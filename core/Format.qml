@@ -40,4 +40,11 @@ Singleton {
             return 0;
         return clamp01(value / max);
     }
+
+    // 容量：KiB → GiB（保留一位小数）
+    function size(kb) {
+        if (!(kb > 0))
+            return "--";
+        return (kb / 1048576).toFixed(1) + " GiB";
+    }
 }

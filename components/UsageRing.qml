@@ -13,6 +13,8 @@ Item {
     property real thickness: 2.5
     property real startAngle: -90
     property bool showTrack: true
+    property string centerText: ""      // 环心文字（字母/数字），空则不显示
+    property real centerFontSize: 9
 
     implicitWidth: size
     implicitHeight: size
@@ -54,5 +56,16 @@ Item {
                 sweepAngle: root._sweep
             }
         }
+    }
+
+    Text {
+        anchors.centerIn: parent
+        visible: root.centerText !== ""
+        text: root.centerText
+        color: root.color
+        font.family: Theme.fontFamily
+        font.pixelSize: root.centerFontSize
+        font.letterSpacing: 0.2
+        renderType: Text.NativeRendering
     }
 }

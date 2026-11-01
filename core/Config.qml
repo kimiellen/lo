@@ -30,6 +30,10 @@ Singleton {
         }
     }
 
+    // 首次构造时同步等待配置读完：主题/语言必须在第一帧前就是最终值，
+    // 否则环等 Shape 元素会以默认 Mocha 绘制且不随启动后的主题变化重绘。
+    Component.onCompleted: file.waitForJob()
+
     readonly property string theme: data.theme === "latte" ? "latte" : "mocha"
     readonly property string language: data.language === "en" ? "en" : "zh"
     readonly property int barHeight: Math.max(28, Math.min(64, data.barHeight || 40))

@@ -33,6 +33,7 @@ PanelWindow {
         spacing: 14
 
         Workspaces {}
+        SystemRings {}
     }
 
     // 中区：日期 - 时间 - 星期

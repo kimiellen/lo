@@ -20,7 +20,11 @@ Singleton {
         "tooltip.battery": "电池",
         "panel.proxy": "代理",
         "panel.network": "网络",
-        "panel.bluetooth": "蓝牙"
+        "panel.bluetooth": "蓝牙",
+        "ring.cpu": "C",
+        "ring.memory": "M",
+        "ring.disk": "D",
+        "common.na": "--"
     })
 
     readonly property var en: ({
@@ -34,7 +38,11 @@ Singleton {
         "tooltip.battery": "Battery",
         "panel.proxy": "Proxy",
         "panel.network": "Network",
-        "panel.bluetooth": "Bluetooth"
+        "panel.bluetooth": "Bluetooth",
+        "ring.cpu": "C",
+        "ring.memory": "M",
+        "ring.disk": "D",
+        "common.na": "--"
     })
 
     readonly property var dict: isZh ? zh : en
