@@ -8,9 +8,15 @@ Item {
 
     property real value: 0
     property color color: Theme.cpu
-    property string letter: ""          // 环心字母，空则不显示
+    property string letter: ""          // 环心字母/数字，空则不显示
+    property real letterSize: 9
     property string title: ""           // hover 明细标题
     property string detail: ""          // hover 明细数值
+    property bool interactive: false    // 左键可点击（手型指针）
+    property bool wheelEnabled: false   // 滚轮可调节
+
+    signal clicked()
+    signal wheeled(int direction)       // +1 上滚 / -1 下滚
 
     implicitWidth: ring.size
     implicitHeight: ring.size
@@ -21,13 +27,26 @@ Item {
         value: root.value
         color: root.color
         centerText: root.letter
+        centerFontSize: root.letterSize
     }
 
     MouseArea {
         id: hover
         anchors.fill: parent
         hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
+        cursorShape: root.interactive ? Qt.PointingHandCursor : Qt.ArrowCursor
+
+        onClicked: function () {
+            if (root.interactive)
+                root.clicked();
+        }
+
+        onWheel: function (wheel) {
+            if (!root.wheelEnabled || wheel.angleDelta.y === 0)
+                return;
+            root.wheeled(wheel.angleDelta.y > 0 ? 1 : -1);
+            wheel.accepted = true;
+        }
     }
 
     Tooltip {

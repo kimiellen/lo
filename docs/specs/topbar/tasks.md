@@ -2,12 +2,6 @@
 
 > 进度事实源。完成一项勾一项；一个里程碑完成后，已完成的里程碑整段归档到 `tasks-archive.md`。
 
-## M3 状态环
-
-- [ ] `services/Audio.qml`（Pipewire）、`services/Brightness.qml`（brightnessctl）、`services/Power.qml`（UPower）
-- [ ] `bar/StatusRings.qml`：音量/亮度/电池 + 缺失自动隐藏 + 滚轮/左键交互
-- [ ] 验证：与 `pactl`、`brightnessctl -m`、`upower -d` 对齐；静音图标切换；滚轮生效
-
 ## M4 控制面板 + 网络/蓝牙 tab
 
 - [ ] `panels/Panel.qml`：PopupWindow 容器、三 tab、Esc/点外关闭

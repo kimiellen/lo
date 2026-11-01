@@ -24,3 +24,9 @@
 - [x] `components/InfoRing.qml` + `components/Tooltip.qml`：环心字母 + PopupWindow 浮层（锚定顶栏下沿，居中于元素）；`UsageRing` 增加环心文字
 - [x] `core/Config.qml`：首次构造同步读取配置，避免首帧按默认 Mocha 绘制环轨（后续主题切换本可正常重绘）
 - [x] 验证：与 `top`/`free`/`df` 交叉核对（CPU 5% vs `top` 5.3%、内存 25% = (31937−23848)/31937、磁盘 2% = `df` 2%，GiB 换算 30.1/1750.5 与 `df` 一致）；10.2 分钟 soak 共 120 对采样，mean|Δ|=0.7pp、漂移斜率 +0.02pp/min（首尾同量级）；`df` 指向不存在路径时 D 环显示 `--`（验证后已还原）；Latte/Mocha 切换热重绘、中文 tooltip「CPU 占用 5%」正常
+
+## M3 状态环
+
+- [x] `services/Audio.qml`（Pipewire）、`services/Brightness.qml`（brightnessctl）、`services/Power.qml`（UPower）
+- [x] `bar/StatusRings.qml`：音量/亮度/电池 + 缺失自动隐藏 + 滚轮/左键交互
+- [x] 验证：与 `pactl`、`brightnessctl -m`、`upower -d` 对齐（音量 75%、亮度 60%、电池 97%）；左键静音后 `pactl` 为 `Mute: yes`、环心切 `×` 且变灰；滚轮音量 75→80→70、亮度 60→65→55（`pactl`/`brightnessctl -m` 回读一致）；缺失降级实测：无 PipeWire 隐藏音量环、`brightnessctl` 失败隐藏亮度环、无系统 D-Bus 隐藏电池环，均无 QML 报错；中英/Latte 切换与 hover 明细（`音量 75%`/`亮度 60%`/`电池 97% · 已充满`）正常

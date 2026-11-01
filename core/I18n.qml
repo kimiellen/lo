@@ -24,6 +24,12 @@ Singleton {
         "ring.cpu": "C",
         "ring.memory": "M",
         "ring.disk": "D",
+        "ring.volume": "V",
+        "ring.brightness": "B",
+        "ring.muted": "×",
+        "tooltip.muted": "静音",
+        "tooltip.charging": "充电中",
+        "tooltip.full": "已充满",
         "common.na": "--"
     })
 
@@ -42,6 +48,12 @@ Singleton {
         "ring.cpu": "C",
         "ring.memory": "M",
         "ring.disk": "D",
+        "ring.volume": "V",
+        "ring.brightness": "B",
+        "ring.muted": "×",
+        "tooltip.muted": "Muted",
+        "tooltip.charging": "Charging",
+        "tooltip.full": "Full",
         "common.na": "--"
     })
 

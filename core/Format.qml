@@ -26,6 +26,28 @@ Singleton {
         return Math.max(1, Math.round(hours)) + "H";
     }
 
+    // 剩余时间（秒）→ 45M / 2H 15M / 1D 4H；无效返回空串
+    function duration(seconds) {
+        if (!(seconds > 0) || !isFinite(seconds))
+            return "";
+        const total = Math.round(seconds / 60);
+        const days = Math.floor(total / 1440);
+        const hours = Math.floor((total % 1440) / 60);
+        const minutes = total % 60;
+        if (days > 0)
+            return days + "D" + (hours > 0 ? " " + hours + "H" : "");
+        if (hours > 0)
+            return hours + "H" + (minutes > 0 ? " " + minutes + "M" : "");
+        return minutes + "M";
+    }
+
+    // 功率：一位小数，接近 0 时返回空串
+    function watts(w) {
+        if (!isFinite(w) || Math.abs(w) < 0.05)
+            return "";
+        return Math.abs(w).toFixed(1) + " W";
+    }
+
     // 金额：保留接口原样的整数/两位小数
     function money(value, currency) {
         if (value === undefined || value === null || value === "")

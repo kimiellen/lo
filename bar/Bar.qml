@@ -50,6 +50,8 @@ PanelWindow {
             verticalCenter: parent.verticalCenter
         }
         spacing: 14
+
+        StatusRings {}
     }
 
     // 与桌面内容的分隔线
