@@ -51,6 +51,7 @@ Singleton {
     readonly property color brightness: p.yellow
     readonly property color battery: p.peach
     readonly property color charging: p.green
+    readonly property color success: p.green
     readonly property color warning: p.red
     readonly property color accent: p.lavender
 

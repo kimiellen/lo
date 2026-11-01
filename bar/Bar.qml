@@ -6,8 +6,9 @@ import qs.core
 // 顶栏窗口：top layer、独占高度、三区布局（中区绝对居中）
 PanelWindow {
     id: bar
-    required property var modelData
-    screen: modelData
+
+    // 打开控制面板（由系统环 / 后续状态图标发出）
+    signal panelRequested(string tab)
 
     color: Theme.bg
     implicitHeight: Config.barHeight
@@ -33,7 +34,9 @@ PanelWindow {
         spacing: 14
 
         Workspaces {}
-        SystemRings {}
+        SystemRings {
+            onPanelRequested: bar.panelRequested("network")
+        }
     }
 
     // 中区：日期 - 时间 - 星期

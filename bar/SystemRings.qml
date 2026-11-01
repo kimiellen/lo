@@ -4,9 +4,11 @@ import qs.components
 import qs.core
 import qs.services
 
-// 系统三环：CPU / 内存 / 磁盘，hover 显示明细，数据不可用时显示 --
+// 系统三环：CPU / 内存 / 磁盘，hover 显示明细，左键打开控制面板，数据不可用时显示 --
 Row {
     id: root
+
+    signal panelRequested()
 
     spacing: 7
 
@@ -18,6 +20,9 @@ Row {
         letter: SystemStats.cpuAvailable ? I18n.t("ring.cpu") : root.unavailable
         title: I18n.t("tooltip.cpu")
         detail: SystemStats.cpuAvailable ? Format.percent(SystemStats.cpuUsage) : root.unavailable
+        interactive: true
+
+        onClicked: root.panelRequested()
     }
 
     InfoRing {
@@ -29,6 +34,9 @@ Row {
             ? Format.percent(SystemStats.memoryUsage) + " · "
                 + Format.size(SystemStats.memoryUsedKb) + " / " + Format.size(SystemStats.memoryTotalKb)
             : root.unavailable
+        interactive: true
+
+        onClicked: root.panelRequested()
     }
 
     InfoRing {
@@ -40,5 +48,8 @@ Row {
             ? Format.percent(SystemStats.diskUsage) + " · "
                 + Format.size(SystemStats.diskUsedKb) + " / " + Format.size(SystemStats.diskTotalKb)
             : root.unavailable
+        interactive: true
+
+        onClicked: root.panelRequested()
     }
 }

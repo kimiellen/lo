@@ -2,14 +2,6 @@
 
 > 进度事实源。完成一项勾一项；一个里程碑完成后，已完成的里程碑整段归档到 `tasks-archive.md`。
 
-## M4 控制面板 + 网络/蓝牙 tab
-
-- [ ] `panels/Panel.qml`：PopupWindow 容器、三 tab、Esc/点外关闭
-- [ ] `services/Wifi.qml`：iwctl 封装（scan/get-networks/connect/known-networks/Powered）
-- [ ] `panels/tabs/NetworkTab.qml`：Wi-Fi 列表、连接、密码输入、链路只读状态
-- [ ] `panels/tabs/BluetoothTab.qml`：已连/可用设备、开关、刷新
-- [ ] 验证：真实连接一个已知 Wi-Fi；`bluetoothctl devices` 交叉核对；密码框可输入、Esc 关闭
-
 ## M5 代理 tab + 状态图标
 
 - [ ] `services/Proxy.qml`：mihomo `/configs`、`/proxies`、`secret` 解析、`PUT /configs` 切 mode

@@ -30,3 +30,15 @@
 - [x] `services/Audio.qml`（Pipewire）、`services/Brightness.qml`（brightnessctl）、`services/Power.qml`（UPower）
 - [x] `bar/StatusRings.qml`：音量/亮度/电池 + 缺失自动隐藏 + 滚轮/左键交互
 - [x] 验证：与 `pactl`、`brightnessctl -m`、`upower -d` 对齐（音量 75%、亮度 60%、电池 97%）；左键静音后 `pactl` 为 `Mute: yes`、环心切 `×` 且变灰；滚轮音量 75→80→70、亮度 60→65→55（`pactl`/`brightnessctl -m` 回读一致）；缺失降级实测：无 PipeWire 隐藏音量环、`brightnessctl` 失败隐藏亮度环、无系统 D-Bus 隐藏电池环，均无 QML 报错；中英/Latte 切换与 hover 明细（`音量 75%`/`亮度 60%`/`电池 97% · 已充满`）正常
+
+## M4 控制面板 + 网络/蓝牙 tab
+
+- [x] `panels/Panel.qml`：全屏 overlay 容器（`PanelWindow`、Overlay 层/忽略独占区）、三 tab、`Esc`/点外关闭、打开时独占键盘焦点
+- [x] `services/Wifi.qml`：iwctl 封装（adapter/station/get-networks/known-networks/scan/connect/disconnect/Powered）
+- [x] `services/Link.qml`：`ip -br addr` 只读链路状态（网卡/UP-DOWN/地址，5s）
+- [x] `services/BlueZ.qml`：`Quickshell.Bluetooth` 封装（已连/可用分组、限时扫描、电源开关）
+- [x] `panels/tabs/NetworkTab.qml`：Wi-Fi 列表、连接、密码输入、链路只读状态
+- [x] `panels/tabs/BluetoothTab.qml` + `panels/tabs/DeviceRow.qml`：已连/可用设备、开关、刷新
+- [x] `components/ToggleSwitch.qml` + `components/EmptyState.qml`：面板开关与空状态
+- [x] 验证：UI 断开路径现场生效（`iwctl` 随之为 disconnected，网由用户恢复，故未再真机重连）；连接链路用假 iwctl 验证命令为 `iwctl station wlan0 connect TestNet --passphrase s3cret`、状态回到 connected；Bluetooth tab 与 `bluetoothctl devices` 一致（EDIFIER S2000MKⅢ / MelGeek-C2 已连，电量 39% 与 `bluetoothctl info` 一致）；虚拟键盘注入密码框可输入（掩码显示）、`Esc` 关闭面板；点外关闭、列表滚轮滚动、Latte/en 渲染正常；假 iwctl 退出码 1 时显示「Wi-Fi 不可用」且无 QML 报错，链路区仍正常
+
