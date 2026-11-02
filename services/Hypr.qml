@@ -11,7 +11,7 @@ Singleton {
     readonly property var workspaces: Hyprland.workspaces
     readonly property int focusedWorkspaceId: Hyprland.focusedWorkspace ? Hyprland.focusedWorkspace.id : 0
 
-    // 顶栏外边距与卡片间隙的标准：Hyprland 窗口外间隙（读不到时回退 10）
+    // Hyprland 窗口外间隙：顶栏用它推算底部补偿（屏边距 − gaps_out），读不到时回退 10
     property int gapsOut: 10
 
     function focusWorkspace(id) {

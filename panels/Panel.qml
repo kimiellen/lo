@@ -96,8 +96,8 @@ PanelWindow {
             readonly property real maxHeight: Math.max(160, Math.min(560, surface.height - y - 16))
 
             x: surface.width - width - 14
-            // 顶栏总高 = gap + 卡片高；面板落在卡片下方一个 gap 处
-            y: Hypr.gapsOut + Config.barHeight + Hypr.gapsOut
+            // 顶栏总高 = 屏边距 + 卡片高 + 底部补偿；面板落在卡片下方一个屏边距处
+            y: Metrics.outerMargin + Config.barHeight + Metrics.outerMargin
             width: 340
             height: Math.max(120, Math.min(maxHeight, 50 + contentHeight))
             radius: 10

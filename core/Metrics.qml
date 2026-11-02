@@ -2,13 +2,17 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// 顶栏尺寸语言：卡片、环、字号的唯一来源（配色见 Theme，间距取 Hypr.gapsOut）
+// 顶栏尺寸语言：卡片、环、字号、外边距的唯一来源（配色见 Theme）
 Singleton {
     id: root
 
     // 卡片
-    readonly property int cardRadius: 12
+    readonly property int cardRadius: 16
     readonly property int cardPadding: 10      // 横向内边距；纵向由内容居中留白
+
+    // 栏内布局：卡片之间 8，顶栏四周留白 15
+    readonly property int cardGap: 8
+    readonly property int outerMargin: 15
 
     // 环形指标
     readonly property int ringSize: 24

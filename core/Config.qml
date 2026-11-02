@@ -26,7 +26,7 @@ Singleton {
             id: data
             property string theme: "mocha"
             property string language: "zh"
-            property int barHeight: 44
+            property int barHeight: 40
             // mihomo 配置读取失败时的回退；secret 只供 Proxy 内存使用，不写日志
             property string mihomoConfigPath: ""
             property string mihomoController: ""
@@ -42,8 +42,8 @@ Singleton {
 
     readonly property string theme: data.theme === "latte" ? "latte" : "mocha"
     readonly property string language: data.language === "en" ? "en" : "zh"
-    // 卡片高度；顶栏窗口总高 = Hypr.gapsOut + barHeight（顶部间隙 + 卡片）
-    readonly property int barHeight: Math.max(28, Math.min(64, data.barHeight || 44))
+    // 卡片高度；顶栏窗口总高 = 屏边距 + barHeight + 底部补偿（见 Bar.qml）
+    readonly property int barHeight: Math.max(28, Math.min(64, data.barHeight || 40))
     readonly property string mihomoConfigPath: data.mihomoConfigPath !== ""
         ? data.mihomoConfigPath : "/etc/mihomo/config.yaml"
     readonly property string mihomoController: data.mihomoController

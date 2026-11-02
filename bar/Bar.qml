@@ -5,18 +5,19 @@ import qs.components
 import qs.core
 import qs.services
 
-// 顶栏窗口：top layer，独占「gap + 卡片高」，三区卡片布局（中区绝对居中）
+// 顶栏窗口：top layer，独占「屏边距 + 卡片高 + 底部补偿」，三区卡片布局（中区绝对居中）
 PanelWindow {
     id: bar
 
     // 打开控制面板（由系统环 / 状态图标发出）
     signal panelRequested(string tab)
 
-    // 屏幕顶/左/右与卡片间隙统一取 Hyprland 窗口外间隙，避免比桌面窗口更松或更紧
-    readonly property int gap: Hypr.gapsOut
     readonly property int cardHeight: Config.barHeight
-    // 窗口高 = 顶部间隙 + 卡片；卡片贴住底边，底部间隙交给 Hyprland 的 gaps_out
-    readonly property int windowHeight: bar.gap + bar.cardHeight
+    readonly property int outerMargin: Metrics.outerMargin
+    readonly property int cardGap: Metrics.cardGap
+    // 底部补偿：Hyprland 在独占区边界会再补一次 gaps_out，减掉后卡片底到窗口顶才等于屏边距
+    readonly property int bottomPad: Math.max(0, Metrics.outerMargin - Hypr.gapsOut)
+    readonly property int windowHeight: bar.outerMargin + bar.cardHeight + bar.bottomPad
 
     color: "transparent"
     implicitHeight: bar.windowHeight
@@ -45,12 +46,12 @@ PanelWindow {
     // 左区：工作区 → 系统三环 → 额度 → 余额
     Row {
         id: leftSection
-        spacing: bar.gap
+        spacing: bar.cardGap
         anchors {
             left: parent.left
-            leftMargin: bar.gap
+            leftMargin: bar.outerMargin
             top: parent.top
-            topMargin: bar.gap
+            topMargin: bar.outerMargin
         }
 
         GlassCard {
@@ -98,7 +99,7 @@ PanelWindow {
         anchors {
             horizontalCenter: parent.horizontalCenter
             top: parent.top
-            topMargin: bar.gap
+            topMargin: bar.outerMargin
         }
 
         Clock {
@@ -109,12 +110,12 @@ PanelWindow {
     // 右区：状态三环 → 状态图标
     Row {
         id: rightSection
-        spacing: bar.gap
+        spacing: bar.cardGap
         anchors {
             right: parent.right
-            rightMargin: bar.gap
+            rightMargin: bar.outerMargin
             top: parent.top
-            topMargin: bar.gap
+            topMargin: bar.outerMargin
         }
 
         GlassCard {
