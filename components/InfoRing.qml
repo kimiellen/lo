@@ -9,7 +9,9 @@ Item {
     property real value: 0
     property color color: Theme.cpu
     property string letter: ""          // 环心字母/数字，空则不显示
-    property real letterSize: 9
+    property real letterSize: Metrics.ringLetterSize
+    property real size: Metrics.ringSize
+    property real thickness: Metrics.ringThickness
     property string title: ""           // hover 明细标题
     property string detail: ""          // hover 明细数值
     property bool interactive: false    // 左键可点击（手型指针）
@@ -18,12 +20,14 @@ Item {
     signal clicked()
     signal wheeled(int direction)       // +1 上滚 / -1 下滚
 
-    implicitWidth: ring.size
-    implicitHeight: ring.size
+    implicitWidth: root.size
+    implicitHeight: root.size
 
     UsageRing {
         id: ring
         anchors.centerIn: parent
+        size: root.size
+        thickness: root.thickness
         value: root.value
         color: root.color
         centerText: root.letter

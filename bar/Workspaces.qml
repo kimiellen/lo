@@ -10,7 +10,7 @@ import qs.services
 Row {
     id: root
 
-    spacing: 7
+    spacing: 8
 
     readonly property var toplevels: Hyprland.toplevels.values || []
 
@@ -46,8 +46,8 @@ Row {
             readonly property int windows: root.windowsFor(wsId)
             readonly property bool focused: Hypr.focusedWorkspaceId === wsId
 
-            width: 20
-            height: 20
+            width: Metrics.workspaceCell
+            height: Metrics.workspaceCell
 
             Rectangle {
                 anchors.fill: parent
@@ -64,8 +64,8 @@ Row {
 
             UsageRing {
                 anchors.centerIn: parent
-                size: 15
-                thickness: 2
+                size: Metrics.workspaceRing
+                thickness: Metrics.ringThickness
                 value: Format.ratio(cell.windows, 5)
                 color: Theme.workspaceColor(cell.windows)
                 trackColor: Theme.track

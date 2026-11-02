@@ -10,7 +10,7 @@ Row {
 
     signal panelRequested(string tab)
 
-    spacing: 8
+    spacing: 9
 
     readonly property var icons: [
         { key: "proxy", glyph: "\uF0AC" },
@@ -73,15 +73,15 @@ Row {
             readonly property bool shown: cell.modelData.key !== "bluetooth" || BlueZ.available
 
             visible: shown
-            width: 18
-            height: 18
+            width: Metrics.iconSize
+            height: Metrics.iconSize
 
             Text {
                 anchors.centerIn: parent
                 text: cell.modelData.glyph
                 color: root.colorFor(cell.modelData.key)
                 font.family: Theme.fontFamily
-                font.pixelSize: 13
+                font.pixelSize: Metrics.iconGlyphSize
                 renderType: Text.NativeRendering
 
                 Behavior on color {

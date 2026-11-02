@@ -39,6 +39,11 @@ Singleton {
     readonly property color track: p.surface1
     readonly property color trackDim: p.surface0
 
+    // 顶栏卡片：半透明底 + 细描边，背后由 BackgroundEffect 模糊（毛玻璃）
+    // 注意 p.* 是色值字符串，通道运算必须走上面已转成 color 的语义角色
+    readonly property color glass: Qt.rgba(bg.r, bg.g, bg.b, 0.7)
+    readonly property color glassBorder: Qt.rgba(text.r, text.g, text.b, 0.12)
+
     // fontconfig 负责字体替换与 CJK 回退，这里只给首选族名
     readonly property string fontFamily: "JetBrainsMono Nerd Font"
     readonly property string fontFamilyFallback: "Noto Sans Mono CJK SC"

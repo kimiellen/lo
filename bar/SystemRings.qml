@@ -10,7 +10,7 @@ Row {
 
     signal panelRequested()
 
-    spacing: 7
+    spacing: 8
 
     readonly property string unavailable: I18n.t("common.na")
 

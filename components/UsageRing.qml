@@ -9,12 +9,12 @@ Item {
     property real value: 0              // 0..1
     property color color: Theme.cpu
     property color trackColor: Theme.trackDim
-    property real size: 18
-    property real thickness: 2.5
+    property real size: Metrics.ringSize
+    property real thickness: Metrics.ringThickness
     property real startAngle: -90
     property bool showTrack: true
     property string centerText: ""      // 环心文字（字母/数字），空则不显示
-    property real centerFontSize: 9
+    property real centerFontSize: Metrics.ringLetterSize
 
     implicitWidth: size
     implicitHeight: size

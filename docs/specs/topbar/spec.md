@@ -20,7 +20,7 @@
 | --- | --- |
 | 合成器 | Hyprland 0.57.0（0.56+ dispatch 改为 Lua API） |
 | Quickshell | 0.3.2（Arch 包），Qt 6.12 |
-| 显示 | 单屏 DP-2 3840×2160 @1.5，顶栏独占 40px |
+| 显示 | 单屏 eDP-1 2560×1600 @1.6，顶栏独占 54px（卡片 44 + 顶部 gap 10） |
 | 网络 | iwd 1.104.4（Wi-Fi）、systemd-networkd（链路/IP）、systemd-resolved→mihomo DNS、mihomo 1.19.33 TUN（策略路由表 2022）；**不安装 NetworkManager** |
 | 代理 | mihomo external-controller `127.0.0.1:9090`，需 secret（`/etc/mihomo/config.yaml` 可读） |
 | 电源 | BAT0 + ADP0，背光 `nvidia_0`（brightnessctl 可用） |
@@ -29,11 +29,16 @@
 
 ## 3. 布局
 
-顶栏高 40px，三个区域：
+顶栏是一排毛玻璃卡片，分三个区域。所有外边距与卡片间隙统一取 Hyprland 的窗口外间隙
+（`general:gaps_out`，运行时从 `hyprctl getoption general:gaps_out` 读取，当前 10）：
 
-- **左区**：从屏幕左边缘起等间距排列 → 工作区环（数量随 Hyprland 工作区动态）→ CPU/内存/磁盘三环 → Kimi 双窗口环 + 重置倒计时 → DeepSeek 余额。
-- **中区**：日期 - 时间 - 星期，严格锚定屏幕水平中心（`anchors.centerIn`，不使用等分布局近似）。
-- **右区**：从右边缘起等间距排列 → 音量/亮度/电池三环（设备缺失自动隐藏）→ 代理/网络/蓝牙三枚状态图标（点击展开控制面板）。
+- **纵向**：窗口高 = 卡片高 + gap（当前 44 + 10 = 54），卡片贴住窗口底边，独占区 = 窗口高。
+  屏幕顶 → 卡片顶 = gap；Hyprland 在独占区边界再补一次 `gaps_out`，因此卡片底 → 首个窗口顶
+  也正好是 gap（栏内不再留底边间隙，避免双间隙）。
+- **横向**：卡片距屏幕左/右各 gap，卡片之间也 gap。
+- **左区**：工作区环（数量随 Hyprland 工作区动态）、CPU/内存/磁盘三环、Kimi 双窗口环 + 重置倒计时、DeepSeek 余额，各一张卡片。
+- **中区**：日期 - 时间 - 星期卡片，卡片中心严格锚定屏幕水平中心（`anchors.horizontalCenter`，不使用等分布局近似）。
+- **右区**：音量/亮度/电池三环（设备缺失自动隐藏）、代理/网络/蓝牙三枚状态图标（点击展开控制面板），各一张卡片。
 
 ## 4. 视觉规范
 
@@ -41,10 +46,13 @@
 
 | 元素 | 值 |
 | --- | --- |
-| 顶栏高度 | 40 |
-| 环外径 / 线宽 | 18 / 2.5（1.5 缩放下不出现半像素模糊） |
-| 元素间距 | 8 |
-| 字号 | 11（数字）、10（单位/倒计时） |
+| 顶栏窗口高度 | 卡片高 + gap（当前 44 + 10 = 54） |
+| 卡片 | 圆角 12、横向内边距 10；底色 base 70% 不透明 + 1px text 12% 描边 |
+| 卡片间隙 / 屏边距 | Hyprland `general:gaps_out`（当前 10） |
+| 环外径 / 线宽 | 24 / 3 |
+| 工作区槽位 / 工作区环 | 26 / 20 |
+| 字号 | 13（数字、时钟）、11（单位/倒计时/环心） |
+| 毛玻璃 | 卡片区域通过 ext-background-effect-v1 请求背景模糊（Hyprland 0.57 原生支持，不需要 layerrule） |
 | 主字体 | `JetBrainsMono Nerd Font` → `JetBrains Mono` → `Noto Sans CJK SC` → `Alibaba PuHuiTi 3.0` → `sans-serif` |
 
 配色全部取自 Catppuccin 官方色板（Mocha `#1e1e2e` 底 / Latte `#eff1f5` 底）：
@@ -137,7 +145,7 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 - 语言：`zh-CN`（默认）/ `en`，切换即时生效；所有可见文案走 `I18n` 单例，日期/星期格式在 `I18n` 内格式化。
   - zh：`11月1日 - 21:26 - 周一`
   - en：`1 Nov - 09:26 PM - Mon`
-- 配置项：`theme`、`language`、`barHeight`、`mihomoConfigPath`、`mihomoController`/`mihomoSecret`（配置读取失败时回退）、`secretsPath`。
+- 配置项：`theme`、`language`、`barHeight`（卡片高，28–64，默认 44；顶栏总高 = gap + barHeight）、`mihomoConfigPath`、`mihomoController`/`mihomoSecret`（配置读取失败时回退）、`secretsPath`。
 
 ## 8. 代码结构
 

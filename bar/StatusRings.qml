@@ -8,7 +8,7 @@ import qs.services
 Row {
     id: root
 
-    spacing: 7
+    spacing: 8
 
     readonly property string unavailable: I18n.t("common.na")
     readonly property color batteryColor: Power.charging ? Theme.charging

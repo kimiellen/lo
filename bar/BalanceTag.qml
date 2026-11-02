@@ -30,14 +30,14 @@ Item {
         return root.amount + (QuotaDeepSeek.sufficient ? "" : " · " + I18n.t("quota.deepseek.low"));
     }
 
-    implicitWidth: badge.width + 5 + amountLabel.implicitWidth
-    implicitHeight: 18
+    implicitWidth: badge.width + 6 + amountLabel.implicitWidth
+    implicitHeight: Metrics.workspaceCell
 
     Rectangle {
         id: badge
-        width: 14
-        height: 14
-        radius: 4
+        width: 16
+        height: 16
+        radius: 5
         anchors.verticalCenter: parent.verticalCenter
         color: root.badgeColor
 
@@ -46,7 +46,7 @@ Item {
             text: "D"
             color: Theme.bg
             font.family: Theme.fontFamily
-            font.pixelSize: 9
+            font.pixelSize: Metrics.textSizeSmall
             font.bold: true
             renderType: Text.NativeRendering
         }
@@ -56,13 +56,13 @@ Item {
         id: amountLabel
         anchors {
             left: badge.right
-            leftMargin: 5
+            leftMargin: 6
             verticalCenter: parent.verticalCenter
         }
         text: root.amount
         color: root.amountColor
         font.family: Theme.fontFamily
-        font.pixelSize: 11
+        font.pixelSize: Metrics.textSize
         renderType: Text.NativeRendering
 
         Behavior on color {

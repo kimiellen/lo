@@ -8,7 +8,7 @@ import qs.services
 Row {
     id: root
 
-    spacing: 7
+    spacing: 8
 
     readonly property bool ready: QuotaKimi.available && QuotaKimi.windows.length > 0
 
@@ -119,7 +119,7 @@ Row {
 
         visible: shown
         width: resetLabel.implicitWidth
-        height: 18
+        height: Metrics.workspaceCell
 
         Text {
             id: resetLabel
@@ -127,7 +127,7 @@ Row {
             text: root.resetText
             color: Theme.subtext
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.textSizeSmall
             renderType: Text.NativeRendering
         }
 

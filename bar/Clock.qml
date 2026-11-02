@@ -8,7 +8,7 @@ Item {
     id: root
 
     implicitWidth: label.implicitWidth
-    implicitHeight: 22
+    implicitHeight: Metrics.workspaceCell
 
     SystemClock {
         id: clock
@@ -22,7 +22,7 @@ Item {
         text: I18n.formatClock(clock.date)
         color: Theme.text
         font.family: Theme.fontFamily
-        font.pixelSize: 12
+        font.pixelSize: Metrics.textSize
         font.letterSpacing: 0.3
         renderType: Text.NativeRendering
     }
