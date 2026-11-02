@@ -35,22 +35,25 @@
   屏幕顶 → 卡片顶 = 12；Hyprland 在独占区边界会再补一次 `gaps_out`，因此卡片底到首个窗口顶
   要多留 `max(0, 上下边距 − gaps_out)` 的透明条，补偿后卡片底 → 窗口顶正好是 12（不再叠出双间隙）。
 - **横向**：卡片距屏幕左/右各 15，卡片之间 8。
-- **左区**：工作区环（数量随 Hyprland 工作区动态）、CPU/内存/磁盘三环、Kimi 双窗口环 + 重置倒计时、DeepSeek 余额，各一张卡片。
+- **左区**：工作区环（数量随 Hyprland 工作区动态）、CPU/内存/磁盘三环、Kimi 矢量标 + 7 天/5 小时额度环（各自跟自己的重置倒计时）、DeepSeek 余额，各一张卡片。
 - **中区**：日期 - 时间 - 星期卡片，卡片中心严格锚定屏幕水平中心（`anchors.horizontalCenter`，不使用等分布局近似）。
 - **右区**：音量/亮度/电池三环（设备缺失自动隐藏）、代理/网络/蓝牙三枚状态图标（点击展开控制面板），各一张卡片。
 
 ## 4. 视觉规范
 
-统一「环形用量图标」：外环轨道 + 进度弧 + 中央字母/数字；进度弧用 `Shape + PathAngleArc` 绘制。
+统一「环形用量图标」：外环轨道 + 进度弧 + 中央字母/数字；进度弧用 `Shape + PathAngleArc` 绘制，
+`preferredRendererType: Shape.CurveRenderer`（抗锯齿内置，不依赖窗口多重采样）。
 
 | 元素 | 值 |
 | --- | --- |
-| 顶栏窗口高度 | 上下边距 + 卡片高 + 底部补偿（当前 12 + 38 + 2 = 52） |
-| 卡片 | 高 38（默认，`barHeight`）、圆角 18、横向内边距 10；底色 base 不透明 + 1px text 12% 描边 |
-| 卡片间隙 / 屏边距 | 8 / 左右 15、上下 12 |
-| 环外径 / 线宽 | 24 / 3 |
+| 顶栏窗口高度 | 上下边距 + 卡片高 + 底部补偿，三项各自按 1/DPR 吸附到整设备像素（1.6 缩放下 11.875 + 38.125 + 1.875 = 51.875 = 83 设备像素，buffer 落在整行不再被合成器重采样） |
+| 卡片 | 高 38（默认，`barHeight`）、圆角 18、横向内边距 10；底色 base 不透明 + 1px text 12% 描边（1px 与卡片宽度同按 1/DPR 吸附） |
+| 卡片间隙 / 屏边距 | 8 / 左右 15、上下 12（间隙同按 1/DPR 吸附，卡片左边逐项落在像素网格上） |
+| 环外径 / 线宽 | 26 / 3（按设备像素吸附：1.6 缩放下实际 26.25 / 3.125） |
 | 工作区槽位 / 工作区环 | 26 / 20 |
-| 字号 | 13（数字、时钟）、11（单位/倒计时/环心） |
+| 字号 | 15（全部文字，环心按字符数自适应缩小） |
+| 状态图标盒 / 字形 | 26 / 20 |
+| 品牌矢量标宽 | 24（鲸标、K 标） |
 | 主字体 | `JetBrainsMono Nerd Font` → `JetBrains Mono` → `Noto Sans CJK SC` → `Alibaba PuHuiTi 3.0` → `sans-serif` |
 
 配色全部取自 Catppuccin 官方色板（Mocha `#1e1e2e` 底 / Latte `#eff1f5` 底）：
@@ -63,8 +66,11 @@
 | 音量 | green | green |
 | 亮度 | yellow | yellow |
 | 电池 | peach（充电 green / <20 red） | 同左 |
-| Kimi 额度环 | pink | pink |
-| DeepSeek 余额 | sapphire | sapphire |
+| Kimi 7 天额度环 | sapphire | sapphire |
+| Kimi 5 小时额度环 | flamingo | flamingo |
+| Kimi 其他窗口环（月度/代码，回退） | pink | pink |
+| Kimi 矢量标 | 官方三色：黑底 `#000000` + 白 K `#FFFFFF` + 蓝点 `#1683FF` | 同左 |
+| DeepSeek 矢量标 | 官方品牌色 `#4d6bfe`（非 Catppuccin 角色）；不可用 overlay、余额不足 warning | 同左 |
 | 工作区 0 个窗口 | overlay0（空环） | overlay0 |
 | 工作区 1–2 个窗口 | blue | blue |
 | 工作区 3–4 个窗口 | yellow | yellow |
@@ -98,15 +104,15 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 ### 5.1 Kimi 额度
 
 - 接口未公开，已发生过一次结构变更（`usage` → `usages`），解析器必须宽容：优先读 `usages.{limit_5h,limit_7d,limit_month_total,limit_month_code}` 的 `used_ratio`/`reset_time`；`limits[].detail`（5h 窗口 `window.duration=300`）与顶层 `usage`（周额度）只补齐 `usages` 缺失的窗口，避免同一窗口重复画环。
-- **窗口动态渲染**：解析器不硬编码窗口集合，顺序固定为 `5h → 7d → month_total → month_code → 未知窗口`；顶栏最多渲染前两个（“双窗口环”），只有一个窗口时只画一个环。月窗口是 5h/7d 缺失时的回退，不会被丢弃。
-- 倒计时由 `reset_time` 计算，格式 `2H` / `1D` / `3D`；顶栏显示两个窗口中最早到期的重置，`hover` 明细分别给出各窗口的百分比与重置时间。
+- **窗口动态渲染**：解析器不硬编码窗口集合，顶栏取窗顺序固定为 `7d → 5h → month_total → month_code → 未知窗口`；最多渲染前两个（“双窗口环”），只有一个窗口时只画一个环。7 天与 5 小时固定配色（sapphire / flamingo），月/代码窗口是缺失时的回退，用 pink，不会被丢弃。
+- 倒计时由 `reset_time` 计算：7 天窗口按天显示（`1D` / `3D`，不足一天也算 `1D`），5 小时窗口按小时显示（`3H`）；每个环后面紧跟自己的重置倒计时标签（颜色同该环），`hover` 明细给出该窗口的百分比与重置时间。
 - 认证：环境变量 `KIMI_CODING_API_KEY` 优先，其次 `~/.config/vbc-io/secrets.json` 的 `kimi_api_key`（权限 600，亦接受更严格的 400；其他权限视为未配置并记一条 warn）。**不读取 `~/.dsh` 私有目录。**
 - 无 key / 401 / 超时 / 解析失败：灰色 `--` 环，不抛错、不阻塞顶栏；恢复 key 后下一次轮询自动恢复。
 
 ### 5.2 DeepSeek 余额
 
 - 官方接口，字段为字符串：`balance_infos[0].total_balance`（按 `currency` 显示 ¥/$），`is_available`。
-- 只有金额没有分母，因此**不画进度环**：保持设计图的「圆角方块图标 + 数字」。
+- 只有金额没有分母，因此**不画进度环**：DeepSeek 官方矢量标（`components/DeepSeekMark.qml`，内嵌官方 path，viewBox 0 0 1391 1024，`PathSvg` + `CurveRenderer` 绘制）+ 金额数字。
 - 多币种时取 `balance_infos[0]`；`is_available=false` 时金额改用警告色，但仍显示数值。
 - 认证：`DEEPSEEK_API_KEY` 环境变量或 `secrets.json` 的 `deepseek_api_key`（权限要求同 §5.1）；无 key / 401 / 超时 / 解析失败显示 `--`。
 
@@ -171,4 +177,4 @@ vbc-io/
 | API key 明文存放 | 泄露 | 仅读环境变量或 600 权限文件；不进仓库、不入日志 |
 | iwctl 输出格式随版本变化 | Wi-Fi 列表异常 | 解析集中一处，失败显示「扫描不可用」 |
 | Quickshell 0.3.2 与 Hyprland 0.57 的 dispatch 差异 | 点击工作区无效 | 统一走 Lua dispatch 包装（已验证写法） |
-| 1.5 缩放下环边缘模糊 | 视觉廉价 | 尺寸取偶数、关闭平滑、必要时用 0.5 对齐 |
+| 分段缩放下环边缘锯齿、1px 描边发虚 | 视觉廉价 | 环走 `Shape.CurveRenderer`（不依赖窗口多重采样）；环径取偶数设备像素、线宽与卡片高按 1/DPR 吸附整设备像素（`Metrics.snap` / `snapEven`） |

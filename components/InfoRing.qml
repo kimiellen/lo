@@ -20,8 +20,9 @@ Item {
     signal clicked()
     signal wheeled(int direction)       // +1 上滚 / -1 下滚
 
-    implicitWidth: root.size
-    implicitHeight: root.size
+    // 跟随环的隐式尺寸（已按设备像素吸附），保证 Row 布局与绘制尺寸一致
+    implicitWidth: ring.implicitWidth
+    implicitHeight: ring.implicitHeight
 
     UsageRing {
         id: ring

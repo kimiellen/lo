@@ -71,7 +71,6 @@ Row {
         value: Power.percentage
         color: root.batteryColor
         letter: "" + Math.round(Power.percentage * 100)
-        letterSize: 8
         title: I18n.t("tooltip.battery")
         detail: root.batteryDetail
     }

@@ -12,13 +12,17 @@ PanelWindow {
     // 打开控制面板（由系统环 / 状态图标发出）
     signal panelRequested(string tab)
 
-    readonly property int cardHeight: Config.barHeight
+    // 设备像素比：分段缩放下只有窗口能给出真实值（Screen.devicePixelRatio 只返回整数）
+    readonly property real dpr: bar.devicePixelRatio
+    // 卡片高 / 上边距按设备像素吸附，卡片上下边落在整像素上，1px 描边才均匀
+    readonly property real cardHeight: Metrics.barCardHeight(Config.barHeight, bar.dpr)
     readonly property int outerMarginX: Metrics.outerMarginX
-    readonly property int outerMarginY: Metrics.outerMarginY
-    readonly property int cardGap: Metrics.cardGap
+    readonly property real outerMarginY: Metrics.barMarginY(bar.dpr)
+    // 卡片间隙同样吸附：卡片左边 = 已有卡片宽度 + 间隙之和，逐项吸附后整条卡片链都落在像素网格上
+    readonly property real cardGap: Metrics.snap(Metrics.cardGap, bar.dpr)
     // 底部补偿：Hyprland 在独占区边界会再补一次 gaps_out，减掉后卡片底到窗口顶才等于上下边距
-    readonly property int bottomPad: Math.max(0, Metrics.outerMarginY - Hypr.gapsOut)
-    readonly property int windowHeight: bar.outerMarginY + bar.cardHeight + bar.bottomPad
+    readonly property real bottomPad: Math.max(0, Metrics.snap(bar.outerMarginY - Hypr.gapsOut, bar.dpr))
+    readonly property real windowHeight: bar.outerMarginY + bar.cardHeight + bar.bottomPad
 
     color: "transparent"
     implicitHeight: bar.windowHeight
@@ -30,7 +34,7 @@ PanelWindow {
 
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.namespace: "vbc-io-bar"
-    WlrLayershell.exclusiveZone: bar.windowHeight
+    WlrLayershell.exclusiveZone: Math.ceil(bar.windowHeight)
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
     // 左区：工作区 → 系统三环 → 额度 → 余额

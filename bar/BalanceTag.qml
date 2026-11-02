@@ -4,7 +4,7 @@ import qs.components
 import qs.core
 import qs.services
 
-// DeepSeek 余额：圆角方块图标 + 金额（只有金额没有分母，不画进度环）
+// DeepSeek 余额：官方矢量标 + 金额（只有金额没有分母，不画进度环）
 Item {
     id: root
 
@@ -13,8 +13,8 @@ Item {
         ? Format.money(QuotaDeepSeek.total, QuotaDeepSeek.currency) : "--"
     readonly property color amountColor: !root.ready
         ? Theme.overlay : (QuotaDeepSeek.sufficient ? Theme.text : Theme.warning)
-    readonly property color badgeColor: !root.ready
-        ? Theme.overlay : (QuotaDeepSeek.sufficient ? Theme.deepseek : Theme.warning)
+    readonly property color markColor: !root.ready
+        ? Theme.overlay : (QuotaDeepSeek.sufficient ? Theme.deepseekBrand : Theme.warning)
 
     readonly property string detail: {
         if (!QuotaDeepSeek.configured)
@@ -30,32 +30,19 @@ Item {
         return root.amount + (QuotaDeepSeek.sufficient ? "" : " · " + I18n.t("quota.deepseek.low"));
     }
 
-    implicitWidth: badge.width + 6 + amountLabel.implicitWidth
+    implicitWidth: mark.implicitWidth + 6 + amountLabel.implicitWidth
     implicitHeight: Metrics.workspaceCell
 
-    Rectangle {
-        id: badge
-        width: 16
-        height: 16
-        radius: 5
+    DeepSeekMark {
+        id: mark
         anchors.verticalCenter: parent.verticalCenter
-        color: root.badgeColor
-
-        Text {
-            anchors.centerIn: parent
-            text: "D"
-            color: Theme.bg
-            font.family: Theme.fontFamily
-            font.pixelSize: Metrics.textSizeSmall
-            font.bold: true
-            renderType: Text.NativeRendering
-        }
+        color: root.markColor
     }
 
     Text {
         id: amountLabel
         anchors {
-            left: badge.right
+            left: mark.right
             leftMargin: 6
             verticalCenter: parent.verticalCenter
         }

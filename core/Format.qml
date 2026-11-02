@@ -26,6 +26,13 @@ Singleton {
         return Math.max(1, Math.round(hours)) + "H";
     }
 
+    // 毫秒 → 天数粒度（周额度这类按天看的窗口）：8H → 1D、30H → 1D、36H → 2D
+    function countdownDays(ms) {
+        if (!(ms > 0))
+            return "";
+        return Math.max(1, Math.round(ms / 86400000)) + "D";
+    }
+
     // 剩余时间（秒）→ 45M / 2H 15M / 1D 4H；无效返回空串
     function duration(seconds) {
         if (!(seconds > 0) || !isFinite(seconds))

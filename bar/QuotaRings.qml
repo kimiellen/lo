@@ -4,7 +4,7 @@ import qs.components
 import qs.core
 import qs.services
 
-// Kimi 额度：最多两个窗口环（5h/7d 优先，月窗口回退）+ 最早到期的重置倒计时
+// Kimi 额度：矢量标 + 7 天环（跟天数）+ 5 小时环（跟小时数），每个环配自己的重置倒计时
 Row {
     id: root
 
@@ -33,116 +33,119 @@ Row {
                 ratio: 0,
                 resetAt: 0,
                 color: Theme.overlay,
-                title: I18n.t("quota.kimi"),
-                detail: root.unavailableText
+                title: I18n.t("quota.kimi")
             }];
         }
-        const list = [];
-        const count = Math.min(2, QuotaKimi.windows.length);
-        for (let i = 0; i < count; ++i) {
-            const item = QuotaKimi.windows[i];
-            list.push({
-                id: item.id,
-                letter: item.letter,
-                ratio: item.ratio,
-                resetAt: item.resetAt,
-                color: Theme.kimi,
-                title: I18n.t(item.labelKey),
-                detail: ""
-            });
+        const picked = [];
+        // 先按 7d → 5h 固定顺序取，再用其他窗口（月度/代码）补齐，保证月窗口不被丢弃
+        const order = ["7d", "5h"];
+        for (const id of order) {
+            for (const item of QuotaKimi.windows) {
+                if (picked.length < 2 && item.id === id) {
+                    picked.push(item);
+                    break;
+                }
+            }
         }
-        return list;
+        for (const item of QuotaKimi.windows) {
+            if (picked.length >= 2)
+                break;
+            if (picked.indexOf(item) < 0)
+                picked.push(item);
+        }
+        return picked.map(item => ({
+            id: item.id,
+            letter: item.letter,
+            ratio: item.ratio,
+            resetAt: item.resetAt,
+            color: root.windowColor(item.id),
+            title: I18n.t(item.labelKey)
+        }));
     }
 
-    // 两个窗口中最早到期的重置
-    readonly property double nextResetAt: {
-        let best = 0;
-        const count = Math.min(2, QuotaKimi.windows.length);
-        for (let i = 0; i < count; ++i) {
-            const at = QuotaKimi.windows[i].resetAt;
-            if (at > QuotaKimi.now && (best === 0 || at < best))
-                best = at;
-        }
-        return best;
+    function windowColor(id) {
+        if (id === "7d")
+            return Theme.kimiWeek;
+        if (id === "5h")
+            return Theme.kimiSession;
+        return Theme.kimi;
     }
 
-    readonly property string resetText: root.ready
-        ? Format.countdown(root.nextResetAt - QuotaKimi.now) : ""
-
-    readonly property string resetDetail: {
-        const parts = [];
-        const count = Math.min(2, QuotaKimi.windows.length);
-        for (let i = 0; i < count; ++i) {
-            const item = QuotaKimi.windows[i];
-            const reset = Format.countdown(item.resetAt - QuotaKimi.now);
-            let text = root.shortLabel(item.id) + " " + Format.percent(item.ratio);
-            if (reset !== "")
-                text += " · " + I18n.resetIn(reset);
-            parts.push(text);
-        }
-        return parts.join(" · ");
+    function resetOf(entry) {
+        if (!root.ready || entry.resetAt <= 0)
+            return "";
+        const ms = entry.resetAt - QuotaKimi.now;
+        // 7 天窗口按天看（2D），5 小时窗口按小时看（3H）
+        return entry.id === "7d" ? Format.countdownDays(ms) : Format.countdown(ms);
     }
 
-    function shortLabel(id) {
-        if (id === "5h" || id === "7d" || id === "month" || id === "code")
-            return I18n.t("quota.kimi." + id + ".short");
-        return I18n.t("quota.kimi");
+    KimiMark {
+        anchors.verticalCenter: parent.verticalCenter
     }
 
     Repeater {
         model: root.entries
 
-        delegate: InfoRing {
-            id: ringItem
+        delegate: Row {
+            id: group
             required property var modelData
 
-            value: ringItem.modelData.ratio
-            color: ringItem.modelData.color
-            letter: ringItem.modelData.letter
-            title: ringItem.modelData.title
-            detail: {
-                if (!root.ready)
-                    return root.unavailableText;
-                let text = Format.percent(ringItem.modelData.ratio);
-                const reset = Format.countdown(ringItem.modelData.resetAt - QuotaKimi.now);
-                if (reset !== "")
-                    text += " · " + I18n.resetIn(reset);
-                return text;
+            spacing: 4
+            anchors.verticalCenter: parent.verticalCenter
+
+            readonly property string resetText: root.resetOf(modelData)
+
+            InfoRing {
+                value: group.modelData.ratio
+                color: group.modelData.color
+                letter: group.modelData.letter
+                title: group.modelData.title
+                detail: {
+                    if (!root.ready)
+                        return root.unavailableText;
+                    let text = Format.percent(group.modelData.ratio);
+                    const reset = root.resetOf(group.modelData);
+                    if (reset !== "")
+                        text += " · " + I18n.resetIn(reset);
+                    return text;
+                }
             }
-        }
-    }
 
-    Item {
-        id: resetItem
+            Item {
+                id: resetItem
 
-        readonly property bool shown: root.resetText !== ""
+                visible: group.resetText !== ""
+                width: resetLabel.implicitWidth
+                height: Metrics.workspaceCell
 
-        visible: shown
-        width: resetLabel.implicitWidth
-        height: Metrics.workspaceCell
+                Text {
+                    id: resetLabel
+                    anchors.centerIn: parent
+                    text: group.resetText
+                    color: group.modelData.color
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Metrics.textSize
+                    renderType: Text.NativeRendering
+                }
 
-        Text {
-            id: resetLabel
-            anchors.centerIn: parent
-            text: root.resetText
-            color: Theme.subtext
-            font.family: Theme.fontFamily
-            font.pixelSize: Metrics.textSizeSmall
-            renderType: Text.NativeRendering
-        }
+                MouseArea {
+                    id: resetHover
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                }
 
-        MouseArea {
-            id: resetHover
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-        }
-
-        Tooltip {
-            targetItem: resetItem
-            title: I18n.t("quota.kimi")
-            detail: root.resetDetail
-            visible: resetHover.containsMouse
+                Tooltip {
+                    targetItem: resetItem
+                    title: group.modelData.title
+                    detail: {
+                        if (!root.ready)
+                            return root.unavailableText;
+                        return Format.percent(group.modelData.ratio) + " · " + I18n.resetIn(group.resetText);
+                    }
+                    visible: resetHover.containsMouse && group.resetText !== ""
+                }
+            }
         }
     }
 }

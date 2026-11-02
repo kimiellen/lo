@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
+import QtQuick.Window
 import Quickshell
 import Quickshell.Hyprland
 import qs.components
@@ -11,6 +12,9 @@ Row {
     id: root
 
     spacing: 8
+
+    // 真实设备像素比：分段缩放下 Screen.devicePixelRatio 只返回整数
+    readonly property real dpr: Window.window ? Window.window.devicePixelRatio : 1
 
     readonly property var toplevels: Hyprland.toplevels.values || []
 
@@ -53,7 +57,8 @@ Row {
                 anchors.fill: parent
                 radius: width / 2
                 color: "transparent"
-                border.width: 1
+                // 1px 描边按设备像素吸附，1.6 缩放下才是 2 设备像素的均匀细线
+                border.width: Metrics.snap(1, root.dpr)
                 border.color: Theme.text
                 opacity: cell.focused ? 0.85 : 0
 
