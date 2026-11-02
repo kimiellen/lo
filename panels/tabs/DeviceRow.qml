@@ -12,18 +12,18 @@ Item {
     readonly property string label: device ? (device.name || device.deviceName || device.address || "") : ""
 
     width: parent ? parent.width : 0
-    height: 24
+    height: 28
 
     Text {
         id: deviceName
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        width: parent.width - meta.width - 8
+        width: parent.width - meta.width - 10
         elide: Text.ElideRight
         text: root.label
         color: root.device && root.device.connected ? Theme.success : Theme.text
         font.family: Theme.fontFamily
-        font.pixelSize: 11
+        font.pixelSize: Metrics.panelTitleSize
         renderType: Text.NativeRendering
     }
 
@@ -31,7 +31,7 @@ Item {
         id: meta
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 6
+        spacing: 8
 
         Text {
             // BlueZ 对部分设备报告 0（未知），不显示
@@ -41,7 +41,7 @@ Item {
                 : ""
             color: Theme.overlay
             font.family: Theme.fontFamily
-            font.pixelSize: 9
+            font.pixelSize: Metrics.panelMetaSize
             renderType: Text.NativeRendering
         }
 
@@ -50,7 +50,7 @@ Item {
             text: I18n.t("panel.bt.paired")
             color: Theme.overlay
             font.family: Theme.fontFamily
-            font.pixelSize: 9
+            font.pixelSize: Metrics.panelMetaSize
             renderType: Text.NativeRendering
         }
 
@@ -59,7 +59,7 @@ Item {
                 ? I18n.t("panel.disconnect") : I18n.t("panel.connect")
             color: root.device && root.device.connected ? Theme.subtext : Theme.accent
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelTextSize
             renderType: Text.NativeRendering
         }
     }

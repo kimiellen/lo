@@ -10,6 +10,8 @@ Item {
 
     implicitHeight: body.height
 
+    readonly property var modes: ["rule", "global", "direct"]
+
     readonly property string errorTitle: {
         if (!Proxy.configured)
             return I18n.t("panel.proxy.noConfig");
@@ -29,7 +31,7 @@ Item {
     Column {
         id: body
         width: root.width
-        spacing: 8
+        spacing: 10
 
         EmptyState {
             visible: !Proxy.available
@@ -42,43 +44,57 @@ Item {
         Column {
             visible: Proxy.available
             width: parent.width
-            spacing: 4
+            spacing: 6
 
             Text {
                 text: I18n.t("panel.proxy.mode")
                 color: Theme.subtext
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
             }
 
             Row {
                 id: modeRow
                 width: parent.width
-                spacing: 6
+                spacing: 8
 
                 Repeater {
-                    model: ["rule", "global", "direct"]
+                    model: root.modes
 
                     delegate: Rectangle {
                         id: modeButton
                         required property string modelData
 
+                        readonly property bool active: Proxy.mode === modeButton.modelData
+
                         width: (modeRow.width - modeRow.spacing * 2) / 3
-                        height: 24
-                        radius: 6
-                        color: Proxy.mode === modeButton.modelData ? Theme.track : "transparent"
+                        height: Metrics.proxyModeButtonHeight
+                        radius: 8
+                        color: modeButton.active ? Theme.track : "transparent"
                         border.width: 1
-                        border.color: Proxy.mode === modeButton.modelData ? Theme.accent : Theme.trackDim
+                        border.color: modeButton.active ? Theme.accent : Theme.trackDim
                         opacity: Proxy.busy ? 0.55 : 1
 
-                        Text {
+                        Row {
                             anchors.centerIn: parent
-                            text: I18n.proxyMode(modeButton.modelData)
-                            color: Proxy.mode === modeButton.modelData ? Theme.text : Theme.subtext
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 11
-                            renderType: Text.NativeRendering
+                            spacing: 6
+
+                            ProxyGlyph {
+                                size: Metrics.proxyModeIconSize
+                                mode: modeButton.modelData
+                                color: modeButton.active ? Theme.text : Theme.subtext
+                                cutColor: modeButton.active ? Theme.track : Theme.panel
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: I18n.proxyMode(modeButton.modelData)
+                                color: modeButton.active ? Theme.text : Theme.subtext
+                                font.family: Theme.fontFamily
+                                font.pixelSize: Metrics.panelTitleSize
+                                renderType: Text.NativeRendering
+                            }
                         }
 
                         MouseArea {
@@ -96,7 +112,7 @@ Item {
             text: I18n.t("panel.proxy.switching")
             color: Theme.overlay
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelMetaSize
             renderType: Text.NativeRendering
         }
 
@@ -105,7 +121,7 @@ Item {
             text: I18n.t("panel.proxy.failed")
             color: Theme.warning
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelMetaSize
             renderType: Text.NativeRendering
         }
 
@@ -113,7 +129,7 @@ Item {
         Item {
             visible: Proxy.available
             width: parent.width
-            height: 20
+            height: 24
 
             Text {
                 anchors.left: parent.left
@@ -121,20 +137,20 @@ Item {
                 text: I18n.t("panel.proxy.node")
                 color: Theme.subtext
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
             }
 
             Text {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                width: parent.width - 84
+                width: parent.width - 100
                 horizontalAlignment: Text.AlignRight
                 elide: Text.ElideRight
                 text: Proxy.node !== "" ? Proxy.node : I18n.t("common.na")
                 color: Theme.text
                 font.family: Theme.fontFamily
-                font.pixelSize: 11
+                font.pixelSize: Metrics.panelTitleSize
                 renderType: Text.NativeRendering
             }
         }
@@ -147,7 +163,7 @@ Item {
             text: I18n.t("panel.proxy.group") + " · " + Proxy.nodeGroup
             color: Theme.overlay
             font.family: Theme.fontFamily
-            font.pixelSize: 9
+            font.pixelSize: Metrics.panelMetaSize
             renderType: Text.NativeRendering
         }
 
@@ -155,7 +171,7 @@ Item {
         Item {
             visible: Proxy.available
             width: parent.width
-            height: 20
+            height: 24
 
             Text {
                 anchors.left: parent.left
@@ -163,7 +179,7 @@ Item {
                 text: I18n.t("panel.proxy.tun")
                 color: Theme.subtext
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
             }
 
@@ -173,7 +189,7 @@ Item {
                 text: Proxy.tun ? I18n.t("panel.proxy.tun.on") : I18n.t("panel.proxy.tun.off")
                 color: Proxy.tun ? Theme.success : Theme.overlay
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
             }
         }
@@ -181,7 +197,7 @@ Item {
         // ---------------- 手动刷新 ----------------
         Item {
             width: parent.width
-            height: 18
+            height: 20
 
             Text {
                 anchors.right: parent.right
@@ -189,7 +205,7 @@ Item {
                 text: I18n.t("panel.proxy.refresh")
                 color: Theme.accent
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
 
                 MouseArea {

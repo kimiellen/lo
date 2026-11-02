@@ -56,13 +56,13 @@ Item {
     Column {
         id: body
         width: root.width
-        spacing: 6
+        spacing: 8
 
         // ---------------- Wi-Fi 开关 ----------------
         Item {
             visible: Wifi.available
             width: parent.width
-            height: 24
+            height: 28
 
             Text {
                 anchors.left: parent.left
@@ -70,7 +70,7 @@ Item {
                 text: I18n.t("panel.wifi")
                 color: Theme.text
                 font.family: Theme.fontFamily
-                font.pixelSize: 11
+                font.pixelSize: Metrics.panelTitleSize
                 renderType: Text.NativeRendering
             }
 
@@ -98,13 +98,13 @@ Item {
         Item {
             visible: Wifi.ready
             width: parent.width
-            height: 22
+            height: 26
 
             Text {
                 id: linkStatus
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                width: parent.width - disconnectAction.width - 8
+                width: parent.width - disconnectAction.width - 10
                 elide: Text.ElideRight
                 text: Wifi.connected
                     ? (Wifi.ssid + (Wifi.ipv4 !== "" ? " · " + Wifi.ipv4 : "")
@@ -112,7 +112,7 @@ Item {
                     : I18n.t("panel.wifi.idle")
                 color: Wifi.connected ? Theme.success : Theme.subtext
                 font.family: Theme.fontFamily
-                font.pixelSize: 11
+                font.pixelSize: Metrics.panelTitleSize
                 renderType: Text.NativeRendering
             }
 
@@ -124,7 +124,7 @@ Item {
                 text: I18n.t("panel.disconnect")
                 color: Theme.subtext
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
 
                 MouseArea {
@@ -138,7 +138,7 @@ Item {
         Item {
             visible: Wifi.ready
             width: parent.width
-            height: 18
+            height: 22
 
             Text {
                 anchors.left: parent.left
@@ -147,7 +147,7 @@ Item {
                     : (Wifi.networks.length === 0 ? I18n.t("panel.wifi.empty") : "")
                 color: Theme.overlay
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
             }
 
@@ -157,7 +157,7 @@ Item {
                 text: I18n.t("panel.scan")
                 color: Wifi.scanning ? Theme.overlay : Theme.accent
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
 
                 MouseArea {
@@ -174,7 +174,7 @@ Item {
             text: I18n.t("panel.wifi.failed")
             color: Theme.warning
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelTextSize
             renderType: Text.NativeRendering
         }
 
@@ -184,7 +184,7 @@ Item {
             text: root.notice
             color: Theme.warning
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelTextSize
             renderType: Text.NativeRendering
         }
 
@@ -192,14 +192,14 @@ Item {
         Rectangle {
             visible: root.pending !== null
             width: parent.width
-            height: 90
-            radius: 8
+            height: 112
+            radius: 10
             color: Theme.trackDim
 
             Column {
                 anchors.fill: parent
-                anchors.margins: 10
-                spacing: 6
+                anchors.margins: 12
+                spacing: 8
 
                 Text {
                     width: parent.width
@@ -209,13 +209,13 @@ Item {
                         : ""
                     color: Theme.text
                     font.family: Theme.fontFamily
-                    font.pixelSize: 10
+                    font.pixelSize: Metrics.panelTextSize
                     renderType: Text.NativeRendering
                 }
 
                 Rectangle {
                     width: parent.width
-                    height: 26
+                    height: 32
                     radius: 6
                     color: Theme.bg
                     border.width: 1
@@ -224,35 +224,35 @@ Item {
                     TextInput {
                         id: passwordInput
                         anchors.fill: parent
-                        anchors.leftMargin: 8
-                        anchors.rightMargin: 8
+                        anchors.leftMargin: 10
+                        anchors.rightMargin: 10
                         verticalAlignment: TextInput.AlignVCenter
                         echoMode: TextInput.Password
                         passwordCharacter: "•"
                         color: Theme.text
                         selectionColor: Theme.accent
                         font.family: Theme.fontFamily
-                        font.pixelSize: 11
+                        font.pixelSize: Metrics.panelTitleSize
                         onAccepted: root.submit()
                         Keys.onEscapePressed: root.closeRequested()
                     }
 
                     Text {
                         anchors.fill: parent
-                        anchors.leftMargin: 9
+                        anchors.leftMargin: 11
                         verticalAlignment: Text.AlignVCenter
                         visible: passwordInput.text === ""
                         text: I18n.t("panel.password.placeholder")
                         color: Theme.overlay
                         font.family: Theme.fontFamily
-                        font.pixelSize: 10
+                        font.pixelSize: Metrics.panelTextSize
                         renderType: Text.NativeRendering
                     }
                 }
 
                 Item {
                     width: parent.width
-                    height: 16
+                    height: 20
 
                     Text {
                         anchors.left: parent.left
@@ -260,7 +260,7 @@ Item {
                         text: I18n.t("panel.cancel")
                         color: Theme.subtext
                         font.family: Theme.fontFamily
-                        font.pixelSize: 10
+                        font.pixelSize: Metrics.panelTextSize
                         renderType: Text.NativeRendering
 
                         MouseArea {
@@ -276,7 +276,7 @@ Item {
                         text: I18n.t("panel.connect")
                         color: Theme.accent
                         font.family: Theme.fontFamily
-                        font.pixelSize: 10
+                        font.pixelSize: Metrics.panelTextSize
                         renderType: Text.NativeRendering
 
                         MouseArea {
@@ -298,19 +298,19 @@ Item {
                 required property var modelData
 
                 width: root.width
-                height: 22
+                height: 26
 
                 Text {
                     id: networkName
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    width: parent.width - networkMeta.width - 8
+                    width: parent.width - networkMeta.width - 10
                     elide: Text.ElideRight
                     text: networkRow.modelData.ssid
                     color: networkRow.modelData.connected ? Theme.success
                         : (networkRow.modelData.known ? Theme.text : Theme.subtext)
                     font.family: Theme.fontFamily
-                    font.pixelSize: 11
+                    font.pixelSize: Metrics.panelTitleSize
                     renderType: Text.NativeRendering
                 }
 
@@ -318,14 +318,14 @@ Item {
                     id: networkMeta
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 6
+                    spacing: 8
 
                     Text {
                         visible: networkRow.modelData.connected
                         text: I18n.t("panel.connected")
                         color: Theme.success
                         font.family: Theme.fontFamily
-                        font.pixelSize: 9
+                        font.pixelSize: Metrics.panelMetaSize
                         renderType: Text.NativeRendering
                     }
 
@@ -334,7 +334,7 @@ Item {
                         text: I18n.t("panel.known")
                         color: Theme.overlay
                         font.family: Theme.fontFamily
-                        font.pixelSize: 9
+                        font.pixelSize: Metrics.panelMetaSize
                         renderType: Text.NativeRendering
                     }
 
@@ -342,7 +342,7 @@ Item {
                         text: I18n.securityLabel(networkRow.modelData.security)
                         color: Theme.subtext
                         font.family: Theme.fontFamily
-                        font.pixelSize: 9
+                        font.pixelSize: Metrics.panelMetaSize
                         renderType: Text.NativeRendering
                     }
 
@@ -350,7 +350,7 @@ Item {
                         text: "*".repeat(networkRow.modelData.stars)
                         color: Theme.overlay
                         font.family: Theme.fontFamily
-                        font.pixelSize: 9
+                        font.pixelSize: Metrics.panelMetaSize
                         renderType: Text.NativeRendering
                     }
                 }
@@ -376,7 +376,7 @@ Item {
             text: I18n.t("panel.link")
             color: Theme.subtext
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelTextSize
             renderType: Text.NativeRendering
         }
 
@@ -388,24 +388,24 @@ Item {
                 required property var modelData
 
                 width: root.width
-                height: 16
+                height: 19
 
                 Text {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 76
+                    width: 84
                     elide: Text.ElideRight
                     text: linkRow.modelData.name
                     color: Theme.subtext
                     font.family: Theme.fontFamily
-                    font.pixelSize: 9
+                    font.pixelSize: Metrics.panelMetaSize
                     renderType: Text.NativeRendering
                 }
 
                 Text {
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    width: parent.width - 84
+                    width: parent.width - 92
                     horizontalAlignment: Text.AlignRight
                     elide: Text.ElideRight
                     text: linkRow.modelData.state
@@ -414,7 +414,7 @@ Item {
                     color: linkRow.modelData.state === "UP" ? Theme.success
                         : (linkRow.modelData.state === "DOWN" ? Theme.warning : Theme.overlay)
                     font.family: Theme.fontFamily
-                    font.pixelSize: 9
+                    font.pixelSize: Metrics.panelMetaSize
                     renderType: Text.NativeRendering
                 }
             }
@@ -426,7 +426,7 @@ Item {
             text: I18n.t("panel.link.empty")
             color: Theme.overlay
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelTextSize
             renderType: Text.NativeRendering
         }
     }

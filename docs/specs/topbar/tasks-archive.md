@@ -86,3 +86,16 @@
   - 亮度：30/100 显示 `30`/`F`；电池 100 显示 `F`；电池 10/50/90/充电四态图标与红/黄/绿分档在隔离测试中渲染正确
   - 麦克风：`wpctl set-mute @DEFAULT_AUDIO_SOURCE@` 与 `Audio.toggleSourceMute()` 双向同步；静音斜线 + 灰图标
   - 布局：右区一张卡（主题｜麦克风｜音量｜亮度｜电池）+ 状态图标卡；Mocha/Latte 双主题截图无重叠
+
+## M9 状态图标卡：代理模式派生图标与面板放大
+
+- [x] `docs/specs/topbar/spec.md`：§4 状态图标改为 26/24 + 代理 24×24 矢量派生图标（规则=列表线、全局=圆环、直连=箭头），§6 面板宽 400 / 字号 11–13 / tab 30 / 模式按钮 30
+- [x] `components/ProxyGlyph.qml`：地球底形 + 右下角徽标，按 `size` 缩放（顶栏 24、面板按钮 16）；未知模式或不可用时只有灰地球
+- [x] `bar/StatusIcons.qml` + `core/Metrics.qml`：代理接入矢量派生图标，网络/蓝牙字形 20→24
+- [x] `panels/Panel.qml`：宽 340→400、圆角 12、内边距 12、tab 30、最大高 640
+- [x] `panels/tabs/*` + `components/EmptyState.qml`：字号 9/10/11→11/12/13，行高与输入框同步放大；代理模式按钮高 30，图标 16 + 文字 13
+- [x] 验证：
+  - 三模式：`PATCH /configs {"mode":...}` 后各等一个轮询（5s）截图，顶栏图标依次为「地球+列表线 / 地球+圆环 / 地球+箭头」；结束回读 `mode=rule`
+  - 面板：临时实例 `Panel open:true` 分别截 proxy/network/bluetooth；Proxy 面板实测 687 设备像素高（429 逻辑），Network 的 4 个 Wi-Fi + 4 条链路、Bluetooth 的设备行、Proxy 不可用（controller 指向 9099）均完整不裁切
+  - 中英/双主题：`VBCIO_CONFIG_DIR` 隔离的 zh-CN + Latte 面板正常；真机 IPC 切 Latte 后顶栏截图（卡片白底、图标切口同底色），切回 mocha 且 `config.json` 回读 `"theme": "mocha"`
+  - 预览实例日志无 QML 报错/警告；顶栏热重载后图标即时生效；点击链路（状态图标→`openPanel`、模式按钮→`Proxy.setMode`）未改动

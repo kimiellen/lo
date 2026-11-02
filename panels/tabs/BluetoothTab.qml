@@ -15,7 +15,7 @@ Item {
     Column {
         id: body
         width: root.width
-        spacing: 6
+        spacing: 8
 
         EmptyState {
             visible: !BlueZ.available
@@ -27,7 +27,7 @@ Item {
         Item {
             visible: BlueZ.available
             width: parent.width
-            height: 24
+            height: 28
 
             Text {
                 anchors.left: parent.left
@@ -37,7 +37,7 @@ Item {
                 text: BlueZ.adapter ? BlueZ.adapter.name : I18n.t("panel.bluetooth")
                 color: Theme.text
                 font.family: Theme.fontFamily
-                font.pixelSize: 11
+                font.pixelSize: Metrics.panelTitleSize
                 renderType: Text.NativeRendering
             }
 
@@ -59,7 +59,7 @@ Item {
         Item {
             visible: BlueZ.powered
             width: parent.width
-            height: 18
+            height: 22
 
             Text {
                 anchors.left: parent.left
@@ -67,7 +67,7 @@ Item {
                 text: BlueZ.discovering ? I18n.t("panel.bt.discovering") : ""
                 color: Theme.overlay
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
             }
 
@@ -77,7 +77,7 @@ Item {
                 text: I18n.t("panel.bt.search")
                 color: BlueZ.discovering ? Theme.overlay : Theme.accent
                 font.family: Theme.fontFamily
-                font.pixelSize: 10
+                font.pixelSize: Metrics.panelTextSize
                 renderType: Text.NativeRendering
 
                 MouseArea {
@@ -94,7 +94,7 @@ Item {
             text: I18n.t("panel.connected")
             color: Theme.subtext
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelTextSize
             renderType: Text.NativeRendering
         }
 
@@ -109,7 +109,7 @@ Item {
             text: I18n.t("panel.bt.available")
             color: Theme.subtext
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelTextSize
             renderType: Text.NativeRendering
         }
 

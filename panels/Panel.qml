@@ -93,14 +93,14 @@ PanelWindow {
             id: frame
 
             readonly property real contentHeight: loader.item ? loader.item.implicitHeight : 0
-            readonly property real maxHeight: Math.max(160, Math.min(560, surface.height - y - 16))
+            readonly property real maxHeight: Math.max(180, Math.min(640, surface.height - y - 16))
 
             x: surface.width - width - 14
             // 顶栏总高（与 Bar 共用同一套设备像素吸附公式）+ 一个 gaps_out；面板落在卡片下方
             y: Metrics.barWindowHeight(Config.barHeight, Hypr.gapsOut, root.devicePixelRatio) + Hypr.gapsOut
-            width: 340
-            height: Math.max(120, Math.min(maxHeight, 50 + contentHeight))
-            radius: 10
+            width: Metrics.panelWidth
+            height: Math.max(140, Math.min(maxHeight, 64 + contentHeight))
+            radius: Metrics.panelRadius
             color: Theme.panel
             // 1px 描边按设备像素吸附，与顶栏卡片一致
             border.width: Metrics.snap(1, root.devicePixelRatio)
@@ -115,20 +115,20 @@ PanelWindow {
                 id: bodyArea
                 anchors {
                     top: parent.top
-                    topMargin: 8
+                    topMargin: Metrics.panelPadding
                     left: parent.left
-                    leftMargin: 10
+                    leftMargin: Metrics.panelPadding
                     right: parent.right
-                    rightMargin: 10
+                    rightMargin: Metrics.panelPadding
                     bottom: parent.bottom
-                    bottomMargin: 8
+                    bottomMargin: Metrics.panelPadding
                 }
 
                 Row {
                     id: tabBar
                     width: parent.width
-                    height: 26
-                    spacing: 6
+                    height: Metrics.panelTabHeight
+                    spacing: 8
 
                     Repeater {
                         model: root.tabs
@@ -139,7 +139,7 @@ PanelWindow {
 
                             width: (tabBar.width - tabBar.spacing * (root.tabs.length - 1)) / root.tabs.length
                             height: tabBar.height
-                            radius: 7
+                            radius: 8
                             color: root.tab === tabButton.modelData.key ? Theme.track : "transparent"
 
                             Text {
@@ -147,7 +147,7 @@ PanelWindow {
                                 text: tabButton.modelData.label
                                 color: root.tab === tabButton.modelData.key ? Theme.text : Theme.subtext
                                 font.family: Theme.fontFamily
-                                font.pixelSize: 11
+                                font.pixelSize: Metrics.panelTextSize
                                 renderType: Text.NativeRendering
                             }
 
@@ -164,7 +164,7 @@ PanelWindow {
                     id: flick
                     anchors {
                         top: tabBar.bottom
-                        topMargin: 8
+                        topMargin: 10
                         left: parent.left
                         right: parent.right
                         bottom: parent.bottom

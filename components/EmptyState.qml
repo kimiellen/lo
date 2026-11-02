@@ -8,7 +8,7 @@ Item {
     property string title: ""
     property string detail: ""
 
-    implicitHeight: 88
+    implicitHeight: 96
 
     Column {
         anchors.centerIn: parent
@@ -19,7 +19,7 @@ Item {
             text: root.title
             color: Theme.subtext
             font.family: Theme.fontFamily
-            font.pixelSize: 11
+            font.pixelSize: Metrics.panelTitleSize
             renderType: Text.NativeRendering
         }
 
@@ -29,7 +29,7 @@ Item {
             text: root.detail
             color: Theme.overlay
             font.family: Theme.fontFamily
-            font.pixelSize: 10
+            font.pixelSize: Metrics.panelTextSize
             renderType: Text.NativeRendering
         }
     }

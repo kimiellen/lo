@@ -78,11 +78,25 @@ Row {
 
             Text {
                 anchors.centerIn: parent
+                visible: cell.modelData.key !== "proxy"
                 text: cell.modelData.glyph
                 color: root.colorFor(cell.modelData.key)
                 font.family: Theme.fontFamily
                 font.pixelSize: Metrics.iconGlyphSize
                 renderType: Text.NativeRendering
+
+                Behavior on color {
+                    ColorAnimation { duration: 120 }
+                }
+            }
+
+            // 代理：地球底形 + 当前模式的派生徽标（规则/全局/直连）
+            ProxyGlyph {
+                anchors.centerIn: parent
+                visible: cell.modelData.key === "proxy"
+                mode: Proxy.available ? Proxy.mode : ""
+                color: root.colorFor("proxy")
+                cutColor: Theme.cardBg
 
                 Behavior on color {
                     ColorAnimation { duration: 120 }

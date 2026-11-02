@@ -29,7 +29,7 @@ Singleton {
 
     // 状态图标
     readonly property int iconSize: 26         // 状态图标点击/绘制盒
-    readonly property int iconGlyphSize: 20     // 盒内 Nerd Font 字形
+    readonly property int iconGlyphSize: 24     // 盒内字形/矢量图标（光学尺寸对齐）
     readonly property int brandMarkWidth: 24    // 品牌矢量标（鲸标/K 标）逻辑宽度
 
     // 右区状态卡：自绘图标、主题按钮、模块间距
@@ -39,6 +39,17 @@ Singleton {
     readonly property int modeButtonPadding: 8
     readonly property int statusModuleGap: 10   // 模块之间
     readonly property int statusIconGap: 4      // 图标与环之间
+
+    // 控制面板：宽 400、内边距 12、tab 高 30；字号 11–13
+    readonly property int panelWidth: 400
+    readonly property int panelRadius: 12
+    readonly property int panelPadding: 12
+    readonly property int panelTabHeight: 30
+    readonly property int panelTitleSize: 13     // 数值/名称
+    readonly property int panelTextSize: 12      // 正文/标签
+    readonly property int panelMetaSize: 11      // 次要信息
+    readonly property int proxyModeButtonHeight: 30
+    readonly property int proxyModeIconSize: 16
 
     // 设备像素吸附：逻辑尺寸 × DPR 常是小数（分段缩放 1.6 下 26 → 41.6），
     // 几何落在半像素上就会发虚。DPR 必须由调用方传入（取 Window.window.devicePixelRatio，
