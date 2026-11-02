@@ -1,7 +1,7 @@
 import QtQuick
 import qs.core
 
-// 顶栏卡片：半透明毛玻璃圆角矩形，宽度随内容；背景模糊由 Bar 的 BackgroundEffect 统一申请
+// 顶栏卡片：不透明底色 + 1px 描边的圆角矩形，宽度随内容
 // 每张卡片只放一个内容组件，卡片尺寸取该组件的隐式尺寸
 Item {
     id: root
@@ -15,13 +15,21 @@ Item {
     implicitWidth: (contentItem ? contentItem.implicitWidth : 0) + root.padding * 2
     implicitHeight: contentItem ? contentItem.implicitHeight : 0
 
+    // 底色
     Rectangle {
-        id: background
         anchors.fill: parent
         radius: root.radius
-        color: Theme.glass
+        color: Theme.cardBg
+    }
+
+    // 1px 描边（透明度只作用在描边上，因为填充是透明的）
+    Rectangle {
+        anchors.fill: parent
+        radius: root.radius
+        color: "transparent"
         border.width: 1
-        border.color: Theme.glassBorder
+        border.color: Theme.text
+        opacity: Theme.cardBorderOpacity
     }
 
     Item {

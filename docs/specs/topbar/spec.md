@@ -29,7 +29,7 @@
 
 ## 3. 布局
 
-顶栏是一排毛玻璃卡片，分三个区域。顶栏四周留白左右 15、上下 12（`Metrics.outerMarginX/Y`），卡片之间 8（`Metrics.cardGap`）：
+顶栏是一排不透明卡片，分三个区域。顶栏四周留白左右 15、上下 12（`Metrics.outerMarginX/Y`），卡片之间 8（`Metrics.cardGap`）：
 
 - **纵向**：窗口高 = 上下边距 + 卡片高 + 底部补偿（当前 12 + 38 + 2 = 52），独占区 = 窗口高。
   屏幕顶 → 卡片顶 = 12；Hyprland 在独占区边界会再补一次 `gaps_out`，因此卡片底到首个窗口顶
@@ -46,12 +46,11 @@
 | 元素 | 值 |
 | --- | --- |
 | 顶栏窗口高度 | 上下边距 + 卡片高 + 底部补偿（当前 12 + 38 + 2 = 52） |
-| 卡片 | 高 38（默认，`barHeight`）、圆角 18、横向内边距 10；底色 base 70% 不透明 + 1px text 12% 描边 |
+| 卡片 | 高 38（默认，`barHeight`）、圆角 18、横向内边距 10；底色 base 不透明 + 1px text 12% 描边 |
 | 卡片间隙 / 屏边距 | 8 / 左右 15、上下 12 |
 | 环外径 / 线宽 | 24 / 3 |
 | 工作区槽位 / 工作区环 | 26 / 20 |
 | 字号 | 13（数字、时钟）、11（单位/倒计时/环心） |
-| 毛玻璃 | 卡片区域通过 ext-background-effect-v1 请求背景模糊（Hyprland 0.57 原生支持，不需要 layerrule） |
 | 主字体 | `JetBrainsMono Nerd Font` → `JetBrains Mono` → `Noto Sans CJK SC` → `Alibaba PuHuiTi 3.0` → `sans-serif` |
 
 配色全部取自 Catppuccin 官方色板（Mocha `#1e1e2e` 底 / Latte `#eff1f5` 底）：

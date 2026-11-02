@@ -33,17 +33,6 @@ PanelWindow {
     WlrLayershell.exclusiveZone: bar.windowHeight
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-    // 卡片区域的背景模糊：ext-background-effect-v1（Hyprland 0.57 原生支持，无需 layerrule）
-    BackgroundEffect.blurRegion: Region {
-        Region { item: workspaceCard; radius: Metrics.cardRadius }
-        Region { item: systemCard; radius: Metrics.cardRadius }
-        Region { item: quotaCard; radius: Metrics.cardRadius }
-        Region { item: balanceCard; radius: Metrics.cardRadius }
-        Region { item: clockCard; radius: Metrics.cardRadius }
-        Region { item: statusCard; radius: Metrics.cardRadius }
-        Region { item: iconCard; radius: Metrics.cardRadius }
-    }
-
     // 左区：工作区 → 系统三环 → 额度 → 余额
     Row {
         id: leftSection
@@ -55,7 +44,7 @@ PanelWindow {
             topMargin: bar.outerMarginY
         }
 
-        GlassCard {
+        BarCard {
             id: workspaceCard
             height: bar.cardHeight
 
@@ -64,7 +53,7 @@ PanelWindow {
             }
         }
 
-        GlassCard {
+        BarCard {
             id: systemCard
             height: bar.cardHeight
 
@@ -74,7 +63,7 @@ PanelWindow {
             }
         }
 
-        GlassCard {
+        BarCard {
             id: quotaCard
             height: bar.cardHeight
 
@@ -83,7 +72,7 @@ PanelWindow {
             }
         }
 
-        GlassCard {
+        BarCard {
             id: balanceCard
             height: bar.cardHeight
 
@@ -94,7 +83,7 @@ PanelWindow {
     }
 
     // 中区：日期 - 时间 - 星期（卡片中心严格对齐屏幕水平中心）
-    GlassCard {
+    BarCard {
         id: clockCard
         height: bar.cardHeight
         anchors {
@@ -119,7 +108,7 @@ PanelWindow {
             topMargin: bar.outerMarginY
         }
 
-        GlassCard {
+        BarCard {
             id: statusCard
             height: bar.cardHeight
 
@@ -128,7 +117,7 @@ PanelWindow {
             }
         }
 
-        GlassCard {
+        BarCard {
             id: iconCard
             height: bar.cardHeight
 
