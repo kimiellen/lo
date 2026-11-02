@@ -1,5 +1,47 @@
+# 依赖与构建产物
 node_modules/
+*.qmlc
+.qmlls.ini
+
+# 日志与本地试验目录（截图、探针、隔离配置都在这里）
 *.log
-.DS_Store
 tmp/
 .dev/
+.cache/
+
+# 本地密钥与配置：绝不入仓
+#   secrets.json 含 API key；config.json 可能含 mihomo secret
+secrets.json
+secrets*.json
+config.json
+config.local.json
+*.key
+*.pem
+*.p12
+*.pfx
+*.secret
+.env
+.env.*
+.npmrc
+.netrc
+.pypirc
+credentials
+credentials.json
+id_rsa*
+id_ed25519*
+
+# 示例配置允许入仓
+!secrets.example.json
+
+# 编辑器 / 操作系统
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 补丁残留
+*.orig
+*.rej
