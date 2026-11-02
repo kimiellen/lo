@@ -60,3 +60,13 @@
 - [x] 验证（离线样例）：current 结构 5h 42% + 7d 18%（4H/4D）、旧 `usage` 结构 7%/2%、仅 5h 单环、仅月窗口 M/C 55%/12% + 21D；401 / 连接失败 / 非 JSON / 空 `usages` / 无 key / secrets 644 均为灰环 + `--` 且无 QML 报错；secrets 600 正常读取，644 拒绝并 warn；现场删除 secrets 后 60s 内降级为 `--`，恢复后下一次轮询自动恢复；DeepSeek CNY ¥110.00、USD $12.34、`is_available=false` 警告色 + 「余额不足」；Latte + en 下 tooltip 为 `5-hour quota 42% · resets in 4H`
 - [x] 验证（真实 key）：secrets.json 600 下真实接口返回 5h `used_ratio=0`（02:26Z 重置）、7d `0.8866`（14:26Z 重置）、DeepSeek `¥26.75`/`is_available=true`；UI 显示 5h 0% · 2H、7d 89% · 12H、¥26.75，与原始 JSON 一致；关闭旧 Quickshell 后 vbc-Io 以常驻实例接管顶栏
 
+## M7 卡片化样式与间隙对齐
+
+- [x] `docs/specs/topbar/spec.md`：§2/§3/§4/§7 同步新的布局与视觉规范（用户确认后先改文档）
+- [x] `services/Hypr.qml`：`hyprctl getoption general:gaps_out -j` 读取 css（上右下左，回退 10），30s 复查以跟随 `hyprctl reload`
+- [x] `core/Metrics.qml`：卡片/环/字号尺寸 token；`core/Theme.qml` 加毛玻璃底色（base 70%）与 1px text 12% 描边；`Config.barHeight` 改为卡片高（默认 44）
+- [x] `components/GlassCard.qml`：半透明圆角卡片，宽度随内容组件隐式尺寸
+- [x] `bar/Bar.qml`：三区 7 张卡片；窗口高 = gap + 卡片高，`exclusiveZone` 同值且卡片贴底；单一 `BackgroundEffect`（`Region` 按卡片圆角）负责模糊
+- [x] bar item 放大：环 24/3、工作区槽位 26/内环 20、字号 13（时钟/金额）与 11（倒计时/环心）、状态图标 22/17
+- [x] `panels/Panel.qml`：面板 y = gap + 卡片高 + gap，不与卡片重叠
+- [x] 验证：热重载无 QML 报错；`hyprctl layers` bar 为 1600×54；`hyprctl clients` 窗口 y=66（54 + gaps_out 10 + 边框 2），即卡片底到窗口顶只有一个 gap；截图量得卡片左边距 10、卡片间隙 10、时钟卡中心 1279/1280；Mocha/Latte 双主题截图正常；`WAYLAND_DEBUG=1` 探针确认出现 `ext_background_effect_manager_v1.get_background_effect` 与 3 次 `set_blur_region`，圆角模糊在 Hyprland 上生效（探针已删除）
