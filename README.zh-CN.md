@@ -23,10 +23,10 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 
 1. **系统状态**——工作区、CPU / 内存 / 磁盘、音量 / 亮度 / 电池，全部是环形，精确数值在环心或悬浮里
 2. **AI 额度**——Kimi Code 的 7 天与 5 小时窗口，各自带重置倒计时；外加 DeepSeek 余额
-3. **网络与代理**——mihomo 的模式 / 节点 / TUN、iwd Wi-Fi、BlueZ，收在同一个控制面板里
+3. **网络**——iwd Wi-Fi（含内联密码输入）与 BlueZ 蓝牙，收在同一个控制面板里
 4. **主题与语言**——Catppuccin Mocha / Latte / 自动，中文 / English，切换即时生效并持久化
 
-顶栏的底线是：任何一项依赖坏掉都只让它自己变灰，不影响其余部分——没有 API key、mihomo 停了、`df` 失败、没有电池，都不会让整条栏失色。
+顶栏的底线是：任何一项依赖坏掉都只让它自己变灰，不影响其余部分——没有 API key、`df` 失败、没有电池，都不会让整条栏失色。
 
 ## 功能特点
 
@@ -72,7 +72,7 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 
 ### 右区——状态卡与状态图标
 
-![右区：主题、麦克风、音量、亮度、电池，以及三枚状态图标](docs/assets/bar-right.png)
+![右区：主题、麦克风、音量、亮度、电池，以及状态图标](docs/assets/bar-right.png)
 
 **状态卡**
 
@@ -85,27 +85,12 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 
 **状态图标**
 
-- 代理、Wi-Fi、蓝牙三枚，各自点开控制面板的对应 tab
+- Wi-Fi、蓝牙两枚，各自点开控制面板的对应 tab
 - Wi-Fi 已连接为绿色、关闭为灰色；蓝牙只在有设备连接时高亮
-- 代理图标**由当前模式派生**：地球 + 列表线 = 规则，地球 + 圆环 = 全局，地球 + 箭头 = 直连；mihomo 不可用时只留灰色地球
-
-| 规则 | 全局 | 直连 |
-|---|---|---|
-| ![规则模式](docs/assets/mode-rule.png) | ![全局模式](docs/assets/mode-global.png) | ![直连模式](docs/assets/mode-direct.png) |
 
 ## 控制面板
 
-面板是 400 px 宽的浮层，锚定在顶栏右下方，分三个 tab。`Esc` 或点击面板外关闭；打开时独占键盘焦点，Wi-Fi 密码框才有得输入。打开或切换 tab 会立刻刷新该页数据。
-
-### 代理
-
-![代理 tab](docs/assets/panel-proxy.zh.png)
-
-- 显示 mihomo 的模式、当前节点、所属策略组，以及 TUN 是否开启
-- 模式按钮走 `PATCH /configs` 传 `{"mode": ...}`；mihomo 1.19.33 对 `PUT` 返回 204 却不生效，所以这里刻意用 `PATCH`
-- 当前节点递归解析：全局模式跟 `GLOBAL.now`，规则模式取成员最多的策略组的 `now`，直连显示 `DIRECT`
-- mihomo 信息从 `/etc/mihomo/config.yaml` 的 `external-controller` 与 `secret` 读取，读不到时回退 `config.json`
-- 控制器不通、secret 缺失、secret 错误各有独立文案，不会只剩一个空白 tab
+面板是 400 px 宽的浮层，锚定在顶栏右下方。`Esc` 或点击面板外关闭；打开时独占键盘焦点，Wi-Fi 密码框才有得输入。打开或切换 tab 会立刻刷新该页数据。
 
 ### 网络
 
@@ -133,7 +118,7 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 | 强调 | lavender `#b4befe` | lavender `#7287fd` |
 | 环 | blue / mauve / teal / green / yellow | 同一套语义角色 |
 
-![Latte 主题与中文界面](docs/assets/panel-proxy.zh.png)
+> 文中截图统一取自英文界面；中文界面只替换文案与日期格式，布局规则与尺寸规范一致。
 
 - 所有可见文案走 `I18n`，所有颜色走 `Theme`——栏里没有散落的硬编码字符串与色值
 - 主题与语言写入 `~/.config/vbc-io/config.json`，并在第一帧之前恢复，启动时不会先用错配色画一遍环
@@ -152,7 +137,7 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 | 音量图标或环 | 切换静音 | ±5% | 百分比，或「静音」 |
 | 亮度图标或环 | — | ±5% | 百分比 |
 | 电池图标或环 | — | — | 百分比、剩余时间、功率 |
-| 状态图标（代理 / Wi-Fi / 蓝牙） | 打开对应 tab | — | 模式与节点、SSID、已连设备数 |
+| 状态图标（Wi-Fi / 蓝牙） | 打开对应 tab | — | SSID、已连设备数 |
 | 时钟 | — | — | — |
 
 ## 环境要求
@@ -167,7 +152,6 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 | iwd | 任意 | Wi-Fi tab——**不使用 NetworkManager** |
 | `brightnessctl` | 任意 | 亮度模块 |
 | `curl` | 任意 | Kimi 与 DeepSeek 请求 |
-| mihomo | 1.19+ | 可选；仅代理 tab 与代理图标需要 |
 | JetBrainsMono Nerd Font | 任意 | 状态图标字形；中文另需 Noto Sans CJK |
 
 ## 安装
@@ -182,8 +166,6 @@ Arch：
 sudo pacman -S quickshell pipewire upower bluez bluez-utils iwd brightnessctl curl
 sudo pacman -S ttf-jetbrains-mono-nerd noto-fonts-cjk
 ```
-
-mihomo 可选；只有需要代理 tab 与派生代理图标时才装。
 
 ### 2. 克隆到 Quickshell 配置目录
 
@@ -240,9 +222,6 @@ Quickshell 下次重载即生效；这个项目没有构建步骤。
 | `theme` | `"mocha"` | `mocha`、`latte` 或 `auto`（自动 = 06:00–18:00 浅色） |
 | `language` | `"zh"` | `"zh"` 或 `"en"` |
 | `barHeight` | `38` | 卡片高，限制在 28–64；顶栏窗口在此基础上加留白 |
-| `mihomoConfigPath` | `/etc/mihomo/config.yaml` | 读取 `external-controller` 与 `secret` 的位置 |
-| `mihomoController` | `""` | 配置文件读不到时的控制器回退 |
-| `mihomoSecret` | `""` | 回退 secret；只在内存中使用 |
 | `secretsPath` | `<配置目录>/secrets.json` | 覆盖额度 key 文件路径 |
 
 ```json
@@ -250,9 +229,6 @@ Quickshell 下次重载即生效；这个项目没有构建步骤。
   "theme": "auto",
   "language": "zh",
   "barHeight": 38,
-  "mihomoConfigPath": "/etc/mihomo/config.yaml",
-  "mihomoController": "",
-  "mihomoSecret": "",
   "secretsPath": ""
 }
 ```
@@ -283,11 +259,11 @@ lo/
 ├── shell.qml            # ShellRoot：每屏一个 Bar + 一个 Panel，外加 IPC
 ├── core/                # Theme、I18n、Config、Format、Metrics——无副作用
 ├── services/            # 所有外部读写：Hypr、SystemStats、Audio、
-│                        #   Brightness、Power、Wifi、Link、BlueZ、Proxy、
+│                        #   Brightness、Power、Wifi、Link、BlueZ、
 │                        #   QuotaKimi、QuotaDeepSeek、Secrets
-├── components/          # UsageRing、InfoRing、StatusGlyph、ProxyGlyph、Tooltip…
+├── components/          # UsageRing、InfoRing、StatusGlyph、Tooltip…
 ├── bar/                 # 三区布局与各 item
-├── panels/              # 面板宿主与代理 / 网络 / 蓝牙 tab
+├── panels/              # 面板宿主与各 tab
 └── docs/specs/topbar/   # spec.md 是事实源
 ```
 
@@ -309,7 +285,6 @@ lo/
 | 电池 | UPower `displayDevice` | 事件 | 隐藏 |
 | Kimi 额度 | `api.kimi.com/coding/v1/usages` | 60 s | 灰色 `--` |
 | DeepSeek 余额 | `api.deepseek.com/user/balance` | 5 min | `--` |
-| 代理 | mihomo `/configs`、`/proxies` | 5 s | 灰色图标 |
 | Wi-Fi | `iwctl` | 10 s + 打开时 | 离线图标 |
 | 链路 | `ip -br addr` | 5 s | 空表 |
 | 蓝牙 | `Quickshell.Bluetooth` | 事件 | 隐藏 |
@@ -320,7 +295,6 @@ HTTP 一律是 `curl` 子进程，带 `--max-time 8`。解析失败只记一条�
 
 - 没有 key 显示 `--` 与灰环；key 恢复后下一次轮询自动恢复，不用重启
 - `secrets.json` 权限宽于 `600/400` 时拒绝读取，而不是照读
-- mihomo 控制器不通、secret 错误、配置缺失各有独立提示
 - 硬件缺失就隐藏模块，不渲染一个 0
 - 控制面板高度随内容收缩，限制在 140–640 px
 
@@ -374,7 +348,7 @@ qs -c vbc-io                                 # 前台运行，直接看日志
 
 ## 非目标
 
-通知中心、媒体控制、温度 / GPU、OBS 状态、输入法指示、自动隐藏、多显示器差异化布局与 TUN 开关，都不在范围内。
+通知中心、媒体控制、温度 / GPU、OBS 状态、输入法指示、自动隐藏与多显示器差异化布局，都不在范围内。
 
 ## 许可证
 

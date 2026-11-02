@@ -23,10 +23,10 @@ lo is a Hyprland top bar written entirely in QML on **Quickshell 0.3.2 / Qt 6.12
 
 1. **System at a glance** — workspaces, CPU / memory / disk, volume / brightness / battery, all as arcs that show their exact value in the ring or on hover
 2. **AI quota on the bar** — Kimi Code 7-day and 5-hour windows with their own reset countdowns, plus your DeepSeek balance
-3. **Network and proxy** — mihomo mode / node / TUN, iwd Wi-Fi and BlueZ in a single control panel
+3. **Network** — iwd Wi-Fi with inline password entry and BlueZ devices in a single control panel
 4. **Your theme, your language** — Catppuccin Mocha / Latte / auto and 中文 / English, switched live and persisted
 
-Nothing on the bar is allowed to break the bar: a missing API key, a stopped mihomo, a failed `df` or an absent battery only greys out that one item.
+Nothing on the bar is allowed to break the bar: a missing API key, a failed `df` or an absent battery only greys out that one item.
 
 ## Features
 
@@ -72,7 +72,7 @@ Nothing on the bar is allowed to break the bar: a missing API key, a stopped mih
 
 ### Right cluster — status card and status icons
 
-![Right cluster: theme, microphone, volume, brightness, battery and the three status icons](docs/assets/bar-right.png)
+![Right cluster: theme, microphone, volume, brightness, battery and the status icons](docs/assets/bar-right.png)
 
 **Status card**
 
@@ -85,27 +85,12 @@ Nothing on the bar is allowed to break the bar: a missing API key, a stopped mih
 
 **Status icons**
 
-- Proxy, Wi-Fi and Bluetooth, each opening the panel on its own tab
+- Wi-Fi and Bluetooth, each opening the panel on its own tab
 - Wi-Fi is green when connected, grey when off; Bluetooth accents only while a device is connected
-- The proxy icon is **derived from the current mode**: globe plus a list badge for rule, a ring for global, an arrow for direct — and a plain grey globe when mihomo is unavailable
-
-| Rule | Global | Direct |
-|---|---|---|
-| ![rule mode](docs/assets/mode-rule.png) | ![global mode](docs/assets/mode-global.png) | ![direct mode](docs/assets/mode-direct.png) |
 
 ## Control panel
 
-The panel is a 400 px overlay anchored under the right edge of the bar, with three tabs. `Esc` or a click outside closes it, and it takes exclusive keyboard focus while open so the Wi-Fi password field can be typed into. Opening a tab refreshes that tab's data immediately.
-
-### Proxy
-
-![Proxy tab](docs/assets/panel-proxy.en.png)
-
-- Shows mihomo's mode, the resolved node, its policy group and whether TUN is on
-- Mode buttons call `PATCH /configs` with `{"mode": ...}`; mihomo 1.19.33 acknowledges `PUT` with 204 but does not apply it, so `PATCH` is used deliberately
-- The current node is resolved recursively: `GLOBAL.now` in global mode, the largest policy group's `now` in rule mode, `DIRECT` in direct mode
-- mihomo details are read from `/etc/mihomo/config.yaml` (`external-controller` and `secret`), falling back to `config.json`
-- A dead controller, a missing secret and a bad secret each get their own message instead of a blank tab
+The panel is a 400 px overlay anchored under the right edge of the bar. `Esc` or a click outside closes it, and it takes exclusive keyboard focus while open so the Wi-Fi password field can be typed into. Opening a tab refreshes that tab's data immediately.
 
 ### Network
 
@@ -133,8 +118,6 @@ The panel is a 400 px overlay anchored under the right edge of the bar, with thr
 | Accent | lavender `#b4befe` | lavender `#7287fd` |
 | Rings | blue / mauve / teal / green / yellow | same roles |
 
-![Latte theme with the Chinese UI](docs/assets/panel-proxy.zh.png)
-
 - Every visible string goes through `I18n`; every colour goes through `Theme` — there are no hard-coded labels or hex values in the bar
 - Theme and language are written to `~/.config/vbc-io/config.json` and restored before the first frame, so rings never flash in the wrong palette on startup
 - Both can also be driven from the shell with IPC (see below)
@@ -152,7 +135,7 @@ The panel is a 400 px overlay anchored under the right edge of the bar, with thr
 | Volume icon or ring | toggle mute | ±5% | percentage, or `Muted` |
 | Brightness icon or ring | — | ±5% | percentage |
 | Battery icon or ring | — | — | percentage, remaining time, wattage |
-| Status icon (proxy / Wi-Fi / Bluetooth) | open its panel tab | — | mode and node, SSID, connected device count |
+| Status icon (Wi-Fi / Bluetooth) | open its panel tab | — | SSID, connected device count |
 | Clock | — | — | — |
 
 ## Requirements
@@ -167,7 +150,6 @@ The panel is a 400 px overlay anchored under the right edge of the bar, with thr
 | iwd | any | Wi-Fi tab — **NetworkManager is not used** |
 | `brightnessctl` | any | Brightness module |
 | `curl` | any | Kimi and DeepSeek requests |
-| mihomo | 1.19+ | Optional; proxy tab and status icon |
 | JetBrainsMono Nerd Font | any | Status glyphs; Noto Sans CJK for Chinese |
 
 ## Installation
@@ -182,8 +164,6 @@ On Arch:
 sudo pacman -S quickshell pipewire upower bluez bluez-utils iwd brightnessctl curl
 sudo pacman -S ttf-jetbrains-mono-nerd noto-fonts-cjk
 ```
-
-mihomo is optional. Install it only if you want the proxy tab and the derived proxy icon.
 
 ### 2. Clone into the Quickshell config directory
 
@@ -240,9 +220,6 @@ Quickshell picks up the new QML on the next reload; no build step exists.
 | `theme` | `"mocha"` | `mocha`, `latte` or `auto` (`auto` = light 06:00–18:00) |
 | `language` | `"zh"` | `"zh"` or `"en"` |
 | `barHeight` | `38` | Card height, clamped to 28–64; the bar window adds margins on top |
-| `mihomoConfigPath` | `/etc/mihomo/config.yaml` | Where to read `external-controller` and `secret` |
-| `mihomoController` | `""` | Fallback controller URL when the config file is unreadable |
-| `mihomoSecret` | `""` | Fallback secret; kept in memory only |
 | `secretsPath` | `<config dir>/secrets.json` | Override the quota key file |
 
 ```json
@@ -250,9 +227,6 @@ Quickshell picks up the new QML on the next reload; no build step exists.
   "theme": "auto",
   "language": "en",
   "barHeight": 38,
-  "mihomoConfigPath": "/etc/mihomo/config.yaml",
-  "mihomoController": "",
-  "mihomoSecret": "",
   "secretsPath": ""
 }
 ```
@@ -283,11 +257,11 @@ lo/
 ├── shell.qml            # ShellRoot: one Bar + one Panel per screen, plus IPC
 ├── core/                # Theme, I18n, Config, Format, Metrics — no side effects
 ├── services/            # every external read/write: Hypr, SystemStats, Audio,
-│                        #   Brightness, Power, Wifi, Link, BlueZ, Proxy,
+│                        #   Brightness, Power, Wifi, Link, BlueZ,
 │                        #   QuotaKimi, QuotaDeepSeek, Secrets
-├── components/          # UsageRing, InfoRing, StatusGlyph, ProxyGlyph, Tooltip…
+├── components/          # UsageRing, InfoRing, StatusGlyph, Tooltip…
 ├── bar/                 # three-zone layout and its items
-├── panels/              # Panel host and the proxy / network / bluetooth tabs
+├── panels/              # panel host and its tabs
 └── docs/specs/topbar/   # spec.md is the source of truth
 ```
 
@@ -309,7 +283,6 @@ Two rules keep the codebase honest:
 | Battery | UPower `displayDevice` | events | hidden |
 | Kimi quota | `api.kimi.com/coding/v1/usages` | 60 s | grey `--` |
 | DeepSeek balance | `api.deepseek.com/user/balance` | 5 min | `--` |
-| Proxy | mihomo `/configs`, `/proxies` | 5 s | grey icon |
 | Wi-Fi | `iwctl` | 10 s + on open | offline icon |
 | Links | `ip -br addr` | 5 s | empty table |
 | Bluetooth | `Quickshell.Bluetooth` | events | hidden |
@@ -320,7 +293,6 @@ HTTP is always a `curl` child process with `--max-time 8`. Parsing failures are 
 
 - A missing key shows `--` and a grey ring, and the module recovers on the next poll once the key is back — no restart
 - `secrets.json` with permissions wider than `600/400` is refused rather than read
-- A dead mihomo controller, a wrong secret and a missing config each get a specific message
 - Missing hardware hides the module; it does not render a zero
 - The control panel's height follows its content, clamped between 140 and 640 px
 
@@ -374,7 +346,7 @@ qs -c vbc-io                                 # run in the foreground, read the l
 
 ## Non-goals
 
-Notification centre, media controls, temperature / GPU, OBS status, input-method indicator, auto-hide, per-monitor layouts and a TUN toggle are intentionally out of scope.
+Notification centre, media controls, temperature / GPU, OBS status, input-method indicator, auto-hide and per-monitor layouts are intentionally out of scope.
 
 ## License
 
