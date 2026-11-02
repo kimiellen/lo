@@ -70,3 +70,19 @@
 - [x] bar item 放大：环 24/3、工作区槽位 26/内环 20、字号 13（时钟/金额）与 11（倒计时/环心）、状态图标 22/17
 - [x] `panels/Panel.qml`：面板 y = gap + 卡片高 + gap，不与卡片重叠
 - [x] 验证：热重载无 QML 报错；`hyprctl layers` bar 为 1600×54；`hyprctl clients` 窗口 y=66（54 + gaps_out 10 + 边框 2），即卡片底到窗口顶只有一个 gap；截图量得卡片左边距 10、卡片间隙 10、时钟卡中心 1279/1280；Mocha/Latte 双主题截图正常；`WAYLAND_DEBUG=1` 探针确认出现 `ext_background_effect_manager_v1.get_background_effect` 与 3 次 `set_blur_region`，圆角模糊在 Hyprland 上生效（探针已删除）
+
+## M8 右区状态卡（主题三态 / 麦克风 / 音量 / 亮度 / 电池）
+
+- [x] `docs/specs/topbar/spec.md`：§3/§4/§5/§6/§7/§9/§10 同步状态卡、图标、环心数字规则与 auto 主题
+- [x] `services/Audio.qml`：`defaultAudioSource` 静音状态与切换；`PwObjectTracker` 同时跟踪输出/输入节点
+- [x] `core/Config.qml` / `core/Theme.qml`：dark/light/auto 三态、auto = 06:00–18:00、持久化与旧值兼容
+- [x] `core/Format.qml` / `core/Metrics.qml` / `UsageRing` / `InfoRing`：状态环心固定 15 号、100→`F`、不缩放
+- [x] `components/StatusGlyph.qml`：麦克风（静音斜线）、喇叭 1–3 道声波、太阳、电池连续填充 + 闪电
+- [x] `bar/StatusControls.qml` + `bar/Bar.qml`：单卡整合，删除 `bar/StatusRings.qml`
+- [x] `core/I18n.qml`：主题/麦克风文案（zh/en）
+- [x] 验证：临时实例无 QML 报错；Mocha/Latte/auto 截图；`git status` 干净
+  - 主题：IPC `theme set light/auto` 与 `theme toggle` 三态循环生效，`config.json` 落盘并在重启后保持；`TZ=America/New_York` 02:00 下 auto 解析为 Mocha，15:48 下解析为 Latte
+  - 音量：20/50/90 分别 1/2/3 道声波；`wpctl set-mute` 后喇叭斜线 + 灰环仍显示数字；100 显示 `F`
+  - 亮度：30/100 显示 `30`/`F`；电池 100 显示 `F`；电池 10/50/90/充电四态图标与红/黄/绿分档在隔离测试中渲染正确
+  - 麦克风：`wpctl set-mute @DEFAULT_AUDIO_SOURCE@` 与 `Audio.toggleSourceMute()` 双向同步；静音斜线 + 灰图标
+  - 布局：右区一张卡（主题｜麦克风｜音量｜亮度｜电池）+ 状态图标卡；Mocha/Latte 双主题截图无重叠

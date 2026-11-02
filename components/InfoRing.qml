@@ -10,6 +10,7 @@ Item {
     property color color: Theme.cpu
     property string letter: ""          // 环心字母/数字，空则不显示
     property real letterSize: Metrics.ringLetterSize
+    property bool shrinkLetter: true    // false = 环心固定字号（状态环用）
     property real size: Metrics.ringSize
     property real thickness: Metrics.ringThickness
     property string title: ""           // hover 明细标题
@@ -33,6 +34,7 @@ Item {
         color: root.color
         centerText: root.letter
         centerFontSize: root.letterSize
+        shrinkCenterText: root.shrinkLetter
     }
 
     MouseArea {

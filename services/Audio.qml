@@ -12,9 +12,18 @@ Singleton {
     readonly property real volume: available ? clamp01(sink.audio.volume) : 0
     readonly property bool muted: available ? sink.audio.muted : false
 
+    // 默认输入源（麦克风）：只关心静音状态，不读写音量
+    readonly property var source: Pipewire.defaultAudioSource
+    readonly property bool sourceAvailable: source !== null && source.ready && source.audio !== null
+    readonly property bool sourceMuted: sourceAvailable ? source.audio.muted : false
+
     // 未被 track 的节点不会收到属性更新（volume 恒为 0、volumes 为空）
     PwObjectTracker {
         objects: root.sink ? [root.sink] : []
+    }
+
+    PwObjectTracker {
+        objects: root.source ? [root.source] : []
     }
 
     function clamp01(v) {
@@ -43,5 +52,11 @@ Singleton {
         if (!available)
             return;
         sink.audio.muted = !sink.audio.muted;
+    }
+
+    function toggleSourceMute() {
+        if (!sourceAvailable)
+            return;
+        source.audio.muted = !source.audio.muted;
     }
 }

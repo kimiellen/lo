@@ -18,10 +18,13 @@ Item {
     property bool showTrack: true
     property string centerText: ""      // 环心文字（字母/数字），空则不显示
     property real centerFontSize: Metrics.ringLetterSize
+    property bool shrinkCenterText: true // false = 固定字号，不按字符数缩小
 
     // 环心文字字号：按内径几何求能放下的最大值（不让墨迹碰到环内壁），再受基准字号约束
     // 实测等宽字体墨迹：单字宽最宽约 0.72em（M）、大写/数字高约 0.72em（取宽松值留安全边）
     readonly property real centerTextSize: {
+        if (!root.shrinkCenterText)
+            return root.centerFontSize;
         const glyphs = Math.max(1, root.centerText.length);
         const innerDiameter = root.diameter - 2 * root.strokeWidth;
         const margin = 1.4                        // 文字与内壁留白（逻辑 px）

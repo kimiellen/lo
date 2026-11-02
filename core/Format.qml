@@ -16,6 +16,12 @@ Singleton {
         return Math.round(clamp01(v) * 100) + "%";
     }
 
+    // 状态环心：0–99 显示整数百分比，100 用单字符 F（固定字号不缩字）
+    function ringValue(v) {
+        const percent = Math.round(clamp01(v) * 100);
+        return percent >= 100 ? "F" : "" + percent;
+    }
+
     // 毫秒 → 2H / 1D / 3D；无效或过期返回空串
     function countdown(ms) {
         if (!(ms > 0))

@@ -28,7 +28,7 @@ Singleton {
         }
     })
 
-    readonly property var p: Config.theme === "latte" ? palettes.latte : palettes.mocha
+    readonly property var p: Config.effectiveTheme === "latte" ? palettes.latte : palettes.mocha
 
     // 语义角色
     readonly property color bg: p.base
@@ -53,7 +53,10 @@ Singleton {
     readonly property color disk: p.teal
     readonly property color volume: p.green
     readonly property color brightness: p.yellow
-    readonly property color battery: p.peach
+    // 电池分档：<20% 红 / 20–60% 黄 / ≥60% 绿；充电统一 green
+    readonly property color batteryLow: p.red
+    readonly property color batteryMid: p.yellow
+    readonly property color batteryHigh: p.green
     readonly property color charging: p.green
     readonly property color success: p.green
     readonly property color warning: p.red
@@ -64,6 +67,17 @@ Singleton {
     readonly property color kimiWeek: p.sapphire
     readonly property color kimiSession: p.flamingo
     readonly property color kimi: p.pink
+
+    // 电池状态色：充电优先 green，其余按电量分三档
+    function batteryColor(ratio, isCharging) {
+        if (isCharging)
+            return charging;
+        if (ratio < 0.2)
+            return batteryLow;
+        if (ratio < 0.6)
+            return batteryMid;
+        return batteryHigh;
+    }
 
     // 工作区窗口数分档：0 / 1-2 / 3-4 / 5+
     function workspaceColor(windows) {

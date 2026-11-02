@@ -95,12 +95,16 @@ Singleton {
         "ring.cpu": "C",
         "ring.memory": "M",
         "ring.disk": "D",
-        "ring.volume": "V",
-        "ring.brightness": "B",
-        "ring.muted": "×",
         "tooltip.muted": "静音",
         "tooltip.charging": "充电中",
         "tooltip.full": "已充满",
+        "theme.dark": "深色",
+        "theme.light": "浅色",
+        "theme.auto": "自动",
+        "tooltip.theme": "主题",
+        "tooltip.mic": "麦克风",
+        "tooltip.mic.muted": "已静音",
+        "tooltip.mic.on": "已开启",
         "common.na": "--"
     })
 
@@ -190,12 +194,16 @@ Singleton {
         "ring.cpu": "C",
         "ring.memory": "M",
         "ring.disk": "D",
-        "ring.volume": "V",
-        "ring.brightness": "B",
-        "ring.muted": "×",
         "tooltip.muted": "Muted",
         "tooltip.charging": "Charging",
         "tooltip.full": "Full",
+        "theme.dark": "dark",
+        "theme.light": "light",
+        "theme.auto": "auto",
+        "tooltip.theme": "Theme",
+        "tooltip.mic": "Microphone",
+        "tooltip.mic.muted": "Muted",
+        "tooltip.mic.on": "On",
         "common.na": "--"
     })
 

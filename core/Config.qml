@@ -40,8 +40,26 @@ Singleton {
     // 否则环等 Shape 元素会以默认 Mocha 绘制且不随启动后的主题变化重绘。
     Component.onCompleted: file.waitForJob()
 
-    readonly property string theme: data.theme === "latte" ? "latte" : "mocha"
     readonly property string language: data.language === "en" ? "en" : "zh"
+
+    // 主题三态：mocha(dark) / latte(light) / auto；auto 在 06:00–18:00 用 light
+    property int hour: new Date().getHours()
+
+    Timer {
+        interval: 60000
+        running: true
+        repeat: true
+        onTriggered: root.hour = new Date().getHours()
+    }
+
+    readonly property string themeMode: data.theme === "latte" ? "latte"
+        : (data.theme === "auto" ? "auto" : "mocha")
+    readonly property string themeName: themeMode === "mocha" ? "dark"
+        : (themeMode === "latte" ? "light" : "auto")
+    readonly property string effectiveTheme: themeMode === "auto"
+        ? (hour >= 6 && hour < 18 ? "latte" : "mocha")
+        : themeMode
+
     // 卡片高度；顶栏窗口总高 = 上下边距 + barHeight + 底部补偿（见 Bar.qml）
     readonly property int barHeight: Math.max(28, Math.min(64, data.barHeight || 38))
     readonly property string mihomoConfigPath: data.mihomoConfigPath !== ""
@@ -54,12 +72,20 @@ Singleton {
         ? data.secretsPath : (configDir + "/secrets.json")
 
     function setTheme(name) {
-        data.theme = name === "latte" ? "latte" : "mocha"
+        data.theme = (name === "latte" || name === "light") ? "latte"
+            : (name === "auto" ? "auto" : "mocha")
         file.writeAdapter()
     }
 
+    // 主题按钮：dark → light → auto → dark
+    function cycleTheme() {
+        const order = ["mocha", "latte", "auto"]
+        setTheme(order[(order.indexOf(themeMode) + 1) % order.length])
+    }
+
+    // IPC toggle 沿用旧名字，语义改为三态循环
     function toggleTheme() {
-        setTheme(theme === "mocha" ? "latte" : "mocha")
+        cycleTheme()
     }
 
     function setLanguage(name) {

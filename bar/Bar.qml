@@ -101,7 +101,7 @@ PanelWindow {
         }
     }
 
-    // 右区：状态三环 → 状态图标
+    // 右区：状态卡（主题/麦克风/音量/亮度/电池）→ 状态图标
     Row {
         id: rightSection
         spacing: bar.cardGap
@@ -116,7 +116,7 @@ PanelWindow {
             id: statusCard
             height: bar.cardHeight
 
-            StatusRings {
+            StatusControls {
                 anchors.centerIn: parent
             }
         }

@@ -32,6 +32,14 @@ Singleton {
     readonly property int iconGlyphSize: 20     // 盒内 Nerd Font 字形
     readonly property int brandMarkWidth: 24    // 品牌矢量标（鲸标/K 标）逻辑宽度
 
+    // 右区状态卡：自绘图标、主题按钮、模块间距
+    readonly property int statusGlyphSize: 20
+    readonly property int modeButtonHeight: 24
+    readonly property int modeButtonRadius: 6
+    readonly property int modeButtonPadding: 8
+    readonly property int statusModuleGap: 10   // 模块之间
+    readonly property int statusIconGap: 4      // 图标与环之间
+
     // 设备像素吸附：逻辑尺寸 × DPR 常是小数（分段缩放 1.6 下 26 → 41.6），
     // 几何落在半像素上就会发虚。DPR 必须由调用方传入（取 Window.window.devicePixelRatio，
     // Screen.devicePixelRatio 在分段缩放下只返回整数，不可用）。
