@@ -49,3 +49,14 @@
 - [x] `panels/tabs/ProxyTab.qml`：规则/全局/直连 + 当前节点 + TUN 状态
 - [x] 规格修正：mihomo 1.19.33 的 `PUT /configs` 返回 204 但不生效，改用 `PATCH`（spec §5.3 同步）
 - [x] 验证：UI 点「直连」后 `curl /configs` 回读 `mode=direct`，再点「规则」回读 `mode=rule`；面板「当前节点 香港010 / 策略组 自动选择」与 `/proxies` 的 `自动选择.now` 一致，TUN「已开启」与 `tun.enable=true` 一致；用 127.0.0.1:9099 空端口模拟控制器停机（未停 mihomo，避免中断网络）→ 图标变灰、面板「mihomo 不可用 / external-controller 无响应」、日志仅 1 条 warn 且无 QML 报错；仅给 controller 不给 secret → 401 降级为「secret 缺失或错误」；mihomo 配置文件缺失时回退 `config.json` 的 `mihomoController`/`mihomoSecret` 并正常读出；中文/Mocha 与英文/Latte 下三图标点击分别打开代理/网络/蓝牙 tab，hover 明细正常
+
+## M6 额度模块
+
+- [x] `services/QuotaKimi.qml`：宽容解析（`usages` → `limits[]` → `usage`）、动态窗口、`reset_time` 倒计时、60s 刷新
+- [x] `services/QuotaDeepSeek.qml`：`/user/balance`、5min 刷新、货币符号
+- [x] `services/Secrets.qml`：`secrets.json` 权限校验（600/400）、env key 优先、key 增删自愈
+- [x] `bar/QuotaRings.qml` + `bar/BalanceTag.qml`：Kimi 双窗口环 + 最早重置倒计时、DeepSeek 方块 + 数字
+- [x] `core/Config.qml` / `Theme.qml` / `I18n.qml`：`secretsPath`、Kimi pink / DeepSeek sapphire、额度文案
+- [x] 验证（离线样例）：current 结构 5h 42% + 7d 18%（4H/4D）、旧 `usage` 结构 7%/2%、仅 5h 单环、仅月窗口 M/C 55%/12% + 21D；401 / 连接失败 / 非 JSON / 空 `usages` / 无 key / secrets 644 均为灰环 + `--` 且无 QML 报错；secrets 600 正常读取，644 拒绝并 warn；现场删除 secrets 后 60s 内降级为 `--`，恢复后下一次轮询自动恢复；DeepSeek CNY ¥110.00、USD $12.34、`is_available=false` 警告色 + 「余额不足」；Latte + en 下 tooltip 为 `5-hour quota 42% · resets in 4H`
+- [x] 验证（真实 key）：secrets.json 600 下真实接口返回 5h `used_ratio=0`（02:26Z 重置）、7d `0.8866`（14:26Z 重置）、DeepSeek `¥26.75`/`is_available=true`；UI 显示 5h 0% · 2H、7d 89% · 12H、¥26.75，与原始 JSON 一致；关闭旧 Quickshell 后 vbc-Io 以常驻实例接管顶栏
+
