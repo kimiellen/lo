@@ -32,8 +32,8 @@ Singleton {
     readonly property int iconGlyphSize: 24     // 盒内字形/矢量图标（光学尺寸对齐）
     readonly property int brandMarkWidth: 24    // 品牌矢量标（鲸标/K 标）逻辑宽度
 
-    // 右区状态卡：自绘图标、主题按钮、模块间距
-    readonly property int statusGlyphSize: 20
+    // 右区状态卡：自绘图标（与环同高）、主题按钮、模块间距
+    readonly property int statusGlyphSize: 26
     readonly property int modeButtonHeight: 24
     readonly property int modeButtonRadius: 6
     readonly property int modeButtonPadding: 8

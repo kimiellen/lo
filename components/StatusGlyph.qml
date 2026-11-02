@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Shapes
 import qs.core
 
-// 右区状态卡的自绘矢量图标：坐标系固定 20×20，不依赖字体 codepoint
+// 右区状态卡的自绘矢量图标：绘制视框固定 20×20，按控件尺寸等比缩放，不依赖字体 codepoint
 // kind = mic / speaker / sun / battery；颜色、静音斜线、声波档位与电池填充由调用方驱动
 Item {
     id: root
@@ -14,13 +14,20 @@ Item {
     property int waves: 0                   // speaker：0–3 道声波
     property real level: 0                  // battery：0..1 填充
     property bool charging: false
+    property real size: Metrics.statusGlyphSize
 
-    implicitWidth: Metrics.statusGlyphSize
-    implicitHeight: Metrics.statusGlyphSize
+    readonly property real viewBox: 20
+
+    implicitWidth: size
+    implicitHeight: size
 
     // ---------------- 麦克风 ----------------
     Shape {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: root.viewBox
+        height: root.viewBox
+        scale: root.size / root.viewBox
+        transformOrigin: Item.Center
         visible: root.kind === "mic"
         preferredRendererType: Shape.CurveRenderer
 
@@ -84,7 +91,11 @@ Item {
 
     // ---------------- 喇叭 ----------------
     Shape {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: root.viewBox
+        height: root.viewBox
+        scale: root.size / root.viewBox
+        transformOrigin: Item.Center
         visible: root.kind === "speaker"
         preferredRendererType: Shape.CurveRenderer
 
@@ -160,7 +171,11 @@ Item {
 
     // ---------------- 太阳 ----------------
     Item {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: root.viewBox
+        height: root.viewBox
+        scale: root.size / root.viewBox
+        transformOrigin: Item.Center
         visible: root.kind === "sun"
 
         // 四道贯穿线先画，中央圆盘盖住中段 → 视觉上是 8 条射线
@@ -212,7 +227,11 @@ Item {
 
     // ---------------- 电池 ----------------
     Item {
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: root.viewBox
+        height: root.viewBox
+        scale: root.size / root.viewBox
+        transformOrigin: Item.Center
         visible: root.kind === "battery"
 
         // 充电：只显示闪电（与参考图一致）
