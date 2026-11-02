@@ -54,6 +54,9 @@ Singleton {
     readonly property color success: p.green
     readonly property color warning: p.red
     readonly property color accent: p.lavender
+    // 额度模块：Kimi 用 pink（与系统三环无撞色），DeepSeek 用 sapphire
+    readonly property color kimi: p.pink
+    readonly property color deepseek: p.sapphire
 
     // 工作区窗口数分档：0 / 1-2 / 3-4 / 5+
     function workspaceColor(windows) {

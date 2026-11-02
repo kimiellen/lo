@@ -31,6 +31,8 @@ Singleton {
             property string mihomoConfigPath: ""
             property string mihomoController: ""
             property string mihomoSecret: ""
+            // 额度密钥文件；留空则用配置目录下的 secrets.json
+            property string secretsPath: ""
         }
     }
 
@@ -45,6 +47,10 @@ Singleton {
         ? data.mihomoConfigPath : "/etc/mihomo/config.yaml"
     readonly property string mihomoController: data.mihomoController
     readonly property string mihomoSecret: data.mihomoSecret
+
+    // secrets.json 只用于额度 key；默认与 config.json 同目录，便于 VBCIO_CONFIG_DIR 隔离测试
+    readonly property string secretsPath: data.secretsPath !== ""
+        ? data.secretsPath : (configDir + "/secrets.json")
 
     function setTheme(name) {
         data.theme = name === "latte" ? "latte" : "mocha"

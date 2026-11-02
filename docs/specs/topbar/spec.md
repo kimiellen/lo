@@ -57,6 +57,8 @@
 | 音量 | green | green |
 | 亮度 | yellow | yellow |
 | 电池 | peach（充电 green / <20 red） | 同左 |
+| Kimi 额度环 | pink | pink |
+| DeepSeek 余额 | sapphire | sapphire |
 | 工作区 0 个窗口 | overlay0（空环） | overlay0 |
 | 工作区 1–2 个窗口 | blue | blue |
 | 工作区 3–4 个窗口 | yellow | yellow |
@@ -89,16 +91,18 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 
 ### 5.1 Kimi 额度
 
-- 接口未公开，已发生过一次结构变更（`usage` → `usages`），解析器必须宽容：优先读 `usages.{limit_5h,limit_7d,limit_month_total,limit_month_code}` 的 `used_ratio`/`reset_time`；回退读 `limits[].detail`（5h 窗口 `window.duration=300`）；再回退 `usage`。
-- **窗口动态渲染**：接口返回哪个窗口就画哪个环（新套餐只有 5h 滚动限额，无周限额）。
-- 倒计时由 `reset_time` 计算，格式 `2H` / `1D` / `3D`。
-- 认证：环境变量 `KIMI_CODING_API_KEY` 优先，其次 `~/.config/vbc-io/secrets.json` 的 `kimi_api_key`（权限 600）。**不读取 `~/.dsh` 私有目录。**
+- 接口未公开，已发生过一次结构变更（`usage` → `usages`），解析器必须宽容：优先读 `usages.{limit_5h,limit_7d,limit_month_total,limit_month_code}` 的 `used_ratio`/`reset_time`；`limits[].detail`（5h 窗口 `window.duration=300`）与顶层 `usage`（周额度）只补齐 `usages` 缺失的窗口，避免同一窗口重复画环。
+- **窗口动态渲染**：解析器不硬编码窗口集合，顺序固定为 `5h → 7d → month_total → month_code → 未知窗口`；顶栏最多渲染前两个（“双窗口环”），只有一个窗口时只画一个环。月窗口是 5h/7d 缺失时的回退，不会被丢弃。
+- 倒计时由 `reset_time` 计算，格式 `2H` / `1D` / `3D`；顶栏显示两个窗口中最早到期的重置，`hover` 明细分别给出各窗口的百分比与重置时间。
+- 认证：环境变量 `KIMI_CODING_API_KEY` 优先，其次 `~/.config/vbc-io/secrets.json` 的 `kimi_api_key`（权限 600，亦接受更严格的 400；其他权限视为未配置并记一条 warn）。**不读取 `~/.dsh` 私有目录。**
+- 无 key / 401 / 超时 / 解析失败：灰色 `--` 环，不抛错、不阻塞顶栏；恢复 key 后下一次轮询自动恢复。
 
 ### 5.2 DeepSeek 余额
 
 - 官方接口，字段为字符串：`balance_infos[0].total_balance`（按 `currency` 显示 ¥/$），`is_available`。
 - 只有金额没有分母，因此**不画进度环**：保持设计图的「圆角方块图标 + 数字」。
-- 认证：`DEEPSEEK_API_KEY` 环境变量或 `secrets.json` 的 `deepseek_api_key`。
+- 多币种时取 `balance_infos[0]`；`is_available=false` 时金额改用警告色，但仍显示数值。
+- 认证：`DEEPSEEK_API_KEY` 环境变量或 `secrets.json` 的 `deepseek_api_key`（权限要求同 §5.1）；无 key / 401 / 超时 / 解析失败显示 `--`。
 
 ### 5.3 代理（mihomo）
 
@@ -133,7 +137,7 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 - 语言：`zh-CN`（默认）/ `en`，切换即时生效；所有可见文案走 `I18n` 单例，日期/星期格式在 `I18n` 内格式化。
   - zh：`11月1日 - 21:26 - 周一`
   - en：`1 Nov - 09:26 PM - Mon`
-- 配置项：`theme`、`language`、`barHeight`、`mihomoConfigPath`、`mihomoController`/`mihomoSecret`（配置读取失败时回退）、`secretsPath`、`modules.kimi/enabled` 等。
+- 配置项：`theme`、`language`、`barHeight`、`mihomoConfigPath`、`mihomoController`/`mihomoSecret`（配置读取失败时回退）、`secretsPath`。
 
 ## 8. 代码结构
 

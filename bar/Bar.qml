@@ -37,6 +37,8 @@ PanelWindow {
         SystemRings {
             onPanelRequested: bar.panelRequested("network")
         }
+        QuotaRings {}
+        BalanceTag {}
     }
 
     // 中区：日期 - 时间 - 星期

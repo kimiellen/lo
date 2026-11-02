@@ -71,6 +71,23 @@ Singleton {
         "status.connected": "已连接",
         "status.on": "已开启",
         "status.unavailable": "不可用",
+        "quota.kimi": "Kimi 额度",
+        "quota.kimi.5h": "5 小时额度",
+        "quota.kimi.7d": "7 天额度",
+        "quota.kimi.month": "月度额度",
+        "quota.kimi.code": "代码额度",
+        "quota.kimi.5h.short": "5 小时",
+        "quota.kimi.7d.short": "7 天",
+        "quota.kimi.month.short": "月度",
+        "quota.kimi.code.short": "代码",
+        "quota.deepseek": "DeepSeek 余额",
+        "quota.deepseek.low": "余额不足",
+        "quota.noKey": "未配置 API key",
+        "quota.insecure": "secrets.json 权限过宽",
+        "quota.auth": "API key 无效",
+        "quota.offline": "接口不可用",
+        "quota.parse": "返回数据无法解析",
+        "quota.loading": "同步中…",
         "wifi.security.psk": "WPA",
         "wifi.security.open": "开放",
         "wifi.security.8021x": "802.1X",
@@ -149,6 +166,23 @@ Singleton {
         "status.connected": "connected",
         "status.on": "on",
         "status.unavailable": "unavailable",
+        "quota.kimi": "Kimi quota",
+        "quota.kimi.5h": "5-hour quota",
+        "quota.kimi.7d": "7-day quota",
+        "quota.kimi.month": "Monthly quota",
+        "quota.kimi.code": "Code quota",
+        "quota.kimi.5h.short": "5h",
+        "quota.kimi.7d.short": "7d",
+        "quota.kimi.month.short": "month",
+        "quota.kimi.code.short": "code",
+        "quota.deepseek": "DeepSeek balance",
+        "quota.deepseek.low": "Balance low",
+        "quota.noKey": "API key not set",
+        "quota.insecure": "secrets.json permissions too open",
+        "quota.auth": "Invalid API key",
+        "quota.offline": "API unavailable",
+        "quota.parse": "Unparseable response",
+        "quota.loading": "Syncing…",
         "wifi.security.psk": "WPA",
         "wifi.security.open": "Open",
         "wifi.security.8021x": "802.1X",
@@ -182,6 +216,13 @@ Singleton {
     function proxyMode(mode) {
         const v = dict["panel.proxy." + (mode || "")];
         return v === undefined ? (mode || "") : v;
+    }
+
+    // 额度重置倒计时：2H 后重置 / resets in 2H
+    function resetIn(text) {
+        if (!text)
+            return "";
+        return isZh ? text + " 后重置" : "resets in " + text;
     }
 
     readonly property var weekdayZh: ["日", "一", "二", "三", "四", "五", "六"]
