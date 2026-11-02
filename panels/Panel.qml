@@ -55,7 +55,9 @@ PanelWindow {
 
     // 打开/切到某 tab 时取一次最新数据（面板内即时刷新）
     function activate() {
-        if (tab === "network") {
+        if (tab === "proxy") {
+            Proxy.refresh();
+        } else if (tab === "network") {
             Wifi.refresh();
             Link.refresh();
         }
@@ -175,7 +177,7 @@ PanelWindow {
                         width: flick.width
                         active: root.open
                         sourceComponent: root.tab === "network" ? networkTab
-                            : (root.tab === "bluetooth" ? bluetoothTab : proxyEmpty)
+                            : (root.tab === "bluetooth" ? bluetoothTab : proxyTab)
                     }
                 }
             }
@@ -198,13 +200,10 @@ PanelWindow {
         }
     }
 
-    // 代理 tab 在 M5 接入，先保持空状态
+    // 代理 tab 在 M5 接入
     Component {
-        id: proxyEmpty
+        id: proxyTab
 
-        EmptyState {
-            title: I18n.t("panel.proxy")
-            detail: I18n.t("common.na")
-        }
+        ProxyTab {}
     }
 }

@@ -55,6 +55,12 @@ PanelWindow {
         spacing: 14
 
         StatusRings {}
+
+        StatusIcons {
+            onPanelRequested: function (tab) {
+                bar.panelRequested(tab);
+            }
+        }
     }
 
     // 与桌面内容的分隔线

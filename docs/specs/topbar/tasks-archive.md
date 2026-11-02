@@ -42,3 +42,10 @@
 - [x] `components/ToggleSwitch.qml` + `components/EmptyState.qml`：面板开关与空状态
 - [x] 验证：UI 断开路径现场生效（`iwctl` 随之为 disconnected，网由用户恢复，故未再真机重连）；连接链路用假 iwctl 验证命令为 `iwctl station wlan0 connect TestNet --passphrase s3cret`、状态回到 connected；Bluetooth tab 与 `bluetoothctl devices` 一致（EDIFIER S2000MKⅢ / MelGeek-C2 已连，电量 39% 与 `bluetoothctl info` 一致）；虚拟键盘注入密码框可输入（掩码显示）、`Esc` 关闭面板；点外关闭、列表滚轮滚动、Latte/en 渲染正常；假 iwctl 退出码 1 时显示「Wi-Fi 不可用」且无 QML 报错，链路区仍正常
 
+## M5 代理 tab + 状态图标
+
+- [x] `services/Proxy.qml`：mihomo `/configs`、`/proxies`、`secret` 解析、`PATCH /configs` 切 mode
+- [x] `bar/StatusIcons.qml`：代理/网络/蓝牙三枚图标 + 点击开面板 + 异常变灰
+- [x] `panels/tabs/ProxyTab.qml`：规则/全局/直连 + 当前节点 + TUN 状态
+- [x] 规格修正：mihomo 1.19.33 的 `PUT /configs` 返回 204 但不生效，改用 `PATCH`（spec §5.3 同步）
+- [x] 验证：UI 点「直连」后 `curl /configs` 回读 `mode=direct`，再点「规则」回读 `mode=rule`；面板「当前节点 香港010 / 策略组 自动选择」与 `/proxies` 的 `自动选择.now` 一致，TUN「已开启」与 `tun.enable=true` 一致；用 127.0.0.1:9099 空端口模拟控制器停机（未停 mihomo，避免中断网络）→ 图标变灰、面板「mihomo 不可用 / external-controller 无响应」、日志仅 1 条 warn 且无 QML 报错；仅给 controller 不给 secret → 401 降级为「secret 缺失或错误」；mihomo 配置文件缺失时回退 `config.json` 的 `mihomoController`/`mihomoSecret` 并正常读出；中文/Mocha 与英文/Latte 下三图标点击分别打开代理/网络/蓝牙 tab，hover 明细正常

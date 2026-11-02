@@ -18,6 +18,9 @@ Singleton {
         "tooltip.volume": "音量",
         "tooltip.brightness": "亮度",
         "tooltip.battery": "电池",
+        "tooltip.proxy": "代理",
+        "tooltip.network": "网络",
+        "tooltip.bluetooth": "蓝牙",
         "panel.proxy": "代理",
         "panel.network": "网络",
         "panel.bluetooth": "蓝牙",
@@ -47,6 +50,27 @@ Singleton {
         "panel.bt.discovering": "搜索中…",
         "panel.bt.search": "搜索",
         "panel.bt.battery": "电量",
+        "panel.proxy.mode": "模式",
+        "panel.proxy.rule": "规则",
+        "panel.proxy.global": "全局",
+        "panel.proxy.direct": "直连",
+        "panel.proxy.node": "当前节点",
+        "panel.proxy.group": "策略组",
+        "panel.proxy.tun": "TUN",
+        "panel.proxy.tun.on": "已开启",
+        "panel.proxy.tun.off": "已关闭",
+        "panel.proxy.switching": "切换中…",
+        "panel.proxy.failed": "切换失败",
+        "panel.proxy.refresh": "刷新",
+        "panel.proxy.unavailable": "mihomo 不可用",
+        "panel.proxy.unavailable.hint": "external-controller 无响应",
+        "panel.proxy.noConfig": "未找到 mihomo 配置",
+        "panel.proxy.noConfig.hint": "检查 mihomoConfigPath 或 config.json",
+        "panel.proxy.auth": "secret 缺失或错误",
+        "panel.proxy.auth.hint": "检查 mihomo 配置的 secret",
+        "status.connected": "已连接",
+        "status.on": "已开启",
+        "status.unavailable": "不可用",
         "wifi.security.psk": "WPA",
         "wifi.security.open": "开放",
         "wifi.security.8021x": "802.1X",
@@ -72,6 +96,9 @@ Singleton {
         "tooltip.volume": "Volume",
         "tooltip.brightness": "Brightness",
         "tooltip.battery": "Battery",
+        "tooltip.proxy": "Proxy",
+        "tooltip.network": "Network",
+        "tooltip.bluetooth": "Bluetooth",
         "panel.proxy": "Proxy",
         "panel.network": "Network",
         "panel.bluetooth": "Bluetooth",
@@ -101,6 +128,27 @@ Singleton {
         "panel.bt.discovering": "Searching…",
         "panel.bt.search": "Search",
         "panel.bt.battery": "Battery",
+        "panel.proxy.mode": "Mode",
+        "panel.proxy.rule": "Rule",
+        "panel.proxy.global": "Global",
+        "panel.proxy.direct": "Direct",
+        "panel.proxy.node": "Node",
+        "panel.proxy.group": "Group",
+        "panel.proxy.tun": "TUN",
+        "panel.proxy.tun.on": "On",
+        "panel.proxy.tun.off": "Off",
+        "panel.proxy.switching": "Switching…",
+        "panel.proxy.failed": "Switch failed",
+        "panel.proxy.refresh": "Refresh",
+        "panel.proxy.unavailable": "mihomo unavailable",
+        "panel.proxy.unavailable.hint": "external-controller not responding",
+        "panel.proxy.noConfig": "mihomo config not found",
+        "panel.proxy.noConfig.hint": "Check mihomoConfigPath or config.json",
+        "panel.proxy.auth": "secret missing or invalid",
+        "panel.proxy.auth.hint": "Check the mihomo secret",
+        "status.connected": "connected",
+        "status.on": "on",
+        "status.unavailable": "unavailable",
         "wifi.security.psk": "WPA",
         "wifi.security.open": "Open",
         "wifi.security.8021x": "802.1X",
@@ -128,6 +176,12 @@ Singleton {
     function securityLabel(token) {
         const v = dict["wifi.security." + (token || "").toLowerCase()];
         return v === undefined ? (token || "") : v;
+    }
+
+    // mihomo mode → 展示文案（rule / global / direct）
+    function proxyMode(mode) {
+        const v = dict["panel.proxy." + (mode || "")];
+        return v === undefined ? (mode || "") : v;
     }
 
     readonly property var weekdayZh: ["日", "一", "二", "三", "四", "五", "六"]

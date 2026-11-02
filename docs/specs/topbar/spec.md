@@ -62,6 +62,9 @@
 | 工作区 3–4 个窗口 | yellow | yellow |
 | 工作区 ≥5 个窗口 | red | red |
 | 当前工作区 | 外圈用 text 色描边 | 同左 |
+| 状态图标（代理/蓝牙正常） | lavender | lavender |
+| 状态图标（Wi-Fi 已连接） | green | green |
+| 状态图标（不可用/关闭） | overlay（灰） | overlay |
 
 工作区环的进度 = `min(windows, 5) / 5`，颜色按上表分档（对应设计图「颜色分 4 档」）。
 
@@ -101,7 +104,8 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 
 - 读 `/etc/mihomo/config.yaml` 的 `external-controller` 与 `secret` 两行（正则解析），失败回退 `config.json` 手填值。
 - 状态：`mode`（rule/global/direct）+ TUN 是否开启（`/configs` 的 `tun.enable`）+ 当前节点（`/proxies`）。
-- 操作（V1）：切换 mode（`PUT /configs` `{"mode": ...}`）；不重启、不修改 TUN。
+- 当前节点：global 模式跟随 `GLOBAL.now`；rule 模式取成员最多的策略组并递归解析到具体节点；direct 显示 `DIRECT`。
+- 操作（V1）：切换 mode（`PATCH /configs` `{"mode": ...}`；实测 mihomo 1.19.33 对 `PUT` 返回 204 但不生效）；不重启、不修改 TUN。
 
 ### 5.4 网络（iwd + networkd）
 
@@ -118,7 +122,7 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 | 音量环 | 静音切换 | 调节音量 | hover 显示百分比 |
 | 亮度环 | — | 调节亮度 | hover 显示百分比 |
 | 电池环 | — | — | hover 显示剩余时间/功率 |
-| 状态图标 | 打开控制面板（对应 tab） | — | 异常时变红 |
+| 状态图标 | 打开控制面板（对应 tab） | — | 异常时变灰（与 §5「不可用」一致） |
 | 时钟 | — | — | hover 显示完整日期 |
 
 控制面板：全屏 `PanelWindow` overlay（Overlay 层、忽略独占区）承载，面板实际锚定顶栏右下方；tab = 代理 / 网络 / 蓝牙；`Esc` 或点击外部关闭；打开时独占键盘焦点（网络 tab 密码输入需要），关闭后归还。
@@ -129,7 +133,7 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 - 语言：`zh-CN`（默认）/ `en`，切换即时生效；所有可见文案走 `I18n` 单例，日期/星期格式在 `I18n` 内格式化。
   - zh：`11月1日 - 21:26 - 周一`
   - en：`1 Nov - 09:26 PM - Mon`
-- 配置项：`theme`、`language`、`barHeight`、`secretsPath`、`mihomoConfigPath`、`modules.kimi/enabled` 等。
+- 配置项：`theme`、`language`、`barHeight`、`mihomoConfigPath`、`mihomoController`/`mihomoSecret`（配置读取失败时回退）、`secretsPath`、`modules.kimi/enabled` 等。
 
 ## 8. 代码结构
 

@@ -27,6 +27,10 @@ Singleton {
             property string theme: "mocha"
             property string language: "zh"
             property int barHeight: 40
+            // mihomo 配置读取失败时的回退；secret 只供 Proxy 内存使用，不写日志
+            property string mihomoConfigPath: ""
+            property string mihomoController: ""
+            property string mihomoSecret: ""
         }
     }
 
@@ -37,6 +41,10 @@ Singleton {
     readonly property string theme: data.theme === "latte" ? "latte" : "mocha"
     readonly property string language: data.language === "en" ? "en" : "zh"
     readonly property int barHeight: Math.max(28, Math.min(64, data.barHeight || 40))
+    readonly property string mihomoConfigPath: data.mihomoConfigPath !== ""
+        ? data.mihomoConfigPath : "/etc/mihomo/config.yaml"
+    readonly property string mihomoController: data.mihomoController
+    readonly property string mihomoSecret: data.mihomoSecret
 
     function setTheme(name) {
         data.theme = name === "latte" ? "latte" : "mocha"
