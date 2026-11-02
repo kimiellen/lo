@@ -7,12 +7,13 @@ Singleton {
     id: root
 
     // 卡片
-    readonly property int cardRadius: 16
+    readonly property int cardRadius: 18
     readonly property int cardPadding: 10      // 横向内边距；纵向由内容居中留白
 
-    // 栏内布局：卡片之间 8，顶栏四周留白 15
+    // 栏内布局：卡片之间 8；顶栏四周留白左右 15、上下 12
     readonly property int cardGap: 8
-    readonly property int outerMargin: 15
+    readonly property int outerMarginX: 15
+    readonly property int outerMarginY: 12
 
     // 环形指标
     readonly property int ringSize: 24

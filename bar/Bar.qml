@@ -5,7 +5,7 @@ import qs.components
 import qs.core
 import qs.services
 
-// 顶栏窗口：top layer，独占「屏边距 + 卡片高 + 底部补偿」，三区卡片布局（中区绝对居中）
+// 顶栏窗口：top layer，独占「上下边距 + 卡片高 + 底部补偿」，三区卡片布局（中区绝对居中）
 PanelWindow {
     id: bar
 
@@ -13,11 +13,12 @@ PanelWindow {
     signal panelRequested(string tab)
 
     readonly property int cardHeight: Config.barHeight
-    readonly property int outerMargin: Metrics.outerMargin
+    readonly property int outerMarginX: Metrics.outerMarginX
+    readonly property int outerMarginY: Metrics.outerMarginY
     readonly property int cardGap: Metrics.cardGap
-    // 底部补偿：Hyprland 在独占区边界会再补一次 gaps_out，减掉后卡片底到窗口顶才等于屏边距
-    readonly property int bottomPad: Math.max(0, Metrics.outerMargin - Hypr.gapsOut)
-    readonly property int windowHeight: bar.outerMargin + bar.cardHeight + bar.bottomPad
+    // 底部补偿：Hyprland 在独占区边界会再补一次 gaps_out，减掉后卡片底到窗口顶才等于上下边距
+    readonly property int bottomPad: Math.max(0, Metrics.outerMarginY - Hypr.gapsOut)
+    readonly property int windowHeight: bar.outerMarginY + bar.cardHeight + bar.bottomPad
 
     color: "transparent"
     implicitHeight: bar.windowHeight
@@ -49,9 +50,9 @@ PanelWindow {
         spacing: bar.cardGap
         anchors {
             left: parent.left
-            leftMargin: bar.outerMargin
+            leftMargin: bar.outerMarginX
             top: parent.top
-            topMargin: bar.outerMargin
+            topMargin: bar.outerMarginY
         }
 
         GlassCard {
@@ -99,7 +100,7 @@ PanelWindow {
         anchors {
             horizontalCenter: parent.horizontalCenter
             top: parent.top
-            topMargin: bar.outerMargin
+            topMargin: bar.outerMarginY
         }
 
         Clock {
@@ -113,9 +114,9 @@ PanelWindow {
         spacing: bar.cardGap
         anchors {
             right: parent.right
-            rightMargin: bar.outerMargin
+            rightMargin: bar.outerMarginX
             top: parent.top
-            topMargin: bar.outerMargin
+            topMargin: bar.outerMarginY
         }
 
         GlassCard {
