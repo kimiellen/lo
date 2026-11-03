@@ -49,16 +49,16 @@ Nothing on the bar is allowed to break the bar: a missing API key, a failed `df`
 
 #### Kimi Code quota
 
-- Fetches `GET https://api.kimi.com/coding/v1/usages` every 60 seconds and renders the **windows the API actually returns** — no hard-coded window list
+- Refreshes `GET https://api.kimi.com/coding/v1/usages` **once per hour on the hour** (aligned by a 30 s tick, ≤30 s drift); clicking the card refreshes on demand with a **3-minute cooldown**; renders the **windows the API actually returns** — no hard-coded window list
 - Up to two rings, picked in a fixed order: **7-day first, then 5-hour**, with monthly / code windows as a fallback so a changed API never hides the quota
 - Each ring carries its own reset countdown in the same colour: days for the weekly window (`1D`, `3D`), hours for the session window (`3H`)
 - Hover shows the window name, percentage and reset time; 7-day uses sapphire, 5-hour uses flamingo
 - The parser accepts the current `usages` shape, the older `usage` shape and `limits[]`, plus `used_ratio`, `used/limit` and `remaining/limit`
-- Key comes from `KIMI_CODING_API_KEY` or `~/.config/vbc-io/secrets.json` (`600`, `400` also accepted); missing key, 401, timeout or garbage all degrade to a grey `--` ring and recover on the next poll
+- Key comes from `KIMI_CODING_API_KEY` or `~/.config/vbc-io/secrets.json` (`600`, `400` also accepted); missing key, 401, timeout or garbage all degrade to a grey `--` ring and recover on the next hourly or click refresh
 
 #### DeepSeek balance
 
-- Fetches `GET https://api.deepseek.com/user/balance` every five minutes
+- Refreshes `GET https://api.deepseek.com/user/balance` **once per hour on the hour**; clicking the card refreshes on demand with a **3-minute cooldown**
 - A balance has no denominator, so it is deliberately **not** a ring: the official DeepSeek vector mark plus the amount, with `¥` / `$` taken from the API currency
 - `is_available: false` keeps the number but switches it to the warning colour; failures show `--`
 
@@ -130,8 +130,8 @@ The panel is a 400 px overlay anchored under the right edge of the bar. `Esc` or
 |---|---|---|---|
 | Workspace ring | switch to that workspace | — | — |
 | CPU / memory / disk ring | open the control panel | — | percentage, and `used / total` for M and D |
-| Kimi quota ring / countdown | — | — | window, percentage, reset time |
-| DeepSeek balance | — | — | amount or the failure reason |
+| Kimi quota ring / countdown | refresh now (3 min cooldown) | — | window, percentage, reset time |
+| DeepSeek balance | refresh now (3 min cooldown) | — | amount or the failure reason |
 | Theme button | dark → light → auto | — | current mode |
 | Microphone | toggle input mute | — | muted / on |
 | Volume ring | toggle mute | ±5% | percentage, or `Muted` |
@@ -283,8 +283,8 @@ Two rules keep the codebase honest:
 | Volume / mic | `Quickshell.Services.Pipewire` | events | hidden |
 | Brightness | `brightnessctl -m` | 1 s | hidden |
 | Battery | UPower `displayDevice` | events | hidden |
-| Kimi quota | `api.kimi.com/coding/v1/usages` | 60 s | grey `--` |
-| DeepSeek balance | `api.deepseek.com/user/balance` | 5 min | `--` |
+| Kimi quota | `api.kimi.com/coding/v1/usages` | hourly on the hour + click (3 min cooldown) | grey `--` |
+| DeepSeek balance | `api.deepseek.com/user/balance` | hourly on the hour + click (3 min cooldown) | `--` |
 | Wi-Fi | `iwctl` | 10 s + on open | offline icon |
 | Links | `ip -br addr` | 5 s | empty table |
 | Bluetooth | `Quickshell.Bluetooth` | events | hidden |
@@ -293,7 +293,7 @@ HTTP is always a `curl` child process with `--max-time 8`. Parsing failures are 
 
 ### Degradation, by design
 
-- A missing key shows `--` and a grey ring, and the module recovers on the next poll once the key is back — no restart
+- A missing key shows `--` and a grey ring, and the module recovers on the next hourly or click refresh once the key is back — no restart
 - `secrets.json` with permissions wider than `600/400` is refused rather than read
 - Missing hardware hides the module; it does not render a zero
 - The control panel's height follows its content, clamped between 140 and 640 px
