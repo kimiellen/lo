@@ -7,7 +7,7 @@ Singleton {
     id: root
 
     // 卡片
-    readonly property int cardRadius: 18
+    readonly property int cardRadius: 16
     readonly property int cardPadding: 10      // 横向内边距；纵向由内容居中留白
 
     // 栏内布局：卡片之间 8；顶栏四周留白左右 15、上下 12
@@ -16,29 +16,28 @@ Singleton {
     readonly property int outerMarginY: 12
 
     // 环形指标
-    readonly property int ringSize: 26
+    readonly property int ringSize: 24
     readonly property int ringThickness: 3
-    readonly property int ringLetterSize: 15
+    readonly property int ringLetterSize: 14
 
     // 工作区槽位（外描边）与内环
-    readonly property int workspaceCell: 26
-    readonly property int workspaceRing: 20
+    readonly property int workspaceCell: 24
+    readonly property int workspaceRing: 18
 
     // 文本
-    readonly property int textSize: 15         // 全部文字：时钟、金额、环外倒计时/单位
+    readonly property int textSize: 14         // 全部文字：时钟、金额、环外倒计时/单位
 
     // 状态图标
-    readonly property int iconSize: 26         // 状态图标点击/绘制盒
-    readonly property int iconGlyphSize: 24     // 盒内字形/矢量图标（光学尺寸对齐）
-    readonly property int brandMarkWidth: 24    // 品牌矢量标（鲸标/K 标）逻辑宽度
+    readonly property int iconSize: 24         // 状态图标点击/绘制盒
+    readonly property int iconGlyphSize: 22     // 盒内字形/矢量图标（光学尺寸对齐）
+    readonly property int brandMarkWidth: 22    // 品牌矢量标（鲸标/K 标）逻辑宽度
 
     // 右区状态卡：自绘图标（与环同高）、主题按钮、模块间距
-    readonly property int statusGlyphSize: 26
-    readonly property int modeButtonHeight: 24
+    readonly property int statusGlyphSize: 24
+    readonly property int modeButtonHeight: 22
     readonly property int modeButtonRadius: 6
     readonly property int modeButtonPadding: 8
     readonly property int statusModuleGap: 10   // 模块之间
-    readonly property int statusIconGap: 4      // 图标与环之间
 
     // 控制面板：宽 400、内边距 12、tab 高 30；字号 11–13
     readonly property int panelWidth: 400

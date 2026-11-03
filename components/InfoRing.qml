@@ -9,6 +9,7 @@ Item {
     property real value: 0
     property color color: Theme.cpu
     property string letter: ""          // 环心字母/数字，空则不显示
+    property string iconPath: ""        // 环心矢量图标（viewBox 1024 的 PathSvg path 数据），非空时优先于字母
     property real letterSize: Metrics.ringLetterSize
     property bool shrinkLetter: true    // false = 环心固定字号（状态环用）
     property real size: Metrics.ringSize
@@ -33,6 +34,7 @@ Item {
         value: root.value
         color: root.color
         centerText: root.letter
+        centerIconPath: root.iconPath
         centerFontSize: root.letterSize
         shrinkCenterText: root.shrinkLetter
     }

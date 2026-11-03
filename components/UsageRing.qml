@@ -17,6 +17,7 @@ Item {
     property real startAngle: -90
     property bool showTrack: true
     property string centerText: ""      // 环心文字（字母/数字），空则不显示
+    property string centerIconPath: ""  // 环心矢量图标（PathSvg path 数据，viewBox 1024），非空时优先于文字
     property real centerFontSize: Metrics.ringLetterSize
     property bool shrinkCenterText: true // false = 固定字号，不按字符数缩小
 
@@ -86,11 +87,29 @@ Item {
     // 环心文字走默认渲染（距离场），比原生渲染边缘更干净
     Text {
         anchors.centerIn: parent
-        visible: root.centerText !== ""
+        visible: root.centerText !== "" && root.centerIconPath === ""
         text: root.centerText
         color: root.color
         font.family: Theme.fontFamily
         font.pixelSize: root.centerTextSize
         font.letterSpacing: 0.2
+    }
+
+    // 环心矢量图标：1024 视框等比缩放到内径的 72%（与文字互斥，文字端已按 icon 置空）
+    Shape {
+        anchors.centerIn: parent
+        visible: root.centerIconPath !== ""
+        width: 1024
+        height: 1024
+        readonly property real fit: Math.max(2, (root.diameter - 2 * root.strokeWidth) * 0.72)
+        scale: fit / 1024
+        transformOrigin: Item.Center
+        preferredRendererType: Shape.CurveRenderer
+
+        ShapePath {
+            fillColor: root.color
+            strokeColor: "transparent"
+            PathSvg { path: root.centerIconPath }
+        }
     }
 }

@@ -26,7 +26,7 @@ Singleton {
             id: data
             property string theme: "mocha"
             property string language: "zh"
-            property int barHeight: 38
+            property int barHeight: 35
             // mihomo 配置读取失败时的回退；secret 只供 Proxy 内存使用，不写日志
             property string mihomoConfigPath: ""
             property string mihomoController: ""
@@ -61,7 +61,7 @@ Singleton {
         : themeMode
 
     // 卡片高度；顶栏窗口总高 = 上下边距 + barHeight + 底部补偿（见 Bar.qml）
-    readonly property int barHeight: Math.max(28, Math.min(64, data.barHeight || 38))
+    readonly property int barHeight: Math.max(28, Math.min(64, data.barHeight || 35))
     readonly property string mihomoConfigPath: data.mihomoConfigPath !== ""
         ? data.mihomoConfigPath : "/etc/mihomo/config.yaml"
     readonly property string mihomoController: data.mihomoController

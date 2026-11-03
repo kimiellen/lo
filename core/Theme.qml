@@ -51,13 +51,14 @@ Singleton {
     readonly property color cpu: p.blue
     readonly property color memory: p.mauve
     readonly property color disk: p.teal
-    readonly property color volume: p.green
-    readonly property color brightness: p.yellow
-    // 电池分档：<20% 红 / 20–60% 黄 / ≥60% 绿；充电统一 green
+    readonly property color proxy: p.sky
+    readonly property color bluetooth: p.blue
+    readonly property color volume: p.maroon
+    readonly property color brightness: p.blue
+    // 电池分档：<40% 红 / 40–70% 黄 / ≥70% 绿（充电不覆盖，仍按电量分档）
     readonly property color batteryLow: p.red
     readonly property color batteryMid: p.yellow
     readonly property color batteryHigh: p.green
-    readonly property color charging: p.green
     readonly property color success: p.green
     readonly property color warning: p.red
     readonly property color accent: p.lavender
@@ -68,13 +69,11 @@ Singleton {
     readonly property color kimiSession: p.flamingo
     readonly property color kimi: p.pink
 
-    // 电池状态色：充电优先 green，其余按电量分三档
-    function batteryColor(ratio, isCharging) {
-        if (isCharging)
-            return charging;
-        if (ratio < 0.2)
+    // 电池状态色：按电量分三档（<40% 红 / 40–70% 黄 / ≥70% 绿），充电不覆盖
+    function batteryColor(ratio) {
+        if (ratio < 0.4)
             return batteryLow;
-        if (ratio < 0.6)
+        if (ratio < 0.7)
             return batteryMid;
         return batteryHigh;
     }

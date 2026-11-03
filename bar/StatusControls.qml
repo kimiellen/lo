@@ -11,10 +11,9 @@ Row {
 
     spacing: Metrics.statusModuleGap
 
-    readonly property color batteryColor: Theme.batteryColor(Power.percentage, Power.charging)
-    // 音量图标三档：静音/0 → 无；<1/3 → 1 道；<2/3 → 2 道；其余 3 道
-    readonly property int volumeWaves: Audio.muted || Audio.volume <= 0 ? 0
-        : (Audio.volume < 1 / 3 ? 1 : (Audio.volume < 2 / 3 ? 2 : 3))
+    readonly property color batteryColor: Theme.batteryColor(Power.percentage)
+    // 电池插电时环心闪电（viewBox 1024 填充矢量，颜色跟随环的分档色）
+    readonly property string boltPath: "M771.328 465.8176L256 1024l150.1184-450.304A7.9872 7.9872 0 0 0 398.4896 563.2H252.9792c-46.4896 0-77.4656-48.128-58.2656-90.5216l197.7856-435.2A64.1536 64.1536 0 0 1 450.816 0H870.4l-197.888 346.4192A8.0384 8.0384 0 0 0 679.424 358.4h44.8c55.808 0 84.8896 66.4064 47.104 107.4176z"
     readonly property string themeLabel: I18n.t("theme." + Config.themeName)
     readonly property string themeDetail: root.themeLabel
         + (Config.themeName === "auto"
@@ -124,162 +123,54 @@ Row {
     }
 
     // ---------------- 音量 ----------------
-    Row {
+    InfoRing {
         id: volumeModule
 
         visible: Audio.available
-        spacing: Metrics.statusIconGap
+        value: Audio.volume
+        color: Audio.muted ? Theme.overlay : Theme.volume
+        letter: "V"
+        shrinkLetter: false
+        title: I18n.t("tooltip.volume")
+        detail: root.volumeDetail
+        interactive: true
+        wheelEnabled: true
 
-        Item {
-            id: volumeIconCell
-
-            width: Metrics.statusGlyphSize
-            height: Metrics.ringSize
-
-            StatusGlyph {
-                anchors.centerIn: parent
-                kind: "speaker"
-                waves: root.volumeWaves
-                muted: Audio.muted
-                color: Audio.muted ? Theme.overlay : Theme.volume
-            }
-
-            MouseArea {
-                id: volumeIconHover
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: Audio.toggleMute()
-                onWheel: function (wheel) {
-                    if (wheel.angleDelta.y === 0)
-                        return;
-                    Audio.adjustVolume(wheel.angleDelta.y > 0 ? 0.05 : -0.05);
-                    wheel.accepted = true;
-                }
-            }
-
-            Tooltip {
-                targetItem: volumeIconCell
-                title: I18n.t("tooltip.volume")
-                detail: root.volumeDetail
-                visible: volumeIconHover.containsMouse
-            }
-        }
-
-        InfoRing {
-            value: Audio.volume
-            color: Audio.muted ? Theme.overlay : Theme.volume
-            letter: Format.ringValue(Audio.volume)
-            shrinkLetter: false
-            title: I18n.t("tooltip.volume")
-            detail: root.volumeDetail
-            interactive: true
-            wheelEnabled: true
-
-            onClicked: Audio.toggleMute()
-            onWheeled: function (direction) {
-                Audio.adjustVolume(direction * 0.05);
-            }
+        onClicked: Audio.toggleMute()
+        onWheeled: function (direction) {
+            Audio.adjustVolume(direction * 0.05);
         }
     }
 
     // ---------------- 亮度 ----------------
-    Row {
+    InfoRing {
         id: brightnessModule
 
         visible: Brightness.available
-        spacing: Metrics.statusIconGap
+        value: Brightness.level
+        color: Theme.brightness
+        letter: "L"
+        shrinkLetter: false
+        title: I18n.t("tooltip.brightness")
+        detail: Format.percent(Brightness.level)
+        wheelEnabled: true
 
-        Item {
-            id: brightnessIconCell
-
-            width: Metrics.statusGlyphSize
-            height: Metrics.ringSize
-
-            StatusGlyph {
-                anchors.centerIn: parent
-                kind: "sun"
-                color: Theme.brightness
-            }
-
-            MouseArea {
-                id: brightnessHover
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onWheel: function (wheel) {
-                    if (wheel.angleDelta.y === 0)
-                        return;
-                    Brightness.adjust(wheel.angleDelta.y > 0 ? 0.05 : -0.05);
-                    wheel.accepted = true;
-                }
-            }
-
-            Tooltip {
-                targetItem: brightnessIconCell
-                title: I18n.t("tooltip.brightness")
-                detail: Format.percent(Brightness.level)
-                visible: brightnessHover.containsMouse
-            }
-        }
-
-        InfoRing {
-            value: Brightness.level
-            color: Theme.brightness
-            letter: Format.ringValue(Brightness.level)
-            shrinkLetter: false
-            title: I18n.t("tooltip.brightness")
-            detail: Format.percent(Brightness.level)
-            wheelEnabled: true
-
-            onWheeled: function (direction) {
-                Brightness.adjust(direction * 0.05);
-            }
+        onWheeled: function (direction) {
+            Brightness.adjust(direction * 0.05);
         }
     }
 
     // ---------------- 电池 ----------------
-    Row {
+    InfoRing {
         id: batteryModule
 
         visible: Power.available
-        spacing: Metrics.statusIconGap
-
-        Item {
-            id: batteryIconCell
-
-            width: Metrics.statusGlyphSize
-            height: Metrics.ringSize
-
-            StatusGlyph {
-                anchors.centerIn: parent
-                kind: "battery"
-                level: Power.percentage
-                charging: Power.charging
-                color: root.batteryColor
-            }
-
-            MouseArea {
-                id: batteryHover
-                anchors.fill: parent
-                hoverEnabled: true
-            }
-
-            Tooltip {
-                targetItem: batteryIconCell
-                title: I18n.t("tooltip.battery")
-                detail: root.batteryDetail
-                visible: batteryHover.containsMouse
-            }
-        }
-
-        InfoRing {
-            value: Power.percentage
-            color: root.batteryColor
-            letter: Format.ringValue(Power.percentage)
-            shrinkLetter: false
-            title: I18n.t("tooltip.battery")
-            detail: root.batteryDetail
-        }
+        value: Power.percentage
+        color: root.batteryColor
+        letter: Power.pluggedIn ? "" : "B"
+        iconPath: Power.pluggedIn ? root.boltPath : ""
+        shrinkLetter: false
+        title: I18n.t("tooltip.battery")
+        detail: root.batteryDetail
     }
 }

@@ -21,7 +21,7 @@
 
 lo is a Hyprland top bar written entirely in QML on **Quickshell 0.3.2 / Qt 6.12**. It runs as one long-lived process, turns usage into rings, and keeps the things you actually glance at within reach:
 
-1. **System at a glance** — workspaces, CPU / memory / disk, volume / brightness / battery, all as arcs that show their exact value in the ring or on hover
+1. **System at a glance** — workspaces, CPU / memory / disk, volume / brightness / battery, all as arcs: a letter names each subsystem in the ring centre and the exact value appears on hover
 2. **AI quota on the bar** — Kimi Code 7-day and 5-hour windows with their own reset countdowns, plus your DeepSeek balance
 3. **Network** — iwd Wi-Fi with inline password entry and BlueZ devices in a single control panel
 4. **Your theme, your language** — Catppuccin Mocha / Latte / auto and 中文 / English, switched live and persisted
@@ -78,15 +78,15 @@ Nothing on the bar is allowed to break the bar: a missing API key, a failed `df`
 
 - **Theme button** — cycles `dark → light → auto`; `auto` picks light between 06:00 and 18:00 and dark otherwise, and follows the clock while the bar runs
 - **Microphone** — mutes / unmutes the default input; the glyph gains a slash and turns grey when muted
-- **Volume** — self-drawn speaker with 1–3 sound waves matching the level; click the icon or ring to mute, scroll either one to change volume by 5%
-- **Brightness** — sun glyph plus ring; scroll to change by 5%, with the value rounded to the same integer shown elsewhere
-- **Battery** — glyph fills continuously and shows a bolt while charging; the arc and glyph are coloured by tier (`<20%` red, `20–60%` yellow, `≥60%` green, charging green); hover shows percent, remaining time and wattage
+- **Volume** — ring lettered `V` in maroon; click the ring to mute, scroll to change volume by 5% (muted greys the whole ring)
+- **Brightness** — ring lettered `L` in blue; scroll to change by 5%, with the value rounded to the same integer shown elsewhere
+- **Battery** — ring lettered `B` that swaps to a bolt vector while plugged in; the arc and centre are coloured by tier (`<40%` red, `40–70%` yellow, `≥70%` green); hover shows percent, remaining time and wattage
 - Missing hardware hides the module instead of showing a broken one (no PipeWire → no volume module, no backlight → no brightness)
 
 **Status icons**
 
 - Wi-Fi and Bluetooth, each opening the panel on its own tab
-- Wi-Fi is green when connected, grey when off; Bluetooth accents only while a device is connected
+- Wi-Fi is green when connected, grey when off; Bluetooth turns blue only while a device is connected
 
 ## Control panel
 
@@ -107,7 +107,9 @@ The panel is a 400 px overlay anchored under the right edge of the bar. `Esc` or
 
 - Adapter power switch, connected devices with battery percentage, and available / paired devices
 - Search starts a 15-second discovery and stops automatically, because BlueZ has no manual refresh
-- Connect and disconnect act on the device directly; the list re-sorts by name as states change
+- Each row carries an explicit connect / disconnect button; clicking a disconnected device's name connects it too — a connected device's name is inert, so you can't fat-finger a disconnect
+- BlueZ auto-reconnects BLE/HID devices right after a manual disconnect (controller accept list), so a disconnect also blocks the device until the next connect
+- The list re-sorts by name as states change
 
 ## Themes and languages
 
@@ -116,7 +118,7 @@ The panel is a 400 px overlay anchored under the right edge of the bar. `Esc` or
 | Base | `#1e1e2e` | `#eff1f5` |
 | Text | `#cdd6f4` | `#4c4f69` |
 | Accent | lavender `#b4befe` | lavender `#7287fd` |
-| Rings | blue / mauve / teal / green / yellow | same roles |
+| Rings | blue / mauve / teal (CPU·memory·disk), maroon volume, blue brightness, tiered battery | same roles |
 
 - Every visible string goes through `I18n`; every colour goes through `Theme` — there are no hard-coded labels or hex values in the bar
 - Theme and language are written to `~/.config/vbc-io/config.json` and restored before the first frame, so rings never flash in the wrong palette on startup
@@ -132,9 +134,9 @@ The panel is a 400 px overlay anchored under the right edge of the bar. `Esc` or
 | DeepSeek balance | — | — | amount or the failure reason |
 | Theme button | dark → light → auto | — | current mode |
 | Microphone | toggle input mute | — | muted / on |
-| Volume icon or ring | toggle mute | ±5% | percentage, or `Muted` |
-| Brightness icon or ring | — | ±5% | percentage |
-| Battery icon or ring | — | — | percentage, remaining time, wattage |
+| Volume ring | toggle mute | ±5% | percentage, or `Muted` |
+| Brightness ring | — | ±5% | percentage |
+| Battery ring | — | — | percentage, remaining time, wattage |
 | Status icon (Wi-Fi / Bluetooth) | open its panel tab | — | SSID, connected device count |
 | Clock | — | — | — |
 
@@ -219,14 +221,14 @@ Quickshell picks up the new QML on the next reload; no build step exists.
 |---|---|---|
 | `theme` | `"mocha"` | `mocha`, `latte` or `auto` (`auto` = light 06:00–18:00) |
 | `language` | `"zh"` | `"zh"` or `"en"` |
-| `barHeight` | `38` | Card height, clamped to 28–64; the bar window adds margins on top |
+| `barHeight` | `35` | Card height, clamped to 28–64; the bar window adds margins on top |
 | `secretsPath` | `<config dir>/secrets.json` | Override the quota key file |
 
 ```json
 {
   "theme": "auto",
   "language": "en",
-  "barHeight": 38,
+  "barHeight": 35,
   "secretsPath": ""
 }
 ```
@@ -305,9 +307,10 @@ Everything is Catppuccin, with semantic roles instead of raw colours:
 | `cpu` | blue `#89b4fa` | blue `#1e66f5` | CPU ring |
 | `memory` | mauve `#cba6f7` | mauve `#8839ef` | memory ring |
 | `disk` | teal `#94e2d5` | teal `#179299` | disk ring |
-| `volume` | green `#a6e3a1` | green `#40a02b` | volume ring |
-| `brightness` | yellow `#f9e2af` | yellow `#df8e1d` | brightness ring |
-| battery tier | red / yellow / green | same | battery ring and glyph |
+| `volume` | maroon `#f38ba8` | maroon `#e64553` | volume ring and its `V` |
+| `brightness` | blue `#89b4fa` | blue `#1e66f5` | brightness ring and its `L` |
+| battery tier | red / yellow / green (`<40%` / `40–70%` / `≥70%`) | same | battery ring and centre; plugged in swaps the `B` for a bolt |
+| `bluetooth` | blue `#89b4fa` | blue `#1e66f5` | Bluetooth icon while connected |
 | `kimiWeek` | sapphire `#74c7ec` | sapphire `#209fb5` | 7-day quota |
 | `kimiSession` | flamingo `#f2cdcd` | flamingo `#dd7878` | 5-hour quota |
 | `deepseekBrand` | `#4d6bfe` | `#4d6bfe` | DeepSeek mark |
@@ -317,14 +320,14 @@ Geometry is a small, fixed vocabulary:
 
 | Token | Value |
 |---|---|
-| Card | 38 px tall, radius 18, 10 px horizontal padding |
-| Ring | 26 px outer diameter, 3 px stroke |
-| Workspace | 26 px slot, 20 px ring |
-| Text | 15 px everywhere; ring centre fixed at 15 px |
+| Card | 35 px tall, radius 16, 10 px horizontal padding |
+| Ring | 24 px outer diameter, 3 px stroke |
+| Workspace | 24 px slot, 18 px ring |
+| Text | 14 px everywhere; ring centre fixed at 14 px |
 | Bar margins | 15 px left/right, 12 px top/bottom, 8 px between cards |
 | Panel | 400 px wide, radius 12, 12 px padding, 30 px tabs |
 
-At fractional scaling a 26 px ring lands on 41.6 device pixels, so the bar **snaps geometry to device pixels**: card height, margins, gaps, ring diameters and 1 px borders are all rounded to whole device pixels (`Metrics.snap` / `snapEven`). The result is a crisp 1 px outline at 1.6× instead of a blurred one.
+At fractional scaling a 24 px ring lands on 38.4 device pixels, so the bar **snaps geometry to device pixels**: card height, margins, gaps, ring diameters and 1 px borders are all rounded to whole device pixels (`Metrics.snap` / `snapEven`). The result is a crisp 1 px outline at 1.6× instead of a blurred one.
 
 ## Docs
 

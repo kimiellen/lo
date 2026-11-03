@@ -20,7 +20,7 @@ Row {
 
     function colorFor(key) {
         if (key === "proxy")
-            return Proxy.configured && Proxy.available ? Theme.accent : Theme.overlay;
+            return Proxy.configured && Proxy.available ? Theme.proxy : Theme.overlay;
         if (key === "network") {
             if (!Wifi.available || !Wifi.powered)
                 return Theme.overlay;
@@ -29,7 +29,7 @@ Row {
         if (key === "bluetooth") {
             if (!BlueZ.available || !BlueZ.powered)
                 return Theme.overlay;
-            return BlueZ.connectedDevices.length > 0 ? Theme.accent : Theme.subtext;
+            return BlueZ.connectedDevices.length > 0 ? Theme.bluetooth : Theme.subtext;
         }
         return Theme.subtext;
     }

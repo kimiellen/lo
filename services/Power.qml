@@ -13,6 +13,8 @@ Singleton {
     readonly property int state: device ? device.state : UPowerDeviceState.Unknown
     readonly property bool charging: state === UPowerDeviceState.Charging
         || state === UPowerDeviceState.PendingCharge
+    // 交流适配器在线（插电，含满电维持）；桌面无电池时为 true，但电池环本就隐藏
+    readonly property bool pluggedIn: !UPower.onBattery
     readonly property bool full: state === UPowerDeviceState.FullyCharged
     readonly property real timeToEmpty: device ? device.timeToEmpty : 0          // 秒
     readonly property real timeToFull: device ? device.timeToFull : 0            // 秒
