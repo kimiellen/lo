@@ -4,12 +4,13 @@ import Quickshell
 import Quickshell.Io
 import qs.core
 
-// DeepSeek 余额：GET /user/balance，5min 轮询
+// DeepSeek 余额：GET /user/balance，每个整点刷新一次，点击卡片可手动刷新（冷却 3min）
 // 只有金额没有分母，不画环；无 key / 401 / 超时 / 解析失败显示 --，不阻塞顶栏。
 Singleton {
     id: root
 
     readonly property string endpoint: "https://api.deepseek.com/user/balance"
+    readonly property double manualCooldown: 180000   // 点击刷新冷却 3min
 
     property string total: ""          // 保留接口原样的字符串金额
     property string currency: "CNY"
@@ -20,6 +21,11 @@ Singleton {
     property string error: ""          // key / insecure / auth / unreachable / parse
     property string token: ""          // 当前使用的 key，只驻留内存（不写日志）
     property bool pendingRefresh: false
+    property double now: Date.now()    // 30s 刷新一次，驱动点击冷却状态
+    property double lastManualAt: 0    // 上次点击刷新时间戳，0 = 未点击过
+    property double _nextHourlyAt: 0   // 下一个整点时间戳
+
+    readonly property bool manualReady: root.lastManualAt <= 0 || root.now - root.lastManualAt >= root.manualCooldown
 
     Component.onCompleted: {
         Secrets.reload();
@@ -41,14 +47,14 @@ Singleton {
         }
     }
 
+    // 30s tick：更新 now（驱动点击冷却状态）+ 检测跨整点触发整点刷新
     Timer {
-        interval: 300000
+        interval: 30000
         running: true
         repeat: true
-        // 5min 定时刷新；重读 secrets 后强制刷新，key 变化由 refreshIfChanged 兜底
         onTriggered: {
-            root.pendingRefresh = true;
-            Secrets.reload();
+            root.now = Date.now();
+            root.checkHourly();
         }
     }
 
@@ -91,6 +97,35 @@ Singleton {
         return Secrets.get("deepseek_api_key");
     }
 
+    // ---------------- 刷新调度 ----------------
+
+    // 整点刷新：30s tick 检测跨整点，触发误差 ≤30s
+    function checkHourly() {
+        const now = Date.now();
+        if (root._nextHourlyAt <= 0)
+            root._nextHourlyAt = (Math.floor(now / 3600000) + 1) * 3600000;
+        if (now < root._nextHourlyAt)
+            return;
+        root._nextHourlyAt = (Math.floor(now / 3600000) + 1) * 3600000;
+        root.hourlyRefresh();
+    }
+
+    // 重读 secrets 后强制刷新，key 变化由 refreshIfChanged 兜底
+    function hourlyRefresh() {
+        root.pendingRefresh = true;
+        Secrets.reload();
+    }
+
+    // 卡片点击刷新；冷却期内点击忽略（光标已变回箭头提示不可点）
+    function manualRefresh() {
+        if (root.loading || !root.manualReady)
+            return;
+        // 同步刷新 now，让 manualReady 立即变 false，同 tick 内连点也被冷却挡住
+        root.now = Date.now();
+        root.lastManualAt = root.now;
+        root.hourlyRefresh();
+    }
+
     function refresh() {
         if (root.loading)
             return;
@@ -120,7 +155,7 @@ Singleton {
         fetchProcess.running = true;
     }
 
-    // secrets 重读后只在 key 真正变化时刷新，避免把 5min 轮询放大成 60s
+    // secrets 重读后只在 key 真正变化时刷新，避免整点重读被放大成额外请求
     function refreshIfChanged() {
         const key = root.resolveKey();
         if (key !== root.token || (key === "" && Secrets.insecure && root.error !== "insecure"))

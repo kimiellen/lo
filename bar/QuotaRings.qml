@@ -5,10 +5,12 @@ import qs.core
 import qs.services
 
 // Kimi 额度：矢量标 + 7 天环（跟天数）+ 5 小时环（跟小时数），每个环配自己的重置倒计时
-Row {
+// 根是 Item 而非 Row：整卡点击 MouseArea 铺满外层，布局在内部 Row 做
+Item {
     id: root
 
-    spacing: 8
+    implicitWidth: content.implicitWidth
+    implicitHeight: content.implicitHeight
 
     readonly property bool ready: QuotaKimi.available && QuotaKimi.windows.length > 0
 
@@ -79,71 +81,87 @@ Row {
         return entry.id === "7d" ? Format.countdownDays(ms) : Format.countdown(ms);
     }
 
-    KimiMark {
-        anchors.verticalCenter: parent.verticalCenter
+    // 点击整卡刷新（冷却 3min，冷却内忽略）；content 里的 hover MouseArea 不消费点击事件，
+    // 点击会落到这层
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: QuotaKimi.manualReady ? Qt.PointingHandCursor : Qt.ArrowCursor
+        onClicked: QuotaKimi.manualRefresh()
     }
 
-    Repeater {
-        model: root.entries
+    Row {
+        id: content
 
-        delegate: Row {
-            id: group
-            required property var modelData
+        spacing: 8
+        anchors.verticalCenter: parent.verticalCenter
 
-            spacing: 4
+        KimiMark {
             anchors.verticalCenter: parent.verticalCenter
+        }
 
-            readonly property string resetText: root.resetOf(modelData)
+        Repeater {
+            model: root.entries
 
-            InfoRing {
-                value: group.modelData.ratio
-                color: group.modelData.color
-                letter: group.modelData.letter
-                title: group.modelData.title
-                detail: {
-                    if (!root.ready)
-                        return root.unavailableText;
-                    let text = Format.percent(group.modelData.ratio);
-                    const reset = root.resetOf(group.modelData);
-                    if (reset !== "")
-                        text += " · " + I18n.resetIn(reset);
-                    return text;
-                }
-            }
+            delegate: Row {
+                id: group
+                required property var modelData
 
-            Item {
-                id: resetItem
+                spacing: 4
+                anchors.verticalCenter: parent.verticalCenter
 
-                visible: group.resetText !== ""
-                width: resetLabel.implicitWidth
-                height: Metrics.workspaceCell
+                readonly property string resetText: root.resetOf(modelData)
 
-                Text {
-                    id: resetLabel
-                    anchors.centerIn: parent
-                    text: group.resetText
+                InfoRing {
+                    value: group.modelData.ratio
                     color: group.modelData.color
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Metrics.textSize
-                    renderType: Text.NativeRendering
-                }
-
-                MouseArea {
-                    id: resetHover
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                }
-
-                Tooltip {
-                    targetItem: resetItem
+                    letter: group.modelData.letter
                     title: group.modelData.title
                     detail: {
                         if (!root.ready)
                             return root.unavailableText;
-                        return Format.percent(group.modelData.ratio) + " · " + I18n.resetIn(group.resetText);
+                        let text = Format.percent(group.modelData.ratio);
+                        const reset = root.resetOf(group.modelData);
+                        if (reset !== "")
+                            text += " · " + I18n.resetIn(reset);
+                        return text;
                     }
-                    visible: resetHover.containsMouse && group.resetText !== ""
+                }
+
+                Item {
+                    id: resetItem
+
+                    visible: group.resetText !== ""
+                    width: resetLabel.implicitWidth
+                    height: Metrics.workspaceCell
+
+                    Text {
+                        id: resetLabel
+                        anchors.centerIn: parent
+                        text: group.resetText
+                        color: group.modelData.color
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Metrics.textSize
+                        renderType: Text.NativeRendering
+                    }
+
+                    MouseArea {
+                        id: resetHover
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        acceptedButtons: Qt.NoButton   // 纯 hover 区，点击冒泡到整卡刷新
+                        cursorShape: QuotaKimi.manualReady ? Qt.PointingHandCursor : Qt.ArrowCursor
+                    }
+
+                    Tooltip {
+                        targetItem: resetItem
+                        title: group.modelData.title
+                        detail: {
+                            if (!root.ready)
+                                return root.unavailableText;
+                            return Format.percent(group.modelData.ratio) + " · " + I18n.resetIn(group.resetText);
+                        }
+                        visible: resetHover.containsMouse && group.resetText !== ""
+                    }
                 }
             }
         }

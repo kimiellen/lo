@@ -4,13 +4,14 @@ import Quickshell
 import Quickshell.Io
 import qs.core
 
-// Kimi Code 额度：GET /coding/v1/usages，60s 轮询
+// Kimi Code 额度：GET /coding/v1/usages，每个整点刷新一次，点击卡片可手动刷新（冷却 3min）
 // 解析顺序 usages（复数）→ limits[] → usage（旧版周额度），窗口动态，
 // 顶栏最多取前两个；reset_time 转倒计时。任何失败只降级为灰环，不抛错。
 Singleton {
     id: root
 
     readonly property string endpoint: "https://api.kimi.com/coding/v1/usages"
+    readonly property double manualCooldown: 180000   // 点击刷新冷却 3min
 
     // 解析后的窗口：[{ id, letter, labelKey, ratio, resetAt }]
     property var windows: []
@@ -19,7 +20,11 @@ Singleton {
     property bool loading: false
     property string error: ""          // key / insecure / auth / unreachable / parse
     property double now: Date.now()    // 倒计时基准，30s 刷新一次
+    property double lastManualAt: 0    // 上次点击刷新时间戳，0 = 未点击过
     property string _signature: ""     // 避免数据未变时重建 Repeater（环闪一下）
+    property double _nextHourlyAt: 0   // 下一个整点时间戳
+
+    readonly property bool manualReady: root.lastManualAt <= 0 || root.now - root.lastManualAt >= root.manualCooldown
 
     readonly property var windowOrder: ["limit_5h", "limit_7d", "limit_month_total", "limit_month_code"]
 
@@ -38,25 +43,47 @@ Singleton {
         }
     }
 
-    Timer {
-        interval: 60000
-        running: true
-        repeat: true
-        onTriggered: {
-            // 环境变量 key 直接刷新；否则每次轮询重读 secrets.json，
-            // 这样删除/替换 key 后无需重启即可降级或恢复
-            if ((Quickshell.env("KIMI_CODING_API_KEY") || "").trim() === "")
-                Secrets.reload();
-            else
-                root.refresh();
-        }
-    }
-
+    // 30s tick：更新倒计时基准 + 检测跨整点触发整点刷新
     Timer {
         interval: 30000
         running: true
         repeat: true
-        onTriggered: root.now = Date.now()
+        onTriggered: {
+            root.now = Date.now();
+            root.checkHourly();
+        }
+    }
+
+    // ---------------- 刷新调度 ----------------
+
+    // 整点刷新：30s tick 检测跨整点，触发误差 ≤30s
+    function checkHourly() {
+        const now = Date.now();
+        if (root._nextHourlyAt <= 0)
+            root._nextHourlyAt = (Math.floor(now / 3600000) + 1) * 3600000;
+        if (now < root._nextHourlyAt)
+            return;
+        root._nextHourlyAt = (Math.floor(now / 3600000) + 1) * 3600000;
+        root.hourlyRefresh();
+    }
+
+    function hourlyRefresh() {
+        // 环境变量 key 直接刷新；否则重读 secrets.json，
+        // 这样删除/替换 key 后无需重启即可降级或恢复
+        if ((Quickshell.env("KIMI_CODING_API_KEY") || "").trim() === "")
+            Secrets.reload();
+        else
+            root.refresh();
+    }
+
+    // 卡片点击刷新；冷却期内点击忽略（光标已变回箭头提示不可点）
+    function manualRefresh() {
+        if (root.loading || !root.manualReady)
+            return;
+        // 同步刷新 now，让 manualReady 立即变 false，同 tick 内连点也被冷却挡住
+        root.now = Date.now();
+        root.lastManualAt = root.now;
+        root.hourlyRefresh();
     }
 
     // ---------------- 请求 ----------------

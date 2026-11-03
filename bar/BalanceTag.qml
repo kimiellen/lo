@@ -61,7 +61,8 @@ Item {
         id: hover
         anchors.fill: parent
         hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
+        cursorShape: QuotaDeepSeek.manualReady ? Qt.PointingHandCursor : Qt.ArrowCursor
+        onClicked: QuotaDeepSeek.manualRefresh()
     }
 
     Tooltip {
