@@ -95,7 +95,8 @@ PanelWindow {
             readonly property real contentHeight: loader.item ? loader.item.implicitHeight : 0
             readonly property real maxHeight: Math.max(180, Math.min(640, surface.height - y - 16))
 
-            x: surface.width - width - 14
+            // 右边缘与顶栏卡片对齐（外边距同样跟随 gaps_out）
+            x: surface.width - width - Metrics.snap(Metrics.outerMarginXFor(Hypr.gapsOut), root.devicePixelRatio)
             // 顶栏总高（与 Bar 共用同一套设备像素吸附公式）+ 一个 gaps_out；面板落在卡片下方
             y: Metrics.barWindowHeight(Config.barHeight, Hypr.gapsOut, root.devicePixelRatio) + Hypr.gapsOut
             width: Metrics.panelWidth

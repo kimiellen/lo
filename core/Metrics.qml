@@ -10,10 +10,13 @@ Singleton {
     readonly property int cardRadius: 16
     readonly property int cardPadding: 10      // 横向内边距；纵向由内容居中留白
 
-    // 栏内布局：卡片之间 8；顶栏四周留白左右 15、上下 12
+    // 栏内布局：卡片之间 8；顶栏四周留白 = max(设计最小值, gaps_out + 偏移)，
+    // 跟随 Hyprland gaps_out 伸缩，换显示器/改 gaps 配置无需手调（见 spec §3）
     readonly property int cardGap: 8
-    readonly property int outerMarginX: 15
+    readonly property int outerMarginX: 15        // 设计最小值
     readonly property int outerMarginY: 12
+    readonly property int outerMarginGapOffsetX: 5
+    readonly property int outerMarginGapOffsetY: 2
 
     // 环形指标
     readonly property int ringSize: 24
@@ -62,9 +65,19 @@ Singleton {
         return Math.max(2, 2 * Math.round(px * dpr / 2)) / dpr;
     }
 
+    // 顶栏外边距：不小于设计最小值，且始终比 gaps_out 大固定偏移，
+    // 这样 Hyprland 在独占区边界补的 gaps_out 永远不会顶穿顶栏的间隙节律
+    function outerMarginXFor(gapsOut) {
+        return Math.max(outerMarginX, gapsOut + outerMarginGapOffsetX);
+    }
+
+    function outerMarginYFor(gapsOut) {
+        return Math.max(outerMarginY, gapsOut + outerMarginGapOffsetY);
+    }
+
     // 顶栏纵向几何（Bar 与 Panel 共用，避免两处公式漂移）
-    function barMarginY(dpr) {
-        return snap(outerMarginY, dpr);
+    function barMarginY(gapsOut, dpr) {
+        return snap(outerMarginYFor(gapsOut), dpr);
     }
 
     function barCardHeight(height, dpr) {
@@ -72,8 +85,8 @@ Singleton {
     }
 
     function barWindowHeight(height, gapsOut, dpr) {
-        const margin = barMarginY(dpr);
-        const bottomPad = Math.max(0, snap(margin - gapsOut, dpr));
+        const margin = barMarginY(gapsOut, dpr);
+        const bottomPad = Math.max(0, snap(outerMarginYFor(gapsOut) - gapsOut, dpr));
         return barCardHeight(height, dpr) + margin + bottomPad;
     }
 }

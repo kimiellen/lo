@@ -16,8 +16,9 @@ PanelWindow {
     readonly property real dpr: bar.devicePixelRatio
     // 卡片高 / 上边距按设备像素吸附，卡片上下边落在整像素上，1px 描边才均匀
     readonly property real cardHeight: Metrics.barCardHeight(Config.barHeight, bar.dpr)
-    readonly property int outerMarginX: Metrics.outerMarginX
-    readonly property real outerMarginY: Metrics.barMarginY(bar.dpr)
+    // 外边距跟随 gaps_out 伸缩（最小值 15/12），换显示器/改 gaps 无需手调
+    readonly property real outerMarginX: Metrics.snap(Metrics.outerMarginXFor(Hypr.gapsOut), bar.dpr)
+    readonly property real outerMarginY: Metrics.barMarginY(Hypr.gapsOut, bar.dpr)
     // 卡片间隙同样吸附：卡片左边 = 已有卡片宽度 + 间隙之和，逐项吸附后整条卡片链都落在像素网格上
     readonly property real cardGap: Metrics.snap(Metrics.cardGap, bar.dpr)
     // 底部补偿：Hyprland 在独占区边界会再补一次 gaps_out，减掉后卡片底到窗口顶才等于上下边距
