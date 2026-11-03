@@ -88,8 +88,21 @@ Singleton {
         if (!device)
             return;
         if (device.connected)
-            device.disconnect();
+            disconnectDevice(device);
         else
-            device.connect();
+            connectDevice(device);
+    }
+
+    // BlueZ 对 BLE HID 等设备保持 auto-connect（控制器 accept list），
+    // 断开后设备回连会被立即接受（实测 80ms 内），用户主动断开时必须阻止
+    function disconnectDevice(device) {
+        device.disconnect();
+        device.blocked = true;
+    }
+
+    // 必须先解除阻止，否则 Connect 会被 BlueZ 拒绝
+    function connectDevice(device) {
+        device.blocked = false;
+        device.connect();
     }
 }
