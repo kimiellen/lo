@@ -49,16 +49,16 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 
 #### Kimi Code 额度
 
-- **每个整点刷新一次** `GET https://api.kimi.com/coding/v1/usages`（30s tick 对齐，误差 ≤30s）；**点击卡片立即刷新，冷却 3 分钟**；渲染**接口实际返回的窗口**，不硬编码窗口集合
+- 每 60 秒请求 `GET https://api.kimi.com/coding/v1/usages`，渲染**接口实际返回的窗口**，不硬编码窗口集合
 - 最多两个环，取窗顺序固定：**先 7 天、再 5 小时**；月度 / 代码窗口作为回退，接口改结构也不会把额度吞掉
 - 每个环紧跟自己的重置倒计时，颜色与环一致：周额度按天（`1D`、`3D`），5 小时窗口按小时（`3H`）
 - 悬浮显示窗口名、百分比与重置时间；7 天用 sapphire、5 小时用 flamingo
 - 解析器同时兼容新版 `usages`、旧版 `usage` 与 `limits[]`，以及 `used_ratio`、`used/limit`、`remaining/limit` 三种给值方式
-- Key 来自 `KIMI_CODING_API_KEY` 或 `~/.config/vbc-io/secrets.json`（权限 `600`，也接受更严的 `400`）；无 key、401、超时、乱码一律降级为灰色 `--` 环，下一次整点刷新或点击刷新时自动恢复
+- Key 来自 `KIMI_CODING_API_KEY` 或 `~/.config/vbc-io/secrets.json`（权限 `600`，也接受更严的 `400`）；无 key、401、超时、乱码一律降级为灰色 `--` 环，下一次轮询自动恢复
 
 #### DeepSeek 余额
 
-- **每个整点刷新一次** `GET https://api.deepseek.com/user/balance`；**点击卡片立即刷新，冷却 3 分钟**
+- 每 60 秒请求 `GET https://api.deepseek.com/user/balance`
 - 余额只有金额没有分母，所以**刻意不画环**：官方 DeepSeek 矢量标 + 金额，`¥` / `$` 按接口返回的币种
 - `is_available: false` 时仍显示金额，但改用警告色；请求失败显示 `--`
 
@@ -132,8 +132,8 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 |---|---|---|---|
 | 工作区环 | 切换到该工作区 | — | — |
 | CPU / 内存 / 磁盘环 | 打开控制面板 | — | 百分比，内存与磁盘另有 `已用 / 总量` |
-| Kimi 额度环 / 倒计时 | 立即刷新（冷却 3min） | — | 窗口、百分比、重置时间 |
-| DeepSeek 余额 | 立即刷新（冷却 3min） | — | 金额或失败原因 |
+| Kimi 额度环 / 倒计时 | — | — | 窗口、百分比、重置时间 |
+| DeepSeek 余额 | — | — | 金额或失败原因 |
 | 主题按钮 | `深色 → 浅色 → 自动` | — | 当前模式 |
 | 麦克风 | 切换输入静音 | — | 已静音 / 已开启 |
 | 音量环 | 切换静音 | ±5% | 百分比，或「静音」 |
@@ -285,8 +285,8 @@ lo/
 | 音量 / 麦克风 | `Quickshell.Services.Pipewire` | 事件 | 隐藏 |
 | 亮度 | `brightnessctl -m` | 1 s | 隐藏 |
 | 电池 | UPower `displayDevice` | 事件 | 隐藏 |
-| Kimi 额度 | `api.kimi.com/coding/v1/usages` | 整点 + 点击（冷却 3min） | 灰色 `--` |
-| DeepSeek 余额 | `api.deepseek.com/user/balance` | 整点 + 点击（冷却 3min） | `--` |
+| Kimi 额度 | `api.kimi.com/coding/v1/usages` | 60 s | 灰色 `--` |
+| DeepSeek 余额 | `api.deepseek.com/user/balance` | 60 s | `--` |
 | Wi-Fi | `iwctl` | 10 s + 打开时 | 离线图标 |
 | 链路 | `ip -br addr` | 5 s | 空表 |
 | 蓝牙 | `Quickshell.Bluetooth` | 事件 | 隐藏 |
@@ -295,7 +295,7 @@ HTTP 一律是 `curl` 子进程，带 `--max-time 8`。解析失败只记一条�
 
 ### 刻意设计的降级
 
-- 没有 key 显示 `--` 与灰环；key 恢复后下一次整点刷新或点击刷新时自动恢复，不用重启
+- 没有 key 显示 `--` 与灰环；key 恢复后下一次轮询自动恢复，不用重启
 - `secrets.json` 权限宽于 `600/400` 时拒绝读取，而不是照读
 - 硬件缺失就隐藏模块，不渲染一个 0
 - 控制面板高度随内容收缩，限制在 140–640 px

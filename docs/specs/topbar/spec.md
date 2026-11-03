@@ -113,8 +113,8 @@
 | 麦克风 | `Quickshell.Services.Pipewire`（`defaultAudioSource`） | 事件 | 隐藏 |
 | 亮度 | `brightnessctl -m` | 1s | 隐藏 |
 | 电池 | `Quickshell.Services.UPower`（`displayDevice`） | 事件 | 隐藏 |
-| Kimi 额度 | `GET https://api.kimi.com/coding/v1/usages` | 整点 + 点击（冷却 3min） | 灰环 + `--` |
-| DeepSeek 余额 | `GET https://api.deepseek.com/user/balance` | 整点 + 点击（冷却 3min） | `--` |
+| Kimi 额度 | `GET https://api.kimi.com/coding/v1/usages` | 60s | 灰环 + `--` |
+| DeepSeek 余额 | `GET https://api.deepseek.com/user/balance` | 60s | `--` |
 | 代理 | mihomo `GET /configs`、`GET /proxies` | 5s | 灰图标 |
 | Wi-Fi | `iwctl`（已验证普通用户可读写） | 10s + 面板内即时 | 图标离线 |
 | 蓝牙 | `Quickshell.Bluetooth` | 事件 | 隐藏 |
@@ -127,8 +127,7 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 - **窗口动态渲染**：解析器不硬编码窗口集合，顶栏取窗顺序固定为 `7d → 5h → month_total → month_code → 未知窗口`；最多渲染前两个（“双窗口环”），只有一个窗口时只画一个环。7 天与 5 小时固定配色（sapphire / flamingo），月/代码窗口是缺失时的回退，用 pink，不会被丢弃。
 - 倒计时由 `reset_time` 计算：7 天窗口按天显示（`1D` / `3D`，不足一天也算 `1D`），5 小时窗口按小时显示（`3H`）；每个环后面紧跟自己的重置倒计时标签（颜色同该环），`hover` 明细给出该窗口的百分比与重置时间。
 - 认证：环境变量 `KIMI_CODING_API_KEY` 优先，其次 `~/.config/vbc-io/secrets.json` 的 `kimi_api_key`（权限 600，亦接受更严格的 400；其他权限视为未配置并记一条 warn）。**不读取 `~/.dsh` 私有目录。**
-- 无 key / 401 / 超时 / 解析失败：灰色 `--` 环，不抛错、不阻塞顶栏；恢复 key 后下一次整点刷新或点击刷新时自动恢复。
-- **刷新策略**：不做高频轮询——每个整点固定刷新一次（30s tick 对齐，误差 ≤30s）；点击卡片可立即手动刷新，冷却 3 分钟，冷却期内点击忽略且光标变回箭头提示不可点。
+- 无 key / 401 / 超时 / 解析失败：灰色 `--` 环，不抛错、不阻塞顶栏；恢复 key 后下一次轮询自动恢复。
 
 ### 5.2 DeepSeek 余额
 
@@ -155,8 +154,6 @@ HTTP 统一用 `curl` 子进程（已安装）：`--max-time 8` + 显式 header�
 | 元素 | 左键 | 滚轮 | 其他 |
 | --- | --- | --- | --- |
 | 工作区环 | 切换到该工作区（走 Hyprland Lua dispatch） | — | hover 显示窗口数 |
-| Kimi 额度环 | 立即刷新（冷却 3min，冷却内忽略） | — | hover 显示窗口百分比与重置时间 |
-| DeepSeek 余额 | 立即刷新（冷却 3min，冷却内忽略） | — | hover 显示余额明细 |
 | 系统三环 | 打开控制面板 | — | hover 显示明细 |
 | 音量环（环心 `V`） | 静音切换 | 调节音量 | hover 显示百分比 |
 | 亮度环（环心 `L`） | — | 调节亮度 | hover 显示百分比 |
