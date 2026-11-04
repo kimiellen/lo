@@ -46,9 +46,6 @@ Item {
 
     // 红线使用可见起点相对活动段的角度；第五个以后二者差恒为 -4，动画中也固定不动。
     readonly property real markerRotation: (visibleStart - clampedActiveIndex) * 72
-    readonly property real markerAngle: -126 * Math.PI / 180
-    readonly property real markerX: center + Math.cos(markerAngle) * diameter / 2
-    readonly property real markerY: center + Math.sin(markerAngle) * diameter / 2
 
     implicitWidth: diameter
     implicitHeight: diameter
@@ -94,35 +91,25 @@ Item {
         }
     }
 
-    Item {
-        anchors.fill: parent
+    // red 半径线：从圆心指向可见起点。用旋转矩形而非 Shape，避免环尺寸变化后
+    // 热重载时直线路径不重建（曾表现为红线消失）；-36° 把默认朝上的线转到 -126°。
+    Rectangle {
+        id: marker
+
         visible: root.count > 0
-        rotation: root.markerRotation
+        width: Math.max(1 / root.dpr, Metrics.snap(1.5, root.dpr))
+        height: root.diameter / 2
+        x: root.center - width / 2
+        y: root.center - height
+        color: Theme.p.red
+        antialiasing: true
+        transformOrigin: Item.Bottom
+        rotation: root.markerRotation - 36
 
         Behavior on rotation {
             NumberAnimation {
                 duration: 180
                 easing.type: Easing.OutCubic
-            }
-        }
-
-        Shape {
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-
-            ShapePath {
-                strokeColor: Theme.p.red
-                strokeWidth: Math.max(1 / root.dpr, Metrics.snap(1.5, root.dpr))
-                fillColor: "transparent"
-                capStyle: ShapePath.FlatCap
-                PathMove {
-                    x: root.center
-                    y: root.center
-                }
-                PathLine {
-                    x: root.markerX
-                    y: root.markerY
-                }
             }
         }
     }
