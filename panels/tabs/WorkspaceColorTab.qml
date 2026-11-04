@@ -195,7 +195,8 @@ Item {
                     popup: Popup {
                         y: combo.height + 2
                         width: combo.width
-                        implicitHeight: Math.min(contentItem.implicitHeight, 300) + 8
+                        // 13 个选项全部放下：13×30 + 上下各 4px 边距，超出才滚动
+                        implicitHeight: Math.min(contentItem.implicitHeight, 420) + 8
                         padding: 4
 
                         contentItem: ListView {
