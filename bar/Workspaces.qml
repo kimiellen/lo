@@ -61,7 +61,7 @@ Row {
             WorkspaceRing {
                 anchors.centerIn: parent
                 size: Metrics.workspaceRing
-                thickness: Metrics.ringThickness
+                thickness: Metrics.workspaceRingThickness
                 windows: cell.workspaceData.windows
                 activeIndex: cell.workspaceData.activeIndex
                 trackColor: Theme.track

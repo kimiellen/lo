@@ -23,9 +23,11 @@ Singleton {
     readonly property int ringThickness: 3
     readonly property int ringLetterSize: 14
 
-    // 工作区槽位（外描边）与内环
-    readonly property int workspaceCell: 24
-    readonly property int workspaceRing: 18
+    // 工作区槽位（外描边）与内环；五段之间留 10°，空槽/空隙均不连成一圈
+    readonly property int workspaceCell: 30
+    readonly property int workspaceRing: 26
+    readonly property int workspaceRingThickness: 4
+    readonly property int workspaceSegmentGap: 10
 
     // 文本
     readonly property int textSize: 14         // 全部文字：时钟、金额、环外倒计时/单位

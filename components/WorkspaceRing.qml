@@ -11,7 +11,8 @@ Item {
     property var windows: []
     property int activeIndex: 0
     property real size: Metrics.workspaceRing
-    property real thickness: Metrics.ringThickness
+    property real thickness: Metrics.workspaceRingThickness
+    property real segmentGap: Metrics.workspaceSegmentGap
     property color trackColor: Theme.trackDim
 
     readonly property int count: windows.length
@@ -20,15 +21,18 @@ Item {
     // 非循环五槽视窗：前四次移动仍显示首组五个，之后每次隐藏最左一段。
     readonly property int visibleStart: count > 5 ? Math.max(0, clampedActiveIndex - 4) : 0
     readonly property real rotationAngle: -clampedActiveIndex * 72
+    readonly property real arcSweep: 72 - segmentGap
 
-    readonly property var visibleWindows: {
+    // 固定渲染五个逻辑槽位：有窗口用应用色，空槽用轨道色；段间空隙保持透明。
+    readonly property var visibleSlots: {
         const result = [];
-        const end = Math.min(count, visibleStart + 5);
-        for (let i = visibleStart; i < end; ++i) {
-            const colorName = Config.workspaceAppColorName(windows[i].appKey);
+        for (let slot = 0; slot < 5; ++slot) {
+            const logicalIndex = visibleStart + slot;
+            const occupied = logicalIndex < count;
+            const colorName = occupied ? Config.workspaceAppColorName(windows[logicalIndex].appKey) : "";
             result.push({
-                logicalIndex: i,
-                color: Theme.p[colorName] || Theme.p.blue
+                logicalIndex: logicalIndex,
+                color: occupied ? (Theme.p[colorName] || Theme.p.blue) : root.trackColor
             });
         }
         return result;
@@ -50,26 +54,6 @@ Item {
     implicitWidth: diameter
     implicitHeight: diameter
 
-    Shape {
-        anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
-
-        ShapePath {
-            strokeColor: root.trackColor
-            strokeWidth: root.strokeWidth
-            fillColor: "transparent"
-            capStyle: ShapePath.RoundCap
-            PathAngleArc {
-                centerX: root.center
-                centerY: root.center
-                radiusX: root.radius
-                radiusY: root.radius
-                startAngle: 0
-                sweepAngle: 359.9
-            }
-        }
-    }
-
     Item {
         id: rotor
         anchors.fill: parent
@@ -84,7 +68,7 @@ Item {
         }
 
         Repeater {
-            model: root.visibleWindows
+            model: root.visibleSlots
 
             delegate: Shape {
                 id: segment
@@ -103,8 +87,8 @@ Item {
                         centerY: root.center
                         radiusX: root.radius
                         radiusY: root.radius
-                        startAngle: -126 + segment.modelData.logicalIndex * 72
-                        sweepAngle: 72
+                        startAngle: -126 + segment.modelData.logicalIndex * 72 + root.segmentGap / 2
+                        sweepAngle: root.arcSweep
                     }
                 }
             }
