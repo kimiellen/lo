@@ -41,11 +41,17 @@ Singleton {
 
         loops: MediaPlayer.Infinite
         source: root.track === "none" ? "" : Qt.resolvedUrl("../assets/sounds/amb-" + root.track + ".mp3")
-        // source 变化即自动播放（含启动续播与切歌）；source 置空即停止
-        autoPlay: true
+        // 不依赖 autoPlay：它只在首次加载媒体时生效，切歌后 LoadedMedia 不会自动进 PlayingState。
+        // 每次新媒体加载完成都显式 play()；source 置空（none）时媒体卸载，天然停止
+        autoPlay: false
 
         audioOutput: AudioOutput {
             volume: root.volume
+        }
+
+        onMediaStatusChanged: {
+            if (mediaStatus === MediaPlayer.LoadedMedia && source.toString() !== "")
+                play();
         }
 
         onErrorOccurred: function (error, errorString) {
