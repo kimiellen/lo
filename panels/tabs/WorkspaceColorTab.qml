@@ -196,6 +196,7 @@ Item {
                             clip: true
                             implicitHeight: contentHeight
                             model: combo.popup.visible ? combo.model : null
+                            delegate: combo.delegate
                             currentIndex: combo.currentIndex
                             ScrollIndicator.vertical: ScrollIndicator {}
                         }
