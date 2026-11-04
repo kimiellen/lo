@@ -77,15 +77,4 @@ Singleton {
             return batteryMid;
         return batteryHigh;
     }
-
-    // 工作区窗口数分档：0 / 1-2 / 3-4 / 5+
-    function workspaceColor(windows) {
-        if (windows <= 0)
-            return p.overlay;
-        if (windows <= 2)
-            return p.blue;
-        if (windows <= 4)
-            return p.yellow;
-        return p.red;
-    }
 }

@@ -55,6 +55,7 @@ PanelWindow {
 
             Workspaces {
                 anchors.centerIn: parent
+                onPanelRequested: bar.panelRequested("workspace")
             }
         }
 

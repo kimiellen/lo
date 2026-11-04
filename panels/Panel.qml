@@ -14,11 +14,13 @@ PanelWindow {
 
     property bool open: false
     property string tab: "network"
+    property int workspaceEditorId: 0
 
     readonly property var tabs: [
         { key: "proxy", label: I18n.t("panel.proxy") },
         { key: "network", label: I18n.t("panel.network") },
-        { key: "bluetooth", label: I18n.t("panel.bluetooth") }
+        { key: "bluetooth", label: I18n.t("panel.bluetooth") },
+        { key: "workspace", label: I18n.t("panel.workspace") }
     ]
 
     color: "transparent"
@@ -64,11 +66,16 @@ PanelWindow {
     }
 
     onOpenChanged: {
-        if (open)
+        if (open) {
+            if (tab === "workspace")
+                workspaceEditorId = Hypr.focusedWorkspaceId;
             activate();
+        }
     }
 
     onTabChanged: {
+        if (tab === "workspace")
+            workspaceEditorId = Hypr.focusedWorkspaceId;
         if (open)
             activate();
     }
@@ -180,7 +187,8 @@ PanelWindow {
                         width: flick.width
                         active: root.open
                         sourceComponent: root.tab === "network" ? networkTab
-                            : (root.tab === "bluetooth" ? bluetoothTab : proxyTab)
+                            : (root.tab === "bluetooth" ? bluetoothTab
+                            : (root.tab === "workspace" ? workspaceTab : proxyTab))
                     }
                 }
             }
@@ -203,7 +211,14 @@ PanelWindow {
         }
     }
 
-    // 代理 tab 在 M5 接入
+    Component {
+        id: workspaceTab
+
+        WorkspaceColorTab {
+            workspaceId: root.workspaceEditorId
+        }
+    }
+
     Component {
         id: proxyTab
 

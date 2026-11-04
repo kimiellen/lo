@@ -33,6 +33,8 @@ Singleton {
             property string mihomoSecret: ""
             // 额度密钥文件；留空则用配置目录下的 secrets.json
             property string secretsPath: ""
+            // Hyprland class/app_id → Catppuccin 颜色名；只保存显式选择，缺省即 blue
+            property var workspaceAppColors: ({})
         }
     }
 
@@ -70,6 +72,33 @@ Singleton {
     // secrets.json 只用于额度 key；默认与 config.json 同目录，便于 VBCIO_CONFIG_DIR 隔离测试
     readonly property string secretsPath: data.secretsPath !== ""
         ? data.secretsPath : (configDir + "/secrets.json")
+
+    // blue 是未配置窗口的默认色，red 专用于可见起点半径线，因此都不出现在编辑选项中。
+    readonly property var workspaceSelectableColors: [
+        "rosewater", "flamingo", "pink", "mauve", "maroon", "peach",
+        "yellow", "green", "teal", "sky", "sapphire", "lavender"
+    ]
+
+    function workspaceAppColorName(appKey) {
+        if (!appKey)
+            return "blue";
+        const colors = data.workspaceAppColors || ({});
+        const name = colors[appKey];
+        return workspaceSelectableColors.indexOf(name) >= 0 ? name : "blue";
+    }
+
+    function setWorkspaceAppColor(appKey, name) {
+        if (!appKey || workspaceSelectableColors.indexOf(name) < 0)
+            return;
+        const colors = data.workspaceAppColors || ({});
+        if (colors[appKey] === name)
+            return;
+        // 整体替换以触发 JsonAdapter/QML 绑定更新；FileView 负责立即落盘。
+        const next = Object.assign({}, colors);
+        next[appKey] = name;
+        data.workspaceAppColors = next;
+        file.writeAdapter();
+    }
 
     function setTheme(name) {
         data.theme = (name === "latte" || name === "light") ? "latte"

@@ -99,3 +99,11 @@
   - 面板：临时实例 `Panel open:true` 分别截 proxy/network/bluetooth；Proxy 面板实测 687 设备像素高（429 逻辑），Network 的 4 个 Wi-Fi + 4 条链路、Bluetooth 的设备行、Proxy 不可用（controller 指向 9099）均完整不裁切
   - 中英/双主题：`VBCIO_CONFIG_DIR` 隔离的 zh-CN + Latte 面板正常；真机 IPC 切 Latte 后顶栏截图（卡片白底、图标切口同底色），切回 mocha 且 `config.json` 回读 `"theme": "mocha"`
   - 预览实例日志无 QML 报错/警告；顶栏热重载后图标即时生效；点击链路（状态图标→`openPanel`、模式按钮→`Proxy.setMode`）未改动
+
+## Workspace 五段应用色环
+
+- [x] 建立按 scrolling 顺序排列的 Workspace 窗口模型与活动窗口跟踪；真机验证焦点切换、活动窗口右移及坐标重排。
+- [x] 实现五段色环、五槽视窗、red 起点半径线与连续整体旋转；六个窗口时只显示五段且无 `+N`，45 组活动位置/溢出断言通过。
+- [x] 当前 Workspace 点击打开应用颜色编辑列表，提供排除 blue/red 的十二色单选下拉框；编辑模型使用未裁剪的完整窗口列表并按应用去重。
+- [x] 以 `class` / `app_id` 持久化应用颜色名，默认 blue，同应用共享并跟随双主题；隔离配置写入 Chrome=mauve，重开 shell 后仍保持，Kitty 继续默认 blue。
+- [x] 真机检查中英文与 Mocha/Latte 编辑页、既有顶栏布局和热重载；QML 语法、`git diff --check` 通过，临时窗口与验收入口已清理。

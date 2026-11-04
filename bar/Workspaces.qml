@@ -7,16 +7,16 @@ import qs.components
 import qs.core
 import qs.services
 
-// 工作区用量环：窗口数分档配色，左键切换
+// 工作区五段应用色环：非当前工作区点击切换，当前工作区点击打开应用颜色编辑。
 Row {
     id: root
+
+    signal panelRequested()
 
     spacing: 8
 
     // 真实设备像素比：分段缩放下 Screen.devicePixelRatio 只返回整数
     readonly property real dpr: Window.window ? Window.window.devicePixelRatio : 1
-
-    readonly property var toplevels: Hyprland.toplevels.values || []
 
     // 至少 5 个槽位；存在更靠后的工作区时按最大 id 扩展
     readonly property int slotCount: {
@@ -30,16 +30,6 @@ Row {
         return maxId;
     }
 
-    function windowsFor(id) {
-        let count = 0;
-        for (let i = 0; i < toplevels.length; ++i) {
-            const t = toplevels[i];
-            if (t && t.workspace && t.workspace.id === id)
-                ++count;
-        }
-        return count;
-    }
-
     Repeater {
         model: root.slotCount
 
@@ -47,7 +37,8 @@ Row {
             id: cell
             required property int index
             readonly property int wsId: index + 1
-            readonly property int windows: root.windowsFor(wsId)
+            readonly property var workspaceData: Hypr.workspaceModel(wsId)
+            readonly property int windows: workspaceData.windows.length
             readonly property bool focused: Hypr.focusedWorkspaceId === wsId
 
             width: Metrics.workspaceCell
@@ -67,19 +58,33 @@ Row {
                 }
             }
 
-            UsageRing {
+            WorkspaceRing {
                 anchors.centerIn: parent
                 size: Metrics.workspaceRing
                 thickness: Metrics.ringThickness
-                value: Format.ratio(cell.windows, 5)
-                color: Theme.workspaceColor(cell.windows)
+                windows: cell.workspaceData.windows
+                activeIndex: cell.workspaceData.activeIndex
                 trackColor: Theme.track
             }
 
             MouseArea {
+                id: mouse
                 anchors.fill: parent
+                hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: Hypr.focusWorkspace(cell.wsId)
+                onClicked: {
+                    if (cell.focused)
+                        root.panelRequested();
+                    else
+                        Hypr.focusWorkspace(cell.wsId);
+                }
+            }
+
+            Tooltip {
+                targetItem: cell
+                visible: mouse.containsMouse
+                title: I18n.t("tooltip.workspaces") + " " + cell.wsId
+                detail: String(cell.windows)
             }
         }
     }
