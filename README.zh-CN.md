@@ -105,16 +105,12 @@ lo 是一个完全用 QML 写成的 Hyprland 顶栏，运行在 **Quickshell 0.3
 
 ### 网络
 
-![网络 tab](docs/assets/panel-network.en.png)
-
 - Wi-Fi 开关、当前网络（含 IP 与信号强度）、扫描按钮
 - 已保存或开放网络直接连；WPA 网络展开内联密码框——面板独占键盘焦点正是为了这一步
 - 不支持的加密方式、连接失败都在页内提示，不抛错
 - 下方是只读链路表（`ip -br addr`），列出每块网卡的状态与地址，每 5 秒刷新
 
 ### 蓝牙
-
-![蓝牙 tab](docs/assets/panel-bluetooth.en.png)
 
 - 适配器开关、已连接设备（含电量）、可用 / 已配对设备
 - 搜索会发起 15 秒扫描并自动停止，因为 BlueZ 没有手动刷新接口

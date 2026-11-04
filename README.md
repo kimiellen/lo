@@ -105,16 +105,12 @@ The panel is a 400 px overlay anchored under the right edge of the bar. `Esc` or
 
 ### Network
 
-![Network tab](docs/assets/panel-network.en.png)
-
 - Wi-Fi power switch, connected network with IP and signal, and a scan button
 - Saved or open networks connect directly; WPA networks open an inline password field — the panel keeps keyboard focus exactly for this
 - Unsupported security types and failed connections report inline, without throwing
 - A read-only link table (`ip -br addr`) lists every interface with state and addresses, refreshed every five seconds
 
 ### Bluetooth
-
-![Bluetooth tab](docs/assets/panel-bluetooth.en.png)
 
 - Adapter power switch, connected devices with battery percentage, and available / paired devices
 - Search starts a 15-second discovery and stops automatically, because BlueZ has no manual refresh
