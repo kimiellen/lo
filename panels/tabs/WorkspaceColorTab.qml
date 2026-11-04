@@ -184,6 +184,12 @@ Item {
                             radius: 4
                             color: option.highlighted ? Theme.track : "transparent"
                         }
+
+                        // 自定义 Popup 不会自动接管选择：显式走 ComboBox 的 activated 流程。
+                        onClicked: {
+                            combo.activated(index);
+                            combo.popup.close();
+                        }
                     }
 
                     popup: Popup {
