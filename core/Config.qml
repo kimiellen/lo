@@ -33,6 +33,9 @@ Singleton {
             property string mihomoSecret: ""
             // 额度密钥文件；留空则用配置目录下的 secrets.json
             property string secretsPath: ""
+            // 白噪音：上次选中的音轨（none 为停止）与音量 0..1
+            property string whiteNoiseTrack: "none"
+            property real whiteNoiseVolume: 0.5
         }
     }
 
@@ -95,5 +98,19 @@ Singleton {
 
     function toggleLanguage() {
         setLanguage(language === "zh" ? "en" : "zh")
+    }
+
+    // 白噪音持久化：音轨 key 的合法性由 WhiteNoise 服务校验，这里只存取
+    readonly property string whiteNoiseTrack: data.whiteNoiseTrack
+    readonly property real whiteNoiseVolume: Math.max(0, Math.min(1, data.whiteNoiseVolume))
+
+    function setWhiteNoiseTrack(key) {
+        data.whiteNoiseTrack = key;
+        file.writeAdapter();
+    }
+
+    function setWhiteNoiseVolume(v) {
+        data.whiteNoiseVolume = Math.max(0, Math.min(1, v));
+        file.writeAdapter();
     }
 }

@@ -105,6 +105,16 @@ Singleton {
         "tooltip.mic": "麦克风",
         "tooltip.mic.muted": "已静音",
         "tooltip.mic.on": "已开启",
+        "tooltip.noise": "白噪音",
+        "noise.volume": "音量",
+        "noise.stars": "星空音乐",
+        "noise.rain": "雨天图书馆",
+        "noise.sea": "清晨海岸",
+        "noise.forest": "林间早晨",
+        "noise.fire": "夜晚壁炉",
+        "noise.voyage": "远航船舱",
+        "noise.cafe": "安静咖啡馆",
+        "noise.none": "安静",
         "common.na": "--"
     })
 
@@ -204,6 +214,16 @@ Singleton {
         "tooltip.mic": "Microphone",
         "tooltip.mic.muted": "Muted",
         "tooltip.mic.on": "On",
+        "tooltip.noise": "White noise",
+        "noise.volume": "Volume",
+        "noise.stars": "Starlight",
+        "noise.rain": "Rainy Library",
+        "noise.sea": "Morning Coast",
+        "noise.forest": "Forest Morning",
+        "noise.fire": "Night Fireplace",
+        "noise.voyage": "Voyage Cabin",
+        "noise.cafe": "Quiet Café",
+        "noise.none": "Silent",
         "common.na": "--"
     })
 
