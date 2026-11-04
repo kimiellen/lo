@@ -27,6 +27,8 @@ Singleton {
     readonly property int workspaceCell: 30
     readonly property int workspaceRing: 20
     readonly property int workspaceRingThickness: 3
+    readonly property int workspaceFocusRing: 26
+    readonly property int workspaceFocusRingThickness: 2
     readonly property int workspaceSegmentGap: 10
 
     // 文本

@@ -42,14 +42,16 @@ Row {
             width: Metrics.workspaceCell
             height: Metrics.workspaceCell
 
+            // 选中工作区外圈：maroon、直径 26、线宽 2，居中于 30px 槽位
             Rectangle {
-                anchors.fill: parent
+                anchors.centerIn: parent
+                width: Metrics.snap(Metrics.workspaceFocusRing, root.dpr)
+                height: width
                 radius: width / 2
                 color: "transparent"
-                // 1px 描边按设备像素吸附，1.6 缩放下才是 2 设备像素的均匀细线
-                border.width: Metrics.snap(1, root.dpr)
-                border.color: Theme.text
-                opacity: cell.focused ? 0.85 : 0
+                border.width: Metrics.snap(Metrics.workspaceFocusRingThickness, root.dpr)
+                border.color: Theme.workspaceFocus
+                opacity: cell.focused ? 1 : 0
 
                 Behavior on opacity {
                     NumberAnimation { duration: 120 }

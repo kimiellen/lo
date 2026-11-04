@@ -67,8 +67,9 @@ Singleton {
     readonly property color deepseekBrand: "#4d6bfe"
     readonly property color kimi: p.sky
 
-    // 工作区窗口段统一 sky，空槽用轨道色
+    // 工作区窗口段统一 sky，空槽用轨道色；选中工作区的外圈用 maroon
     readonly property color workspace: p.sky
+    readonly property color workspaceFocus: p.maroon
 
     // 时钟卡片：日历/时钟图标与周数药丸统一 sky；药丸文字按主题取深色保证对比
     readonly property color clockDate: p.sky
