@@ -73,18 +73,18 @@ Singleton {
     readonly property string secretsPath: data.secretsPath !== ""
         ? data.secretsPath : (configDir + "/secrets.json")
 
-    // blue 是未配置窗口的默认色，red 专用于可见起点半径线，因此都不出现在编辑选项中。
+    // text 是未配置窗口的默认色（不抢视觉重心），red 专用于可见起点半径线，因此都不出现在编辑选项中。
     readonly property var workspaceSelectableColors: [
         "rosewater", "flamingo", "pink", "mauve", "maroon", "peach",
-        "yellow", "green", "teal", "sky", "sapphire", "lavender"
+        "yellow", "green", "teal", "sky", "sapphire", "blue", "lavender"
     ]
 
     function workspaceAppColorName(appKey) {
         if (!appKey)
-            return "blue";
+            return "text";
         const colors = data.workspaceAppColors || ({});
         const name = colors[appKey];
-        return workspaceSelectableColors.indexOf(name) >= 0 ? name : "blue";
+        return workspaceSelectableColors.indexOf(name) >= 0 ? name : "text";
     }
 
     function setWorkspaceAppColor(appKey, name) {

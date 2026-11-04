@@ -106,7 +106,7 @@ Item {
                             width: 8
                             height: 8
                             radius: 4
-                            color: Theme.p[combo.selectedColor] || Theme.p.blue
+                            color: Theme.p[combo.selectedColor] || Theme.p.text
                         }
 
                         Text {

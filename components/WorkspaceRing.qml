@@ -32,7 +32,7 @@ Item {
             const colorName = occupied ? Config.workspaceAppColorName(windows[logicalIndex].appKey) : "";
             result.push({
                 logicalIndex: logicalIndex,
-                color: occupied ? (Theme.p[colorName] || Theme.p.blue) : root.trackColor
+                color: occupied ? (Theme.p[colorName] || Theme.p.text) : root.trackColor
             });
         }
         return result;
