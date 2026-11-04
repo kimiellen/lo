@@ -5,6 +5,7 @@ import qs.core
 import qs.services
 
 // Kimi 额度：矢量标 + 7 天环（跟天数）+ 5 小时环（跟小时数），每个环配自己的重置倒计时
+// 环统一 sky，倒计时文字用正文色；所有子项同高，保证 Row 内上下居中对齐
 Row {
     id: root
 
@@ -58,17 +59,9 @@ Row {
             letter: item.letter,
             ratio: item.ratio,
             resetAt: item.resetAt,
-            color: root.windowColor(item.id),
+            color: Theme.kimi,
             title: I18n.t(item.labelKey)
         }));
-    }
-
-    function windowColor(id) {
-        if (id === "7d")
-            return Theme.kimiWeek;
-        if (id === "5h")
-            return Theme.kimiSession;
-        return Theme.kimi;
     }
 
     function resetOf(entry) {
@@ -79,8 +72,14 @@ Row {
         return entry.id === "7d" ? Format.countdownDays(ms) : Format.countdown(ms);
     }
 
-    KimiMark {
-        anchors.verticalCenter: parent.verticalCenter
+    Item {
+        width: kimiMark.implicitWidth
+        height: Metrics.ringSize
+
+        KimiMark {
+            id: kimiMark
+            anchors.centerIn: parent
+        }
     }
 
     Repeater {
@@ -91,7 +90,7 @@ Row {
             required property var modelData
 
             spacing: 4
-            anchors.verticalCenter: parent.verticalCenter
+            height: Metrics.ringSize
 
             readonly property string resetText: root.resetOf(modelData)
 
@@ -116,13 +115,13 @@ Row {
 
                 visible: group.resetText !== ""
                 width: resetLabel.implicitWidth
-                height: Metrics.workspaceCell
+                height: Metrics.ringSize
 
                 Text {
                     id: resetLabel
                     anchors.centerIn: parent
                     text: group.resetText
-                    color: group.modelData.color
+                    color: Theme.text
                     font.family: Theme.fontFamily
                     font.pixelSize: Metrics.textSize
                     renderType: Text.NativeRendering

@@ -23,10 +23,9 @@ Singleton {
     readonly property int ringThickness: 3
     readonly property int ringLetterSize: 14
 
-    // 工作区槽位（外描边）与内环；五段之间留 10°，空槽/空隙均不连成一圈
+    // 工作区槽位（外描边）；五段之间留 10°，空槽/空隙均不连成一圈
+    // 环径与线宽复用普通环 token，保证与其他环视觉尺寸一致
     readonly property int workspaceCell: 30
-    readonly property int workspaceRing: 26
-    readonly property int workspaceRingThickness: 4
     readonly property int workspaceSegmentGap: 10
 
     // 文本
@@ -36,6 +35,11 @@ Singleton {
     readonly property int iconSize: 24         // 状态图标点击/绘制盒
     readonly property int iconGlyphSize: 22     // 盒内字形/矢量图标（光学尺寸对齐）
     readonly property int brandMarkWidth: 22    // 品牌矢量标（鲸标/K 标）逻辑宽度
+
+    // 时钟卡片：日历/时钟矢量图标、图标与文字间距、分组间距（周数徽标复用 modeButton* 药丸尺寸）
+    readonly property int clockIconSize: root.modeButtonHeight  // 与周数药丸等高
+    readonly property int clockIconTextGap: 5
+    readonly property int clockGroupGap: 10
 
     // 右区状态卡：自绘图标（与环同高）、主题按钮、模块间距
     readonly property int statusGlyphSize: 24

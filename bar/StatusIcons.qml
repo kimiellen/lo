@@ -24,7 +24,7 @@ Row {
         if (key === "network") {
             if (!Wifi.available || !Wifi.powered)
                 return Theme.overlay;
-            return Wifi.connected ? Theme.success : Theme.subtext;
+            return Wifi.connected ? Theme.network : Theme.subtext;
         }
         if (key === "bluetooth") {
             if (!BlueZ.available || !BlueZ.powered)

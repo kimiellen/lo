@@ -7,11 +7,9 @@ import qs.components
 import qs.core
 import qs.services
 
-// 工作区五段应用色环：非当前工作区点击切换，当前工作区点击打开应用颜色编辑。
+// 工作区五段 sky 色环：非当前工作区点击切换（当前工作区无操作）。
 Row {
     id: root
-
-    signal panelRequested()
 
     spacing: 8
 
@@ -60,22 +58,20 @@ Row {
 
             WorkspaceRing {
                 anchors.centerIn: parent
-                size: Metrics.workspaceRing
-                thickness: Metrics.workspaceRingThickness
+                size: Metrics.ringSize
+                thickness: Metrics.ringThickness
                 windows: cell.workspaceData.windows
                 activeIndex: cell.workspaceData.activeIndex
-                trackColor: Theme.track
+                trackColor: Theme.trackDim
             }
 
             MouseArea {
                 id: mouse
                 anchors.fill: parent
                 hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
+                cursorShape: cell.focused ? Qt.ArrowCursor : Qt.PointingHandCursor
                 onClicked: {
-                    if (cell.focused)
-                        root.panelRequested();
-                    else
+                    if (!cell.focused)
                         Hypr.focusWorkspace(cell.wsId);
                 }
             }

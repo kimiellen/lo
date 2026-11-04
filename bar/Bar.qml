@@ -38,7 +38,7 @@ PanelWindow {
     WlrLayershell.exclusiveZone: Math.ceil(bar.windowHeight)
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-    // 左区：工作区 → 系统三环 → 额度 → 余额
+    // 左区：时间日期 → 系统三环 → 额度 → 余额
     Row {
         id: leftSection
         spacing: bar.cardGap
@@ -50,12 +50,11 @@ PanelWindow {
         }
 
         BarCard {
-            id: workspaceCard
+            id: clockCard
             height: bar.cardHeight
 
-            Workspaces {
+            Clock {
                 anchors.centerIn: parent
-                onPanelRequested: bar.panelRequested("workspace")
             }
         }
 
@@ -88,9 +87,9 @@ PanelWindow {
         }
     }
 
-    // 中区：日期 - 时间 - 星期（卡片中心严格对齐屏幕水平中心）
+    // 中区：工作区（卡片中心严格对齐屏幕水平中心）
     BarCard {
-        id: clockCard
+        id: workspaceCard
         height: bar.cardHeight
         anchors {
             horizontalCenter: parent.horizontalCenter
@@ -98,7 +97,7 @@ PanelWindow {
             topMargin: bar.outerMarginY
         }
 
-        Clock {
+        Workspaces {
             anchors.centerIn: parent
         }
     }

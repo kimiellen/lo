@@ -24,10 +24,6 @@ Singleton {
         "panel.proxy": "代理",
         "panel.network": "网络",
         "panel.bluetooth": "蓝牙",
-        "panel.workspace": "工作区",
-        "panel.workspace.colors": "应用颜色",
-        "panel.workspace.empty": "此工作区没有窗口",
-        "panel.workspace.default": "默认 (text)",
         "panel.scan": "扫描",
         "panel.connect": "连接",
         "panel.disconnect": "断开",
@@ -127,10 +123,6 @@ Singleton {
         "panel.proxy": "Proxy",
         "panel.network": "Network",
         "panel.bluetooth": "Bluetooth",
-        "panel.workspace": "Workspace",
-        "panel.workspace.colors": "App colors",
-        "panel.workspace.empty": "No windows in this workspace",
-        "panel.workspace.default": "Default (text)",
         "panel.scan": "Scan",
         "panel.connect": "Connect",
         "panel.disconnect": "Disconnect",
@@ -250,19 +242,35 @@ Singleton {
         return n < 10 ? "0" + n : "" + n;
     }
 
-    // zh: 11月1日 - 21:26 - 周一 / en: 1 Nov - 09:26 PM - Mon
-    function formatClock(d) {
+    // 时钟卡片分组文案：zh: 11月1日 / 21:26 / 周一；en: 1 Nov / 21:26 / Mon
+    function formatClockDate(d) {
         if (!d)
             return "";
-        if (isZh) {
-            return (d.getMonth() + 1) + "月" + d.getDate() + "日 - "
-                + two(d.getHours()) + ":" + two(d.getMinutes()) + " - 周"
-                + weekdayZh[d.getDay()];
-        }
-        const h = d.getHours();
-        const h12 = ((h + 11) % 12) + 1;
-        return d.getDate() + " " + monthEn[d.getMonth()] + " - "
-            + two(h12) + ":" + two(d.getMinutes()) + " " + (h < 12 ? "AM" : "PM")
-            + " - " + weekdayEn[d.getDay()];
+        if (isZh)
+            return (d.getMonth() + 1) + "月" + d.getDate() + "日";
+        return d.getDate() + " " + monthEn[d.getMonth()];
+    }
+
+    function formatClockTime(d) {
+        if (!d)
+            return "";
+        return two(d.getHours()) + ":" + two(d.getMinutes());
+    }
+
+    function formatClockWeekday(d) {
+        if (!d)
+            return "";
+        return isZh ? "周" + weekdayZh[d.getDay()] : weekdayEn[d.getDay()];
+    }
+
+    // ISO 8601 周数：周一为一周之始，含首个周四的周为第 1 周
+    function isoWeek(d) {
+        if (!d)
+            return 0;
+        const thu = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        thu.setDate(thu.getDate() + 3 - ((thu.getDay() + 6) % 7));
+        const week1 = new Date(thu.getFullYear(), 0, 4);
+        week1.setDate(week1.getDate() + 3 - ((week1.getDay() + 6) % 7));
+        return 1 + Math.round((thu - week1) / 604800000);
     }
 }

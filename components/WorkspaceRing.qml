@@ -4,14 +4,14 @@ import QtQuick.Shapes
 import QtQuick.Window
 import qs.core
 
-// Workspace 五段应用色环：活动段对齐 12 点，red 半径线标记当前可见序列起点。
+// Workspace 五段 sky 色环：活动段对齐 12 点，red 半径线标记当前可见序列起点。
 Item {
     id: root
 
     property var windows: []
     property int activeIndex: 0
-    property real size: Metrics.workspaceRing
-    property real thickness: Metrics.workspaceRingThickness
+    property real size: Metrics.ringSize
+    property real thickness: Metrics.ringThickness
     property real segmentGap: Metrics.workspaceSegmentGap
     property color trackColor: Theme.trackDim
 
@@ -23,16 +23,15 @@ Item {
     readonly property real rotationAngle: -clampedActiveIndex * 72
     readonly property real arcSweep: 72 - segmentGap
 
-    // 固定渲染五个逻辑槽位：有窗口用应用色，空槽用轨道色；段间空隙保持透明。
+    // 固定渲染五个逻辑槽位：有窗口统一 sky，空槽用轨道色；段间空隙保持透明。
     readonly property var visibleSlots: {
         const result = [];
         for (let slot = 0; slot < 5; ++slot) {
             const logicalIndex = visibleStart + slot;
             const occupied = logicalIndex < count;
-            const colorName = occupied ? Config.workspaceAppColorName(windows[logicalIndex].appKey) : "";
             result.push({
                 logicalIndex: logicalIndex,
-                color: occupied ? (Theme.p[colorName] || Theme.p.text) : root.trackColor
+                color: occupied ? Theme.workspace : root.trackColor
             });
         }
         return result;

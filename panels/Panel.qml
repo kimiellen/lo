@@ -14,13 +14,11 @@ PanelWindow {
 
     property bool open: false
     property string tab: "network"
-    property int workspaceEditorId: 0
 
     readonly property var tabs: [
         { key: "proxy", label: I18n.t("panel.proxy") },
         { key: "network", label: I18n.t("panel.network") },
-        { key: "bluetooth", label: I18n.t("panel.bluetooth") },
-        { key: "workspace", label: I18n.t("panel.workspace") }
+        { key: "bluetooth", label: I18n.t("panel.bluetooth") }
     ]
 
     color: "transparent"
@@ -66,16 +64,11 @@ PanelWindow {
     }
 
     onOpenChanged: {
-        if (open) {
-            if (tab === "workspace")
-                workspaceEditorId = Hypr.focusedWorkspaceId;
+        if (open)
             activate();
-        }
     }
 
     onTabChanged: {
-        if (tab === "workspace")
-            workspaceEditorId = Hypr.focusedWorkspaceId;
         if (open)
             activate();
     }
@@ -187,8 +180,7 @@ PanelWindow {
                         width: flick.width
                         active: root.open
                         sourceComponent: root.tab === "network" ? networkTab
-                            : (root.tab === "bluetooth" ? bluetoothTab
-                            : (root.tab === "workspace" ? workspaceTab : proxyTab))
+                            : (root.tab === "bluetooth" ? bluetoothTab : proxyTab)
                     }
                 }
             }
@@ -208,14 +200,6 @@ PanelWindow {
 
         BluetoothTab {
             onCloseRequested: root.closePanel()
-        }
-    }
-
-    Component {
-        id: workspaceTab
-
-        WorkspaceColorTab {
-            workspaceId: root.workspaceEditorId
         }
     }
 

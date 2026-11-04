@@ -47,14 +47,15 @@ Singleton {
     readonly property string fontFamily: "JetBrainsMono Nerd Font"
     readonly property string fontFamilyFallback: "Noto Sans Mono CJK SC"
 
-    // 资源固定配色
-    readonly property color cpu: p.blue
-    readonly property color memory: p.mauve
-    readonly property color disk: p.teal
+    // 资源固定配色：统一 sky 强调色（电池仍按电量分档）
+    readonly property color cpu: p.sky
+    readonly property color memory: p.sky
+    readonly property color disk: p.sky
     readonly property color proxy: p.sky
-    readonly property color bluetooth: p.blue
-    readonly property color volume: p.maroon
-    readonly property color brightness: p.blue
+    readonly property color network: p.sky
+    readonly property color bluetooth: p.sky
+    readonly property color volume: p.sky
+    readonly property color brightness: p.sky
     // 电池分档：<40% 红 / 40–70% 黄 / ≥70% 绿（充电不覆盖，仍按电量分档）
     readonly property color batteryLow: p.red
     readonly property color batteryMid: p.yellow
@@ -62,12 +63,18 @@ Singleton {
     readonly property color success: p.green
     readonly property color warning: p.red
     readonly property color accent: p.lavender
-    // 额度模块：DeepSeek 用官方品牌色（非 Catppuccin 角色）；
-    // Kimi 7 天窗口 sapphire、5 小时窗口 flamingo，月度/代码等回退窗口沿用 pink
+    // 额度模块：DeepSeek 用官方品牌色（非 Catppuccin 角色）；Kimi 所有窗口环统一 sky
     readonly property color deepseekBrand: "#4d6bfe"
-    readonly property color kimiWeek: p.sapphire
-    readonly property color kimiSession: p.flamingo
-    readonly property color kimi: p.pink
+    readonly property color kimi: p.sky
+
+    // 工作区窗口段统一 sky，空槽用轨道色
+    readonly property color workspace: p.sky
+
+    // 时钟卡片：日历/时钟图标与周数药丸统一 sky；药丸文字按主题取深色保证对比
+    readonly property color clockDate: p.sky
+    readonly property color clockTime: p.sky
+    readonly property color weekBadge: p.sky
+    readonly property color weekBadgeText: Config.effectiveTheme === "latte" ? p.text : p.crust
 
     // 电池状态色：按电量分三档（<40% 红 / 40–70% 黄 / ≥70% 绿），充电不覆盖
     function batteryColor(ratio) {
