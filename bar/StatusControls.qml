@@ -9,6 +9,9 @@ import qs.services
 Row {
     id: root
 
+    // 请求开关白噪音弹层（由 shell.qml 的 NoisePopup 宿主处理）
+    signal noiseRequested
+
     spacing: Metrics.statusModuleGap
 
     readonly property color batteryColor: Theme.batteryColor(Power.percentage)
@@ -88,6 +91,36 @@ Row {
             title: I18n.t("tooltip.theme")
             detail: root.themeDetail
             visible: themeHover.containsMouse
+        }
+    }
+
+    // ---------------- 白噪音 ----------------
+    Item {
+        id: noiseCell
+
+        width: Metrics.ringSize
+        height: Metrics.ringSize
+
+        NoiseGlyph {
+            anchors.centerIn: parent
+            kind: "button"
+            size: Metrics.statusGlyphSize
+            color: WhiteNoise.track !== "none" ? Theme.noise : Theme.subtext
+        }
+
+        MouseArea {
+            id: noiseHover
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.noiseRequested()
+        }
+
+        Tooltip {
+            targetItem: noiseCell
+            title: I18n.t("tooltip.noise")
+            detail: I18n.t("noise." + WhiteNoise.track)
+            visible: noiseHover.containsMouse
         }
     }
 

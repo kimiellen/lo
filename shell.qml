@@ -20,10 +20,16 @@ ShellRoot {
                 onPanelRequested: function (tab) {
                     panel.openPanel(tab);
                 }
+                onNoiseRequested: noisePopup.togglePopup()
             }
 
             Panel {
                 id: panel
+                screen: screenRoot.modelData
+            }
+
+            NoisePopup {
+                id: noisePopup
                 screen: screenRoot.modelData
             }
         }

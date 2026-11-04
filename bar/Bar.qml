@@ -11,6 +11,8 @@ PanelWindow {
 
     // 打开控制面板（由系统环 / 状态图标发出）
     signal panelRequested(string tab)
+    // 开关白噪音弹层（由状态卡白噪音按钮发出）
+    signal noiseRequested
 
     // 设备像素比：分段缩放下只有窗口能给出真实值（Screen.devicePixelRatio 只返回整数）
     readonly property real dpr: bar.devicePixelRatio
@@ -119,6 +121,7 @@ PanelWindow {
 
             StatusControls {
                 anchors.centerIn: parent
+                onNoiseRequested: bar.noiseRequested()
             }
         }
 

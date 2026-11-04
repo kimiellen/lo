@@ -56,6 +56,7 @@ Singleton {
     readonly property color bluetooth: p.sky
     readonly property color volume: p.sky
     readonly property color brightness: p.sky
+    readonly property color noise: p.sky
     // 电池分档：<40% 红 / 40–70% 黄 / ≥70% 绿（充电不覆盖，仍按电量分档）
     readonly property color batteryLow: p.red
     readonly property color batteryMid: p.yellow

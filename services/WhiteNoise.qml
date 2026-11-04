@@ -15,13 +15,24 @@ Singleton {
     readonly property string track: trackKeys.indexOf(Config.whiteNoiseTrack) >= 0
         ? Config.whiteNoiseTrack : "none"
     readonly property bool playing: player.playbackState === MediaPlayer.PlayingState
-    readonly property real volume: Config.whiteNoiseVolume
+    // 滑条拖动中的临时音量（<0 表示无临时值）；松手才落盘，避免拖动过程频繁写 config.json
+    property real liveVolume: -1
+    readonly property real volume: liveVolume >= 0 ? liveVolume : Config.whiteNoiseVolume
 
     function select(key) {
         Config.setWhiteNoiseTrack(trackKeys.indexOf(key) >= 0 ? key : "none");
     }
 
     function setVolume(v) {
+        Config.setWhiteNoiseVolume(v);
+    }
+
+    function previewVolume(v) {
+        liveVolume = Math.max(0, Math.min(1, v));
+    }
+
+    function commitVolume(v) {
+        liveVolume = -1;
         Config.setWhiteNoiseVolume(v);
     }
 
