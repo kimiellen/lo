@@ -56,10 +56,11 @@ Row {
                 }
             }
 
+            // 环小于普通环，在 30px 槽位内上下居中；槽位整体再由卡片垂直居中
             WorkspaceRing {
                 anchors.centerIn: parent
-                size: Metrics.ringSize
-                thickness: Metrics.ringThickness
+                size: Metrics.workspaceRing
+                thickness: Metrics.workspaceRingThickness
                 windows: cell.workspaceData.windows
                 activeIndex: cell.workspaceData.activeIndex
                 trackColor: Theme.trackDim

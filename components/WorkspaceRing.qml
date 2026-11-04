@@ -10,8 +10,8 @@ Item {
 
     property var windows: []
     property int activeIndex: 0
-    property real size: Metrics.ringSize
-    property real thickness: Metrics.ringThickness
+    property real size: Metrics.workspaceRing
+    property real thickness: Metrics.workspaceRingThickness
     property real segmentGap: Metrics.workspaceSegmentGap
     property color trackColor: Theme.trackDim
 

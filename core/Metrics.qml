@@ -23,9 +23,10 @@ Singleton {
     readonly property int ringThickness: 3
     readonly property int ringLetterSize: 14
 
-    // 工作区槽位（外描边）；五段之间留 10°，空槽/空隙均不连成一圈
-    // 环径与线宽复用普通环 token，保证与其他环视觉尺寸一致
+    // 工作区槽位（外描边）与内环；内环小于普通环，给五段断弧留呼吸
     readonly property int workspaceCell: 30
+    readonly property int workspaceRing: 20
+    readonly property int workspaceRingThickness: 3
     readonly property int workspaceSegmentGap: 10
 
     // 文本
