@@ -37,7 +37,7 @@ Nothing on the bar is allowed to break the bar: a missing API key, a failed `df`
 #### Clock
 
 - One card at the left edge; the bar's fixed centre is reserved for workspaces
-- Grouped as calendar + date → clock + time → ISO week pill + weekday; both languages use 24-hour time
+- Grouped as calendar + date → clock + time → ISO week badge + weekday; both languages use 24-hour time
 - 中文 `11月1日 / 21:26 / 45 / 周一` · English `1 Nov / 21:26 / 45 / Mon` (`45` is the ISO week)
 - `SystemClock` updates it every second; the calendar/clock glyphs stay in subtext, and the ISO week number sits in a subtext-outlined pill with a transparent fill
 
