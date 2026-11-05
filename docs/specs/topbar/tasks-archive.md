@@ -114,3 +114,8 @@
 - [x] `components/BarCard.qml` + `bar/Bar.qml`：删除高光绘制，模糊区域与可见圆角外轮廓共用半径
 - [x] Hyprland `decoration.blur`：noise 0、size 10、passes 4、vibrancy 0.10，持久化到运行配置
 - [x] 真机验证：Mocha/Latte 截图确认直边与圆角完整，热重载及冷启动无 QML 报错；`hyprctl` 回读四项模糊参数，顶栏保持 1600×48，恢复原 Mocha 与窗口全屏状态
+
+## 卡片外框与填充分离
+
+- [x] `components/BarCard.qml`：实色外框与玻璃填充拆为两层无描边 Shape，外半径按整设备像素吸附，内外圆角保持同心
+- [x] 真机验证：`qmllint` 无告警；冷启动后 IPC 切换 Mocha/Latte 无 QML 报错，截图确认直边与圆角完整，顶栏保持 1600×48，恢复原 Mocha

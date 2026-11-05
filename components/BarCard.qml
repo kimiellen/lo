@@ -3,9 +3,9 @@ import QtQuick.Shapes
 import QtQuick.Window
 import qs.core
 
-// 顶栏卡片：低噪毛玻璃（半透明底 + 背景模糊）+ 单层不透明描边，宽度随内容
-// 每张卡片只放一个内容组件，卡片尺寸取该组件的隐式尺寸；宽度与描边按设备像素吸附
-// 填充与描边走 Shape + CurveRenderer；模糊区域通过 outerRadius 复用可见外轮廓
+// 顶栏卡片：低噪毛玻璃 + 实色外框，外框与玻璃填充分层绘制，宽度随内容
+// 每张卡片只放一个内容组件，卡片尺寸取该组件的隐式尺寸；宽度与外框按设备像素吸附
+// 两层均走 Shape + CurveRenderer；模糊区域通过 outerRadius 复用可见外轮廓
 Item {
     id: root
 
@@ -16,43 +16,64 @@ Item {
     readonly property Item contentItem: holder.children.length > 0 ? holder.children[0] : null
     // 真实设备像素比（分段缩放下 Screen.devicePixelRatio 只返回整数）
     readonly property real dpr: Window.window ? Window.window.devicePixelRatio : 1
-    // 描边外缘的圆角半径，供背景模糊区域使用，避免两套几何在拐角错位
-    readonly property real outerRadius: cardPath.r + cardPath.inset
+    readonly property real frameWidth: Metrics.snap(1, root.dpr)
+    // 外轮廓落在整设备像素；内层减去同样的宽度与半径，保持圆角同心
+    readonly property real outerRadius: Metrics.snap(root.radius, root.dpr)
 
-    // 卡片宽度吸附到整设备像素：卡片左右边与间隙都落在像素网格上，描边才不出现 1/2px 交替
+    // 卡片宽度吸附到整设备像素：卡片左右边与间隙都落在像素网格上
     implicitWidth: Metrics.snap((contentItem ? contentItem.implicitWidth : 0) + root.padding * 2, root.dpr)
     implicitHeight: contentItem ? contentItem.implicitHeight : 0
 
-    Shape {
-        id: cardShape
-        anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
+    component RoundedFill: Item {
+        id: shape
 
-        ShapePath {
-            id: cardPath
+        property real inset: 0
+        property real radius: 0
+        property color color
 
-            // 描边内收半线宽：描边骑跨路径两侧，内收后外缘正好压在卡片边界上
-            readonly property real inset: cardPath.strokeWidth / 2
-            readonly property real r: Metrics.snap(root.radius, root.dpr)
-            readonly property real right: cardShape.width - inset
-            readonly property real bottom: cardShape.height - inset
+        Shape {
+            anchors.fill: parent
+            preferredRendererType: Shape.CurveRenderer
 
-            strokeWidth: Metrics.snap(1, root.dpr)
-            strokeColor: Theme.cardBorder
-            fillColor: Theme.cardBg
+            ShapePath {
+                id: path
 
-            startX: cardPath.inset + cardPath.r
-            startY: cardPath.inset
+                readonly property real left: shape.inset
+                readonly property real top: shape.inset
+                readonly property real right: shape.width - shape.inset
+                readonly property real bottom: shape.height - shape.inset
+                readonly property real r: shape.radius
 
-            PathLine { x: cardPath.right - cardPath.r; y: cardPath.inset }
-            PathArc { x: cardPath.right; y: cardPath.inset + cardPath.r; radiusX: cardPath.r; radiusY: cardPath.r }
-            PathLine { x: cardPath.right; y: cardPath.bottom - cardPath.r }
-            PathArc { x: cardPath.right - cardPath.r; y: cardPath.bottom; radiusX: cardPath.r; radiusY: cardPath.r }
-            PathLine { x: cardPath.inset + cardPath.r; y: cardPath.bottom }
-            PathArc { x: cardPath.inset; y: cardPath.bottom - cardPath.r; radiusX: cardPath.r; radiusY: cardPath.r }
-            PathLine { x: cardPath.inset; y: cardPath.inset + cardPath.r }
-            PathArc { x: cardPath.inset + cardPath.r; y: cardPath.inset; radiusX: cardPath.r; radiusY: cardPath.r }
+                strokeWidth: 0
+                fillColor: shape.color
+
+                startX: path.left + path.r
+                startY: path.top
+
+                PathLine { x: path.right - path.r; y: path.top }
+                PathArc { x: path.right; y: path.top + path.r; radiusX: path.r; radiusY: path.r }
+                PathLine { x: path.right; y: path.bottom - path.r }
+                PathArc { x: path.right - path.r; y: path.bottom; radiusX: path.r; radiusY: path.r }
+                PathLine { x: path.left + path.r; y: path.bottom }
+                PathArc { x: path.left; y: path.bottom - path.r; radiusX: path.r; radiusY: path.r }
+                PathLine { x: path.left; y: path.top + path.r }
+                PathArc { x: path.left + path.r; y: path.top; radiusX: path.r; radiusY: path.r }
+            }
         }
+    }
+
+    // 实色外框覆盖整个外轮廓；其内侧抗锯齿下方不再是模糊背景
+    RoundedFill {
+        anchors.fill: parent
+        radius: root.outerRadius
+        color: Theme.cardBorder
+    }
+
+    RoundedFill {
+        anchors.fill: parent
+        inset: root.frameWidth
+        radius: root.outerRadius - root.frameWidth
+        color: Theme.cardBg
     }
 
     Item {
