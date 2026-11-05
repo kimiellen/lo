@@ -107,3 +107,10 @@
 - [x] 当前 Workspace 点击打开应用颜色编辑列表，提供排除 blue/red 的十二色单选下拉框；编辑模型使用未裁剪的完整窗口列表并按应用去重。
 - [x] 以 `class` / `app_id` 持久化应用颜色名，默认 blue，同应用共享并跟随双主题；隔离配置写入 Chrome=mauve，重开 shell 后仍保持，Kitty 继续默认 blue。
 - [x] 真机检查中英文与 Mocha/Latte 编辑页、既有顶栏布局和热重载；QML 语法、`git diff --check` 通过，临时窗口与验收入口已清理。
+
+## 低噪毛玻璃与边缘清理
+
+- [x] `core/Theme.qml`：Mocha/Latte 底色不透明度调至 80%/82%；描边改单层不透明 mantle/surface0，移除独立高光
+- [x] `components/BarCard.qml` + `bar/Bar.qml`：删除高光绘制，模糊区域与可见圆角外轮廓共用半径
+- [x] Hyprland `decoration.blur`：noise 0、size 10、passes 4、vibrancy 0.10，持久化到运行配置
+- [x] 真机验证：Mocha/Latte 截图确认直边与圆角完整，热重载及冷启动无 QML 报错；`hyprctl` 回读四项模糊参数，顶栏保持 1600×48，恢复原 Mocha 与窗口全屏状态

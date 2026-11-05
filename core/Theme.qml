@@ -41,16 +41,13 @@ Singleton {
     // 环轨道：surface2 约 70% 透明（过淡会在毛玻璃上与卡片底融成一片；实色则喧宾夺主）
     readonly property color ringTrack: Qt.rgba(p.surface2.r, p.surface2.g, p.surface2.b, 0.7)
 
-    // 顶栏卡片：毛玻璃——base 72% 透明（无模糊时仍保证可读性）
-    readonly property color cardBg: Qt.rgba(bg.r, bg.g, bg.b, 0.72)
-    // 边缘：深色主题用不透明暗边（crust——半透明描边会透出背后模糊边缘的噪点，拐角发毛）+ 顶部 1px 内高光；
-    // 浅色主题 text 本身是深色，保持 text 10% 描边、不加高光
+    // 顶栏卡片：低噪毛玻璃——轻度透光，无模糊时仍保证可读性
+    readonly property color cardBg: Qt.rgba(bg.r, bg.g, bg.b,
+        Config.effectiveTheme === "latte" ? 0.82 : 0.80)
+    // 单层、低对比、不透明描边：隔离模糊背景与圆角 AA，不再叠加半透明高光
     readonly property color cardBorder: Config.effectiveTheme === "latte"
-        ? Qt.rgba(text.r, text.g, text.b, 0.10)
-        : p.crust
-    readonly property color cardHighlight: Config.effectiveTheme === "latte"
-        ? "transparent"
-        : Qt.rgba(text.r, text.g, text.b, 0.06)
+        ? p.surface0
+        : p.mantle
     // 图标切口底色：必须不透明，半透明切口无法切断下方字形（毛玻璃底下尤其明显）
     readonly property color cardCut: bg
 
