@@ -64,8 +64,8 @@ Nothing on the bar is allowed to break the bar: a missing API key, a failed `df`
 
 ### Center — workspaces
 
-- One ring per workspace slot, numbered from 1 and always at least five; empty slots show only the track arc in the calendar-glyph colour (subtext), and a higher workspace ID grows the row
-- Each ring always draws five 72° slots with a small gap between segments. One window occupies one slot; occupied slots use sky, empty slots use the calendar-glyph colour (subtext), and gaps stay transparent — no per-app colours or colour editor
+- One ring per workspace slot, numbered from 1 and always at least five; empty slots show only the track, and a higher workspace ID grows the row
+- Each ring always draws five 72° slots with a small gap between segments. One window occupies one slot; occupied slots use sky, empty slots use the track colour, and gaps stay transparent — no per-app colours or colour editor
 - The active window's segment always sits at 12 o'clock; the whole ring rotates continuously when the active window changes or windows move, without replaying the animation when the first/last state is unchanged
 - `N < 5` shows every window; `N >= 5` always draws exactly five. Once the active window is past the fifth position the view slides so the active window is the last visible one — there is no `+N` badge
 - The red radius line marks the start of the visible five-window window and rotates with the ring

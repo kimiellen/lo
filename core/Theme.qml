@@ -74,10 +74,8 @@ Singleton {
     // 额度模块：DeepSeek 用官方品牌色（非 Catppuccin 角色）
     readonly property color deepseekBrand: "#4d6bfe"
 
-    // 工作区窗口段统一 sky，空槽与日历图标同色 subtext（比 surface 轨道更醒目，弱化"缺口"感）；
-    // 选中工作区的外圈用 peach（唯一焦点色，毛玻璃上比 maroon 亮一档）
+    // 工作区窗口段统一 sky，空槽用轨道色；选中工作区的外圈用 peach（唯一焦点色，毛玻璃上比 maroon 亮一档）
     readonly property color workspace: p.sky
-    readonly property color workspaceTrack: p.subtext
     readonly property color workspaceFocus: p.peach
 
     // 时钟卡片：日历/时钟图标去彩色（subtext，静态信息）；周数徽标同色系描边 + 数字（实底药丸在毛玻璃上突兀）

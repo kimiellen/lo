@@ -65,7 +65,7 @@ Row {
                 thickness: Metrics.workspaceRingThickness
                 windows: cell.workspaceData.windows
                 activeIndex: cell.workspaceData.activeIndex
-                trackColor: Theme.workspaceTrack
+                trackColor: Theme.ringTrack
             }
 
             MouseArea {
