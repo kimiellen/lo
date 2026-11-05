@@ -39,11 +39,11 @@ Nothing on the bar is allowed to break the bar: a missing API key, a failed `df`
 - One card at the left edge; the bar's fixed centre is reserved for workspaces
 - Grouped as calendar + date → clock + time → ISO week pill + weekday; both languages use 24-hour time
 - 中文 `11月1日 / 21:26 / 45 / 周一` · English `1 Nov / 21:26 / 45 / Mon` (`45` is the ISO week)
-- `SystemClock` updates it every second; the calendar/clock glyphs and the week pill use sky, with dark text on the pill for contrast
+- `SystemClock` updates it every second; the calendar/clock glyphs stay in subtext, and the ISO week number sits in a subtext-outlined pill with a transparent fill
 
 #### CPU / memory / disk
 
-- Three rings lettered `C`, `M`, `D`; hover for the exact percentage and, for memory and disk, `used / total` in GiB
+- Three rings lettered `C`, `M`, `D`; sky below 80 % usage and peach at 80 % and above; hover for the exact percentage and, for memory and disk, `used / total` in GiB
 - CPU is the delta of two `/proc/stat` samples every second; memory reads `MemAvailable` every two seconds; disk measures `/` every 30 seconds with the same accounting as `df`
 - Clicking any ring opens the control panel; if a source disappears the ring turns grey and shows `--` instead of freezing on a stale value
 
@@ -51,7 +51,7 @@ Nothing on the bar is allowed to break the bar: a missing API key, a failed `df`
 
 - Fetches `GET https://api.kimi.com/coding/v1/usages` every 60 seconds and renders the **windows the API actually returns** — no hard-coded window list
 - Up to two rings, picked in a fixed visual order: **7-day first, then 5-hour**, with monthly / code windows as a fallback so a changed API never hides the quota
-- Every ring uses sky. Each ring carries its own reset countdown in the body text colour: days for the weekly window (`1D`, `3D`), hours for the session window (`3H`)
+- Every ring shares the two-tier usage colours with the system rings (sky below 80 %, peach at 80 % and above). Each ring carries its own reset countdown in the body text colour: days for the weekly window (`1D`, `3D`), hours for the session window (`3H`)
 - Hover shows the window name, percentage and reset time
 - The parser accepts the current `usages` shape, the older `usage` shape and `limits[]`, plus `used_ratio`, `used/limit` and `remaining/limit`
 - Key comes from `KIMI_CODING_API_KEY` or `~/.config/vbc-io/secrets.json` (`600`, `400` also accepted); missing key, 401, timeout or garbage all degrade to a grey `--` ring and recover on the next poll
@@ -69,7 +69,7 @@ Nothing on the bar is allowed to break the bar: a missing API key, a failed `df`
 - The active window's segment always sits at 12 o'clock; the whole ring rotates continuously when the active window changes or windows move, without replaying the animation when the first/last state is unchanged
 - `N < 5` shows every window; `N >= 5` always draws exactly five. Once the active window is past the fifth position the view slides so the active window is the last visible one — there is no `+N` badge
 - The red radius line marks the start of the visible five-window window and rotates with the ring
-- The selected workspace gets a maroon outer ring (26 px diameter, 2 px stroke) centred in its 30 px slot
+- The selected workspace gets a peach outer ring (26 px diameter, 2 px stroke) centred in its 30 px slot
 - Left-click a non-focused workspace to switch through Hyprland's Lua `eval`; clicking the current workspace does nothing
 - Workspaces appear and disappear with Hyprland events — no polling, no restart
 
@@ -83,7 +83,7 @@ Nothing on the bar is allowed to break the bar: a missing API key, a failed `df`
 - **Microphone** — mutes / unmutes the default input; the glyph gains a slash and turns grey when muted
 - **Volume** — ring lettered `V` in sky; click the ring to mute, scroll to change volume by 5% (muted greys the whole ring)
 - **Brightness** — ring lettered `L` in sky; scroll to change by 5%, with the value rounded to the same integer shown elsewhere
-- **Battery** — ring lettered `B` that swaps to a bolt vector while plugged in; the arc and centre are coloured by tier (`<40%` red, `40–70%` yellow, `≥70%` green); hover shows percent, remaining time and wattage
+- **Battery** — ring lettered `B` that swaps to a bolt vector while plugged in; the arc and centre are sky at 50 % and above, peach below; hover shows percent, remaining time and wattage
 - Missing hardware hides the module instead of showing a broken one (no PipeWire → no volume module, no backlight → no brightness)
 
 **Status icons**
@@ -125,12 +125,12 @@ The panel is a 400 px overlay anchored under the right edge of the bar. `Esc` or
 | Base | `#1e1e2e` | `#eff1f5` |
 | Text | `#cdd6f4` | `#4c4f69` |
 | Ring accent | sky `#89dceb` | sky `#04a5e5` |
-| Workspace focus | maroon `#eba0ac` | maroon `#e64553` |
+| Workspace focus | peach `#fab387` | peach `#fe640b` |
 | UI accent | lavender `#b4befe` | lavender `#7287fd` |
 | Status icons | sky when healthy, `subtext` when idle, `overlay` when off | same roles |
-| Battery tiers | red / yellow / green (`<40%` / `40–70%` / `≥70%`) | same roles |
+| Battery tiers | sky (`≥50%`) / peach (`<50%`) | same roles |
 
-- CPU, memory, disk, volume, brightness, Kimi and occupied workspace segments all share the sky ring accent; the selected workspace is the one maroon exception
+- sky is the "normal" colour for gauges and connected states; peach is the one attention colour — the selected workspace ring, any usage ring at 80 %+, and a battery below 50 %
 - The UI accent is used for panel controls such as toggles, links and the active proxy-mode outline
 - Every visible string goes through `I18n`; every colour goes through `Theme` — there are no hard-coded labels or hex values in the bar
 - Theme and language are written to `~/.config/vbc-io/config.json` and restored before the first frame, so rings never flash in the wrong palette on startup
@@ -239,7 +239,7 @@ Quickshell picks up the new QML on the next reload; no build step exists.
 |---|---|---|
 | `theme` | `"mocha"` | `mocha`, `latte` or `auto` (`auto` = light 06:00–18:00) |
 | `language` | `"zh"` | `"zh"` or `"en"` |
-| `barHeight` | `35` | Card height, clamped to 28–64; the bar window adds margins on top |
+| `barHeight` | `32` | Card height, clamped to 28–64; the bar window adds margins on top |
 | `mihomoConfigPath` | `/etc/mihomo/config.yaml` | mihomo config used to discover `external-controller` / `secret` |
 | `mihomoController` | `""` | Fallback controller URL when the config file cannot be read |
 | `mihomoSecret` | `""` | Fallback secret for that controller |
@@ -249,7 +249,7 @@ Quickshell picks up the new QML on the next reload; no build step exists.
 {
   "theme": "auto",
   "language": "en",
-  "barHeight": 35,
+  "barHeight": 32,
   "mihomoConfigPath": "",
   "mihomoController": "",
   "mihomoSecret": "",
@@ -333,12 +333,12 @@ Everything is Catppuccin, with semantic roles instead of raw colours:
 
 | Role | Mocha | Latte | Used by |
 |---|---|---|---|
-| `sky` | `#89dceb` | `#04a5e5` | CPU / memory / disk, volume, brightness, Kimi, occupied workspace segments, clock glyphs and week badge |
-| `maroon` | `#eba0ac` | `#e64553` | selected workspace outer ring |
+| `sky` | `#89dceb` | `#04a5e5` | volume, brightness, occupied workspace segments, healthy status icons; usage rings below their threshold |
+| `peach` | `#fab387` | `#fe640b` | selected workspace outer ring; usage rings ≥80 %; battery <50 % |
 | status healthy | sky | sky | proxy / Wi-Fi / Bluetooth icons |
 | status idle | `subtext` | `subtext` | Wi-Fi / Bluetooth powered but not connected |
 | status off | `overlay` | `overlay` | off or unavailable |
-| battery tier | red / yellow / green (`<40%` / `40–70%` / `≥70%`) | same | battery ring and centre; plugged in swaps `B` for a bolt |
+| battery tier | sky ≥50 % / peach <50 % | same | battery ring and centre; plugged in swaps `B` for a bolt |
 | `deepseekBrand` | `#4d6bfe` | `#4d6bfe` | DeepSeek mark |
 | UI accent | lavender `#b4befe` | lavender `#7287fd` | toggles, links, active proxy-mode outline |
 
@@ -346,9 +346,9 @@ Geometry is a small, fixed vocabulary:
 
 | Token | Value |
 |---|---|
-| Card | 35 px tall, radius 16, 10 px horizontal padding |
+| Card | 32 px tall, radius 12, 10 px horizontal padding; frosted — 72% base over a blurred backdrop (ext-background-effect-v1), 1 px crust stroke plus a 1 px top highlight on dark, 1 px text 10% stroke on light |
 | Ring | 24 px outer diameter, 3 px stroke |
-| Workspace | 30 px slot, 20 px inner ring / 3 px stroke; selected outer ring 26 px / 2 px, maroon |
+| Workspace | 30 px slot, 20 px inner ring / 3 px stroke; selected outer ring 26 px / 2 px, peach |
 | Bar text | 14 px everywhere; panel text 11–13 px |
 | Status icons | 24 px box, 22 px glyph |
 | Theme button | 22 px tall |

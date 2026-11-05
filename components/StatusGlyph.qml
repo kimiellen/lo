@@ -9,7 +9,7 @@ Item {
 
     property string kind: "mic"
     property color color: Theme.text
-    property color cutColor: Theme.cardBg   // 静音斜线两侧的切口底色（卡片底色）
+    property color cutColor: Theme.cardCut   // 静音斜线两侧的切口底色（必须不透明）
     property bool muted: false
     property real size: Metrics.statusGlyphSize
 

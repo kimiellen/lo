@@ -11,7 +11,7 @@ Item {
 
     property real value: 0              // 0..1
     property color color: Theme.cpu
-    property color trackColor: Theme.trackDim
+    property color trackColor: Theme.ringTrack
     property real size: Metrics.ringSize
     property real thickness: Metrics.ringThickness
     property real startAngle: -90

@@ -7,7 +7,7 @@ Singleton {
     id: root
 
     // 卡片
-    readonly property int cardRadius: 16
+    readonly property int cardRadius: 12
     readonly property int cardPadding: 10      // 横向内边距；纵向由内容居中留白
 
     // 栏内布局：卡片之间 8；顶栏四周留白 = max(设计最小值, gaps_out + 偏移)，

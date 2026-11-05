@@ -11,10 +11,12 @@ Hyprland 顶栏，纯 QML + Quickshell 0.3.2（Qt 6.12）。单进程常驻，Ca
 ## 运行与验证
 
 ```bash
-# 开发：仓库软链到 quickshell 配置目录，然后用 -c 启动
-ln -sfn "$PWD" ~/.config/quickshell/vbc-io
-qs -c vbc-io            # 前台运行，看日志；改 QML 热重载
+# 部署目录是 ~/.config/lo（项目的运行副本），用 -p 直接指向它启动
+qs -p ~/.config/lo      # 前台运行，看日志；改 QML 热重载
 ```
+
+- **硬约束**：项目部署/运行目录是 `~/.config/lo`，应用配置目录是 `~/.config/vbc-io`（config.json / secrets.json）。
+  **不要去 `~/.config/quickshell/` 下建软链或找配置**（已多次踩坑）。
 
 - 验证以真机目视为准：启动无报错、顶栏出现、交互可用。
 - 涉及数值的模块，必须与系统命令交叉核对（`top`、`free`、`df`、`pactl`、`brightnessctl`）。

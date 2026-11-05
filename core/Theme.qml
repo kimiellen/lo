@@ -38,10 +38,21 @@ Singleton {
     readonly property color overlay: p.overlay
     readonly property color track: p.surface1
     readonly property color trackDim: p.surface0
+    // 环轨道：surface2 约 70% 透明（过淡会在毛玻璃上与卡片底融成一片；实色则喧宾夺主）
+    readonly property color ringTrack: Qt.rgba(p.surface2.r, p.surface2.g, p.surface2.b, 0.7)
 
-    // 顶栏卡片：不透明底色 + 1px 细描边（描边透明度走 opacity，避免在 QML 里做颜色通道运算）
-    readonly property color cardBg: bg
-    readonly property real cardBorderOpacity: 0.12
+    // 顶栏卡片：毛玻璃——base 72% 透明（无模糊时仍保证可读性）
+    readonly property color cardBg: Qt.rgba(bg.r, bg.g, bg.b, 0.72)
+    // 边缘：深色主题用不透明暗边（crust——半透明描边会透出背后模糊边缘的噪点，拐角发毛）+ 顶部 1px 内高光；
+    // 浅色主题 text 本身是深色，保持 text 10% 描边、不加高光
+    readonly property color cardBorder: Config.effectiveTheme === "latte"
+        ? Qt.rgba(text.r, text.g, text.b, 0.10)
+        : p.crust
+    readonly property color cardHighlight: Config.effectiveTheme === "latte"
+        ? "transparent"
+        : Qt.rgba(text.r, text.g, text.b, 0.06)
+    // 图标切口底色：必须不透明，半透明切口无法切断下方字形（毛玻璃底下尤其明显）
+    readonly property color cardCut: bg
 
     // fontconfig 负责字体替换与 CJK 回退，这里只给首选族名
     readonly property string fontFamily: "JetBrainsMono Nerd Font"
@@ -57,33 +68,29 @@ Singleton {
     readonly property color volume: p.sky
     readonly property color brightness: p.sky
     readonly property color noise: p.sky
-    // 电池分档：<40% 红 / 40–70% 黄 / ≥70% 绿（充电不覆盖，仍按电量分档）
-    readonly property color batteryLow: p.red
-    readonly property color batteryMid: p.yellow
-    readonly property color batteryHigh: p.green
     readonly property color success: p.green
     readonly property color warning: p.red
     readonly property color accent: p.lavender
-    // 额度模块：DeepSeek 用官方品牌色（非 Catppuccin 角色）；Kimi 所有窗口环统一 sky
+    // 额度模块：DeepSeek 用官方品牌色（非 Catppuccin 角色）
     readonly property color deepseekBrand: "#4d6bfe"
-    readonly property color kimi: p.sky
 
-    // 工作区窗口段统一 sky，空槽用轨道色；选中工作区的外圈用 maroon
+    // 工作区窗口段统一 sky，空槽用轨道色；选中工作区的外圈用 peach（唯一焦点色，毛玻璃上比 maroon 亮一档）
     readonly property color workspace: p.sky
-    readonly property color workspaceFocus: p.maroon
+    readonly property color workspaceFocus: p.peach
 
-    // 时钟卡片：日历/时钟图标与周数药丸统一 sky；药丸文字按主题取深色保证对比
-    readonly property color clockDate: p.sky
-    readonly property color clockTime: p.sky
-    readonly property color weekBadge: p.sky
-    readonly property color weekBadgeText: Config.effectiveTheme === "latte" ? p.text : p.crust
+    // 时钟卡片：日历/时钟图标去彩色（subtext，静态信息）；周数徽标同色系描边 + 数字（实底药丸在毛玻璃上突兀）
+    readonly property color clockDate: p.subtext
+    readonly property color clockTime: p.subtext
+    readonly property color weekBadge: p.subtext
+    readonly property color weekBadgeText: p.subtext
 
-    // 电池状态色：按电量分三档（<40% 红 / 40–70% 黄 / ≥70% 绿），充电不覆盖
+    // 用量类环两档：<80% sky（常态）、≥80% peach（注意色）；资源环与 Kimi 额度环共用
+    function usageColor(ratio) {
+        return ratio >= 0.8 ? p.peach : p.sky;
+    }
+
+    // 电池两档：≥50% sky、<50% peach（充电不覆盖，仍按电量分档）
     function batteryColor(ratio) {
-        if (ratio < 0.4)
-            return batteryLow;
-        if (ratio < 0.7)
-            return batteryMid;
-        return batteryHigh;
+        return ratio >= 0.5 ? p.sky : p.peach;
     }
 }

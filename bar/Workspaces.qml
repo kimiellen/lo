@@ -42,7 +42,7 @@ Row {
             width: Metrics.workspaceCell
             height: Metrics.workspaceCell
 
-            // 选中工作区外圈：maroon、直径 26、线宽 2，居中于 30px 槽位
+            // 选中工作区外圈：peach、直径 26、线宽 2，居中于 30px 槽位
             Rectangle {
                 anchors.centerIn: parent
                 width: Metrics.snap(Metrics.workspaceFocusRing, root.dpr)
@@ -65,7 +65,7 @@ Row {
                 thickness: Metrics.workspaceRingThickness
                 windows: cell.workspaceData.windows
                 activeIndex: cell.workspaceData.activeIndex
-                trackColor: Theme.trackDim
+                trackColor: Theme.ringTrack
             }
 
             MouseArea {

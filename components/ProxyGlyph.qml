@@ -9,7 +9,7 @@ Item {
 
     property string mode: ""
     property color color: Theme.accent
-    property color cutColor: Theme.cardBg
+    property color cutColor: Theme.cardCut
     property real size: Metrics.iconGlyphSize
 
     implicitWidth: root.size

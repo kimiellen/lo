@@ -13,7 +13,7 @@ Item {
     property real size: Metrics.workspaceRing
     property real thickness: Metrics.workspaceRingThickness
     property real segmentGap: Metrics.workspaceSegmentGap
-    property color trackColor: Theme.trackDim
+    property color trackColor: Theme.ringTrack
 
     readonly property int count: windows.length
     readonly property int clampedActiveIndex: count > 0

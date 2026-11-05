@@ -5,7 +5,7 @@ import qs.core
 import qs.services
 
 // Kimi 额度：矢量标 + 7 天环（跟天数）+ 5 小时环（跟小时数），每个环配自己的重置倒计时
-// 环统一 sky，倒计时文字用正文色；所有子项同高，保证 Row 内上下居中对齐
+// 环与资源环共用用量两档（<80% sky、≥80% peach），倒计时文字用正文色；所有子项同高，保证 Row 内上下居中对齐
 Row {
     id: root
 
@@ -59,7 +59,7 @@ Row {
             letter: item.letter,
             ratio: item.ratio,
             resetAt: item.resetAt,
-            color: Theme.kimi,
+            color: Theme.usageColor(item.ratio),
             title: I18n.t(item.labelKey)
         }));
     }

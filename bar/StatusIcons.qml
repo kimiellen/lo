@@ -96,7 +96,7 @@ Row {
                 visible: cell.modelData.key === "proxy"
                 mode: Proxy.available ? Proxy.mode : ""
                 color: root.colorFor("proxy")
-                cutColor: Theme.cardBg
+                cutColor: Theme.cardCut
 
                 Behavior on color {
                     ColorAnimation { duration: 120 }

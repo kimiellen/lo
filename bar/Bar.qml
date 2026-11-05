@@ -40,6 +40,17 @@ PanelWindow {
     WlrLayershell.exclusiveZone: Math.ceil(bar.windowHeight)
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
+    // 卡片区域的背景模糊：ext-background-effect-v1（Hyprland 0.57 原生支持，无需 layerrule）
+    BackgroundEffect.blurRegion: Region {
+        Region { item: clockCard; radius: Metrics.cardRadius }
+        Region { item: systemCard; radius: Metrics.cardRadius }
+        Region { item: quotaCard; radius: Metrics.cardRadius }
+        Region { item: balanceCard; radius: Metrics.cardRadius }
+        Region { item: workspaceCard; radius: Metrics.cardRadius }
+        Region { item: statusCard; radius: Metrics.cardRadius }
+        Region { item: iconCard; radius: Metrics.cardRadius }
+    }
+
     // 左区：时间日期 → 系统三环 → 额度 → 余额
     Row {
         id: leftSection

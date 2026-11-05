@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import Quickshell
 import Quickshell.Io
 import qs.components
@@ -49,13 +50,17 @@ Row {
         }
     }
 
-    // 周数 + 星期组：sky 底药丸内为 ISO 8601 周数
+    // 周数 + 星期组：subtext 描边矩形内为 ISO 8601 周数（透明底，实底药丸在毛玻璃上突兀）
     ContentGroup {
         Rectangle {
+            readonly property real dpr: Window.window ? Window.window.devicePixelRatio : 1
+
             width: weekText.implicitWidth + Metrics.modeButtonPadding * 2
             height: Metrics.modeButtonHeight
             radius: Metrics.modeButtonRadius
-            color: Theme.weekBadge
+            color: "transparent"
+            border.width: Metrics.snap(1, dpr)
+            border.color: Theme.weekBadge
 
             Text {
                 id: weekText
