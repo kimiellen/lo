@@ -38,13 +38,12 @@ Singleton {
     readonly property color overlay: p.overlay
     readonly property color track: p.surface1
     readonly property color trackDim: p.surface0
-    // 环轨道：surface2 约 70% 透明（过淡会在毛玻璃上与卡片底融成一片；实色则喧宾夺主）
+    // 环轨道：surface2 约 70% 透明（过淡会与卡片底融成一片；实色则喧宾夺主）
     readonly property color ringTrack: Qt.rgba(p.surface2.r, p.surface2.g, p.surface2.b, 0.7)
 
-    // 顶栏卡片：低噪毛玻璃——轻度透光，无模糊时仍保证可读性
-    readonly property color cardBg: Qt.rgba(bg.r, bg.g, bg.b,
-        Config.effectiveTheme === "latte" ? 0.82 : 0.80)
-    // 单层、低对比、不透明描边：隔离模糊背景与圆角 AA，不再叠加半透明高光
+    // 顶栏卡片：完全不透明，避免下方窗口参与卡片填充混合
+    readonly property color cardBg: bg
+    // 单层、低对比实色外框，不叠加半透明高光
     readonly property color cardBorder: Config.effectiveTheme === "latte"
         ? p.surface0
         : p.mantle

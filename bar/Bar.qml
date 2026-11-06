@@ -40,17 +40,6 @@ PanelWindow {
     WlrLayershell.exclusiveZone: Math.ceil(bar.windowHeight)
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-    // 卡片区域的背景模糊：ext-background-effect-v1；半径与可见描边外轮廓一致
-    BackgroundEffect.blurRegion: Region {
-        Region { item: clockCard; radius: clockCard.outerRadius }
-        Region { item: systemCard; radius: systemCard.outerRadius }
-        Region { item: quotaCard; radius: quotaCard.outerRadius }
-        Region { item: balanceCard; radius: balanceCard.outerRadius }
-        Region { item: workspaceCard; radius: workspaceCard.outerRadius }
-        Region { item: statusCard; radius: statusCard.outerRadius }
-        Region { item: iconCard; radius: iconCard.outerRadius }
-    }
-
     // 左区：时间日期 → 系统三环 → 额度 → 余额
     Row {
         id: leftSection
@@ -100,9 +89,10 @@ PanelWindow {
         }
     }
 
-    // 中区：工作区（卡片中心严格对齐屏幕水平中心）
+    // 中区：偶数设备像素宽度让卡片严格居中时，左右边仍同时落在整像素上
     BarCard {
         id: workspaceCard
+        width: Metrics.snapEven(implicitWidth, bar.dpr)
         height: bar.cardHeight
         anchors {
             horizontalCenter: parent.horizontalCenter
@@ -111,6 +101,8 @@ PanelWindow {
         }
 
         Workspaces {
+            // 内容总宽同样取偶数设备像素，避免居中后内部环落在半像素
+            width: Metrics.snapEven(implicitWidth, bar.dpr)
             anchors.centerIn: parent
         }
     }

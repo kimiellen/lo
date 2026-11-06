@@ -3,9 +3,9 @@ import QtQuick.Shapes
 import QtQuick.Window
 import qs.core
 
-// 顶栏卡片：低噪毛玻璃 + 实色外框，外框与玻璃填充分层绘制，宽度随内容
+// 顶栏卡片：不透明底 + 实色外框，外框与填充分层绘制，宽度随内容
 // 每张卡片只放一个内容组件，卡片尺寸取该组件的隐式尺寸；宽度与外框按设备像素吸附
-// 两层均走 Shape + CurveRenderer；模糊区域通过 outerRadius 复用可见外轮廓
+// 两层均走无描边 Shape + CurveRenderer，内外圆角同心
 Item {
     id: root
 

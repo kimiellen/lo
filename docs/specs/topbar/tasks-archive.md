@@ -119,3 +119,9 @@
 
 - [x] `components/BarCard.qml`：实色外框与玻璃填充拆为两层无描边 Shape，外半径按整设备像素吸附，内外圆角保持同心
 - [x] 真机验证：`qmllint` 无告警；冷启动后 IPC 切换 Mocha/Latte 无 QML 报错，截图确认直边与圆角完整，顶栏保持 1600×48，恢复原 Mocha
+
+## 无玻璃卡片与像素对齐
+
+- [x] `core/Theme.qml` + `bar/Bar.qml` + `components/BarCard.qml`：卡片改完全不透明，移除顶栏背景模糊申请并更新实现注释
+- [x] `bar/Bar.qml`：居中工作区卡片与内容 Row 使用偶数设备像素宽度，避免半像素居中
+- [x] 真机验证：用户确认有窗口时边缘达到干净目标；DP-2 1.5 下 Mocha/Latte 截图与热重载无 QML 报错，`qmllint` 通过；几何断言核对 DP-2 卡片 304px / 左边 1768px / 内容 274px，eDP-1 1.6 为 324px / 1118px / 292px
