@@ -9,7 +9,7 @@ Singleton {
     id: root
 
     // 顺序即弹层列表顺序；none 固定在最后，表示停止；文案由 UI 走 I18n.t("noise." + key)
-    readonly property var trackKeys: ["stars", "rain", "sea", "forest", "fire", "voyage", "cafe", "none"]
+    readonly property var trackKeys: ["birds", "stream", "wind", "night", "fire", "boat", "cafe", "none"]
 
     // 配置里出现非法 key（旧版本/手改）时按停止处理
     readonly property string track: trackKeys.indexOf(Config.whiteNoiseTrack) >= 0
@@ -40,7 +40,7 @@ Singleton {
         id: player
 
         loops: MediaPlayer.Infinite
-        source: root.track === "none" ? "" : Qt.resolvedUrl("../assets/sounds/amb-" + root.track + ".mp3")
+        source: root.track === "none" ? "" : Qt.resolvedUrl("../assets/sounds/amb-" + root.track + ".ogg")
         // 不依赖 autoPlay：它只在首次加载媒体时生效，切歌后 LoadedMedia 不会自动进 PlayingState。
         // 每次新媒体加载完成都显式 play()；source 置空（none）时媒体卸载，天然停止
         autoPlay: false

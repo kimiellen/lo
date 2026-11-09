@@ -3,7 +3,7 @@ import QtQuick.Shapes
 import qs.core
 
 // 白噪音矢量图标：绘制视框固定 1024×1024，按 size 等比缩放
-// kind = button（状态卡按钮，用户提供的波形圆圈）| stars | rain | sea | forest | fire | voyage | cafe | none
+// kind = button（状态卡按钮，用户提供的波形圆圈）| birds | stream | wind | night | fire | boat | cafe | none
 Item {
     id: root
 
@@ -39,43 +39,33 @@ Item {
         }
     }
 
-    // ---------------- 星空音乐：三枚四角星（填充） ----------------
+    // ---------------- 林间鸟鸣：展翅飞鸟（描边） ----------------
     Shape {
         anchors.centerIn: parent
         width: root.viewBox
         height: root.viewBox
         scale: root.size / root.viewBox
         transformOrigin: Item.Center
-        visible: root.kind === "stars"
+        visible: root.kind === "birds"
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
-            fillColor: root.color
-            strokeColor: "transparent"
-            PathSvg { path: "M400 240Q434 396 590 430Q434 464 400 620Q366 464 210 430Q366 396 400 240z" }
-        }
-
-        ShapePath {
-            fillColor: root.color
-            strokeColor: "transparent"
-            PathSvg { path: "M730 205Q748 282 825 300Q748 318 730 395Q712 318 635 300Q712 282 730 205z" }
-        }
-
-        ShapePath {
-            fillColor: root.color
-            strokeColor: "transparent"
-            PathSvg { path: "M700 595Q713 647 765 660Q713 673 700 725Q687 673 635 660Q687 647 700 595z" }
+            strokeColor: root.color
+            strokeWidth: 64
+            fillColor: "transparent"
+            capStyle: ShapePath.RoundCap
+            PathSvg { path: "M160 660C290 490 420 480 512 630C604 480 734 490 864 660" }
         }
     }
 
-    // ---------------- 雨天图书馆：云 + 三条雨滴（描边） ----------------
+    // ---------------- 溪流潺潺：三排波浪（描边） ----------------
     Shape {
         anchors.centerIn: parent
         width: root.viewBox
         height: root.viewBox
         scale: root.size / root.viewBox
         transformOrigin: Item.Center
-        visible: root.kind === "rain"
+        visible: root.kind === "stream"
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
@@ -83,67 +73,45 @@ Item {
             strokeWidth: 48
             fillColor: "transparent"
             capStyle: ShapePath.RoundCap
-            joinStyle: ShapePath.RoundJoin
-            PathSvg { path: "M280 600C200 600 170 520 220 470C240 380 340 340 420 370C460 280 600 260 660 340C760 320 830 400 800 490C850 520 820 600 740 600z" }
-        }
-
-        ShapePath {
-            strokeColor: root.color
-            strokeWidth: 44
-            fillColor: "transparent"
-            capStyle: ShapePath.RoundCap
-            PathSvg { path: "M340 668L304 748M512 668L476 748M684 668L648 748" }
+            PathSvg { path: "M134 380q90 -76 180 0t180 0t180 0t180 0M134 530q90 -76 180 0t180 0t180 0t180 0M134 680q90 -76 180 0t180 0t180 0t180 0" }
         }
     }
 
-    // ---------------- 清晨海岸：两排波浪（描边） ----------------
+    // ---------------- 原野风声：三缕风线（描边） ----------------
     Shape {
         anchors.centerIn: parent
         width: root.viewBox
         height: root.viewBox
         scale: root.size / root.viewBox
         transformOrigin: Item.Center
-        visible: root.kind === "sea"
+        visible: root.kind === "wind"
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
             strokeColor: root.color
-            strokeWidth: 52
+            strokeWidth: 56
             fillColor: "transparent"
             capStyle: ShapePath.RoundCap
-            PathSvg { path: "M114 440q90 -80 180 0t180 0t180 0t180 0" }
-        }
-
-        ShapePath {
-            strokeColor: root.color
-            strokeWidth: 52
-            fillColor: "transparent"
-            capStyle: ShapePath.RoundCap
-            PathSvg { path: "M204 624q90 -80 180 0t180 0t180 0t180 0" }
+            PathSvg { path: "M140 360H560C650 360 700 315 700 250C700 195 655 155 595 155M140 540H690C795 540 840 595 840 660C840 720 795 760 730 760M140 720H470" }
         }
     }
 
-    // ---------------- 林间早晨：松树剪影（填充） ----------------
+    // ---------------- 夏夜虫鸣：弯月（填充，奇偶裁剪出月牙） ----------------
     Shape {
         anchors.centerIn: parent
         width: root.viewBox
         height: root.viewBox
         scale: root.size / root.viewBox
         transformOrigin: Item.Center
-        visible: root.kind === "forest"
+        visible: root.kind === "night"
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
             fillColor: root.color
             strokeColor: "transparent"
-            joinStyle: ShapePath.RoundJoin
-            PathSvg { path: "M512 160L680 420L600 420L740 620L640 620L800 800L224 800L384 620L284 620L424 420L344 420z" }
-        }
-
-        ShapePath {
-            fillColor: root.color
-            strokeColor: "transparent"
-            PathSvg { path: "M482 800h60v104h-60z" }
+            fillRule: ShapePath.OddEvenFill
+            // 大圆减右上的圆 = 开口朝右的月牙（圆用四段三次贝塞尔近似）
+            PathSvg { path: "M40 512C40 313 213 140 400 140C587 140 760 313 760 512C760 711 587 884 400 884C213 884 40 711 40 512ZM310 470C310 304 444 170 610 170C776 170 910 304 910 470C910 636 776 770 610 770C444 770 310 636 310 470Z" }
         }
     }
 
@@ -171,7 +139,7 @@ Item {
         height: root.viewBox
         scale: root.size / root.viewBox
         transformOrigin: Item.Center
-        visible: root.kind === "voyage"
+        visible: root.kind === "boat"
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {

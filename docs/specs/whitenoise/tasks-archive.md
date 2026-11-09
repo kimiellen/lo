@@ -20,3 +20,17 @@
 - [x] 真机验证（`qs -c vbc-io` + grim 截图）：dark/light 双主题弹层与按钮渲染正常；点 Starlight 即播、
   点 Silent 即停且写盘 `whiteNoiseTrack: "none"`；外部改 config 为 rain 触发热加载续播 rain；
   音量滑条拖动实时跟随；重启进程无 QML 报错、none 保持安静
+
+## M3：音频开源授权合规替换 ✅
+
+- [x] 授权调研：旧 `amb-*.mp3`（word-atlas 来源）全部替换；新音频选自 GitHub 开源项目
+  [Blanket](https://github.com/rafaelmardojai/blanket)，仅收录 CC0 / 公有领域条目（免署名），
+  CC BY 条目（Rain/Waves/Storm/City/Train）剔除；逐条来源记录于 `assets/sounds/LICENSES.md`
+- [x] `assets/sounds/`：7 个 `amb-*.ogg`（birds/stream/wind/night/fire/boat/cafe，ffprobe + ffmpeg 解码校验通过，
+  Blanket 按循环规范剪辑、无缝循环），删除全部旧 mp3；格式 mp3 → ogg
+- [x] `services/WhiteNoise.qml`：trackKeys 改为新清单，扩展名 .mp3 → .ogg；旧 config 中的失效 key 自动回退 none
+- [x] `components/NoiseGlyph.qml`：图标 kind 适配新音轨（新增 birds 飞鸟 / stream 波浪 / wind 风线 / night 弯月，
+  fire/cafe 复用，voyage 改名 boat）
+- [x] `core/I18n.qml`：中英音轨文案更新
+- [x] spec-change 经用户确认后先行更新 `docs/specs/whitenoise/spec.md` §3/§6
+- [x] 验证：`qs -p ~/.config/lo` 启动无 QML 报错、多媒体 ffmpeg 后端正常加载；菜单切轨出声待真机目视确认

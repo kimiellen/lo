@@ -26,18 +26,23 @@
 
 ## 3. 声音清单与资源
 
-音频从 word-atlas 拷入本仓库 `assets/sounds/`（不跨项目引用）：
+音频全部来自 GitHub 开源项目 [Blanket](https://github.com/rafaelmardojai/blanket)
+（`data/resources/sounds/`，按该项目循环规范剪辑、天然无缝循环），逐条授权见其
+[SOUNDS_LICENSING.md](https://github.com/rafaelmardojai/blanket/blob/master/SOUNDS_LICENSING.md)。
+本仓库只收录 **CC0 / 公有领域**（可随意使用、无需任何署名声明）的条目；
+Blanket 中 CC BY 的条目（Rain/Waves/Storm/City/Train）一律不收。
+来源与授权逐条记录在 `assets/sounds/LICENSES.md`：
 
-| key | 中文 | English | 文件 |
-| --- | --- | --- | --- |
-| stars | 星空音乐 | Starlight | amb-stars.mp3 |
-| rain | 雨天图书馆 | Rainy Library | amb-rain.mp3 |
-| sea | 清晨海岸 | Morning Coast | amb-sea.mp3 |
-| forest | 林间早晨 | Forest Morning | amb-forest.mp3 |
-| fire | 夜晚壁炉 | Night Fireplace | amb-fire.mp3 |
-| voyage | 远航船舱 | Voyage Cabin | amb-voyage.mp3 |
-| cafe | 安静咖啡馆 | Quiet Café | amb-cafe.mp3 |
-| none | 安静 | Silent | （无，停止播放） |
+| key | 中文 | English | 文件 | 授权 |
+| --- | --- | --- | --- | --- |
+| birds | 林间鸟鸣 | Forest Birds | amb-birds.ogg | CC0 |
+| stream | 溪流潺潺 | Stream | amb-stream.ogg | CC0 |
+| wind | 原野风声 | Open Wind | amb-wind.ogg | CC0 |
+| night | 夏夜虫鸣 | Summer Night | amb-night.ogg | Public Domain |
+| fire | 夜晚壁炉 | Night Fireplace | amb-fire.ogg | Public Domain |
+| boat | 远航船舱 | Boat Cabin | amb-boat.ogg | CC0 |
+| cafe | 安静咖啡馆 | Quiet Café | amb-cafe.ogg | Public Domain |
+| none | 安静 | Silent | （无，停止播放） | — |
 
 列表顺序固定为上表顺序；「安静」在最后一项，选中态表现为停止。
 
@@ -68,7 +73,7 @@ panels/NoisePopup.qml     # 下拉弹层（shell.qml 宿主，随每屏 Bar 或�
 bar/StatusControls.qml    # 主题按钮后插入白噪音按钮
 core/Config.qml           # +whiteNoiseTrack / +whiteNoiseVolume 与 setter
 core/I18n.qml             # 8 个音轨名 + tooltip + 音量标签（中英）
-assets/sounds/            # 7 个 amb-*.mp3（来自 word-atlas，MIT 项目内复制）
+assets/sounds/            # 7 个 amb-*.ogg（来自 Blanket，CC0/公有领域）+ LICENSES.md 来源记录
 ```
 
 规则沿用 topbar：UI 只做绑定，播放副作用只在 `services/WhiteNoise.qml`。
